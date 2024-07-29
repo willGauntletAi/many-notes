@@ -19,7 +19,7 @@ class Login extends Component
 
         Session::regenerate();
 
-        $this->redirectIntended(default: route('vaults', absolute: false), navigate: true);
+        $this->redirectIntended(default: route('vaults.last', absolute: false), navigate: true);
     }
 
     public function render()
