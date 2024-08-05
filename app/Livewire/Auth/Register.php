@@ -13,7 +13,7 @@ class Register extends Component
     {
         $this->form->register();
 
-        $this->redirect(route('vaults', absolute: false), navigate: true);
+        $this->redirect(route('vaults.index', absolute: false), navigate: true);
     }
 
     public function render()
