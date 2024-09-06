@@ -10,10 +10,8 @@
         @vite('resources/js/app.js')
     </head>
     <body>
-        <div class="text-[#040F0F] dark:text-[#FCFFFC] bg-[#FCFFFC] dark:bg-[#222629]">
-            <div class="flex flex-col h-screen min-h-full">
-                {{ $slot }}
-            </div>
+        <div class="flex flex-col h-screen min-h-full">
+            {{ $slot }}
         </div>
     </body>
 </html>
