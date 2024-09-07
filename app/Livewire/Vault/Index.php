@@ -14,6 +14,9 @@ class Index extends Component
 
     public function create()
     {
+        $this->validate();
+        $this->form->create();
+        $this->reset('showCreateModal');
     }
 
     public function export(Vault $vault)
