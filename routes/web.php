@@ -5,6 +5,11 @@ use App\Livewire\Auth\Register;
 use App\Livewire\Auth\ResetPassword;
 use App\Livewire\Auth\ForgotPassword;
 use Illuminate\Support\Facades\Route;
+use App\Livewire\Vault\Index as VaultIndex;
+
+Route::middleware('auth')->group(function () {
+    Route::get('vaults', VaultIndex::class)->name('vaults.index');
+});
 
 Route::middleware('guest')->group(function () {
     Route::get('register', Register::class)->name('register');
