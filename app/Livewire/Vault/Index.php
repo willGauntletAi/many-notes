@@ -25,6 +25,8 @@ class Index extends Component
 
     public function delete(Vault $vault)
     {
+        $this->authorize('delete', $vault);
+        $vault->delete();
     }
 
     public function render()
