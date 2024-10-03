@@ -9,7 +9,7 @@ class ForgotPassword extends Component
 {
     public ForgotPasswordForm $form;
 
-    public function send()
+    public function send(): void
     {
         $this->form->sendPasswordResetLink();
     }

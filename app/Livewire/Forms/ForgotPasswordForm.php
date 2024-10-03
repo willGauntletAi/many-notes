@@ -3,17 +3,8 @@
 namespace App\Livewire\Forms;
 
 use Livewire\Form;
-use App\Models\User;
-use Illuminate\Support\Str;
-use Illuminate\Validation\Rules;
 use Livewire\Attributes\Validate;
-use Illuminate\Auth\Events\Lockout;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Facades\RateLimiter;
-use Illuminate\Validation\ValidationException;
 
 class ForgotPasswordForm extends Form
 {

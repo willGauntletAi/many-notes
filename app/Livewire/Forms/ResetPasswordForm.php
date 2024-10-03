@@ -6,7 +6,6 @@ use Livewire\Form;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Locked;
 use Illuminate\Validation\Rules;
-use Livewire\Attributes\Validate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Password;
@@ -16,11 +15,14 @@ class ResetPasswordForm extends Form
 {
     #[Locked]
     public string $token = '';
+
     public string $email = '';
+
     public string $password = '';
+
     public string $password_confirmation = '';
 
-    public function rules()
+    public function rules(): array
     {
         return [
             'token' => ['required'],

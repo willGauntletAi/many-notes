@@ -9,7 +9,7 @@ class Register extends Component
 {
     public RegisterForm $form;
 
-    public function send()
+    public function send(): void
     {
         $this->form->register();
 

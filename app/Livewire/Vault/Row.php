@@ -14,12 +14,12 @@ class Row extends Component
 
     public $showEditModal = false;
 
-    public function mount()
+    public function mount(): void
     {
         $this->form->setVault($this->vault);
     }
 
-    public function update()
+    public function update(): void
     {
         $this->authorize('update', $this->vault);
         $this->validate();
