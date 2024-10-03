@@ -1,4 +1,4 @@
-<div class="flex flex-grow">
+<div class="flex flex-col h-dvh">
     <x-layouts.guestMain>
         <div class="text-center">
             <x-form.sessionStatus :status="session('status')" />
@@ -11,13 +11,7 @@
         </div>
 
         <x-form wire:submit="send" class="flex flex-col gap-6">
-            <x-form.input
-                name="form.email"
-                label="{{ __('Email') }}"
-                type="email"
-                required
-                autofocus
-            />
+            <x-form.input name="form.email" label="{{ __('Email') }}" type="email" required autofocus />
 
             <x-form.submit label="{{ __('Send') }}" target="send" />
         </x-form>
