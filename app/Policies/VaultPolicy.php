@@ -9,27 +9,11 @@ use Illuminate\Auth\Access\Response;
 class VaultPolicy
 {
     /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(User $user): bool
-    {
-        //
-    }
-
-    /**
      * Determine whether the user can view the model.
      */
     public function view(User $user, Vault $vault): bool
     {
         return $user->id === $vault->created_by;
-    }
-
-    /**
-     * Determine whether the user can create models.
-     */
-    public function create(User $user): bool
-    {
-        //
     }
 
     /**
@@ -53,7 +37,7 @@ class VaultPolicy
      */
     public function restore(User $user, Vault $vault): bool
     {
-        //
+        return $user->id === $vault->created_by;
     }
 
     /**
@@ -61,6 +45,6 @@ class VaultPolicy
      */
     public function forceDelete(User $user, Vault $vault): bool
     {
-        //
+        return $user->id === $vault->created_by;
     }
 }
