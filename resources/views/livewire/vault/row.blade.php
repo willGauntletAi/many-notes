@@ -14,7 +14,7 @@
         <div class="flex flex-col items-center justify-center">
             <x-menu>
                 <x-menu.button>
-                    <x-icons.ellipsisVertical class="w-6 h-6" />
+                    <x-icons.ellipsisVertical class="w-5 h-5" />
                 </x-menu.button>
 
                 <x-menu.items>
@@ -27,17 +27,12 @@
                                     {{ __('Edit') }}
                                 </x-menu.item>
                             </x-modal.open>
-    
+
                             <x-modal.panel title="{{ __('Edit vault') }}">
                                 <x-form wire:submit="update" class="flex flex-col gap-6">
-                                    <x-form.input
-                                        name="form.name"
-                                        label="{{ __('Name') }}"
-                                        type="name"
-                                        required
-                                        autofocus
-                                    />
-    
+                                    <x-form.input name="form.name" label="{{ __('Name') }}" type="name" required
+                                        autofocus />
+
                                     <div class="flex justify-end">
                                         <x-form.submit label="{{ __('Edit') }}" target="edit" />
                                     </div>
@@ -46,15 +41,13 @@
                         </x-modal>
 
                         <x-menu.item x-on:click="$dispatch('vault-export')">
-                            <x-icons.arrowUpTray class="w-4 h-4" />
+                            <x-icons.arrowDownTray class="w-4 h-4" />
 
                             {{ __('Export') }}
                         </x-menu.item>
 
-                        <x-menu.item
-                            wire:confirm="{{ __('Are you sure you want to delete this vault?') }}"
-                            wire:click="$dispatch('vault-delete')"
-                        >
+                        <x-menu.item wire:confirm="{{ __('Are you sure you want to delete this vault?') }}"
+                            wire:click="$dispatch('vault-delete')">
                             <x-icons.trash class="w-4 h-4" />
 
                             {{ __('Delete') }}
