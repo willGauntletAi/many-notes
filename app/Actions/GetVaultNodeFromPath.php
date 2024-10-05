@@ -20,7 +20,7 @@ class GetVaultNodeFromPath
                 ->where('parent_id', $parentId)
                 ->where('is_file', true)
                 ->where('name', 'LIKE', $pathParts['filename'])
-                ->where('extension', 'LIKE', $pathParts['extension'])
+                ->where('extension', 'LIKE', $pathParts['extension'] ?? 'md')
                 ->first();
 
             return $node;
