@@ -26,11 +26,12 @@
         $watch('selectedFile', value => html = markdown())" x-cloak
             @sidebar-left-toggle.window="isSidebarOpen = !isSidebarOpen" class="relative flex w-full">
             <div wire:loading wire:target.except="nodeForm.name, nodeForm.content"
-                class="fixed inset-0 z-40 bg-black bg-opacity-40"></div>
-            <div x-show="false" @click="isSidebarOpen = false" class="fixed inset-0 z-20 bg-black bg-opacity-50"
-                x-transition:enter="ease-out duration-300" x-transition:leave="ease-in duration-200"></div>
+                class="fixed inset-0 z-40 opacity-50 bg-base-950"></div>
+            <div x-show="isSidebarOpen && window.innerWidth < 768" @click="isSidebarOpen = false"
+                class="fixed inset-0 z-20 opacity-50 bg-base-950" x-transition:enter="ease-out duration-300"
+                x-transition:leave="ease-in duration-200"></div>
 
-            <div class="absolute top-0 left-0 z-[5] flex flex-col h-full overflow-hidden overflow-y-auto transition-all w-60 bg-light-base-200 dark:bg-base-950"
+            <div class="absolute top-0 left-0 z-30 flex flex-col h-full overflow-hidden overflow-y-auto transition-all w-60 bg-light-base-200 dark:bg-base-950"
                 :class="{ 'translate-x-0': isSidebarOpen, '-translate-x-full hidden': !isSidebarOpen }">
                 <div class="sticky top-0 z-[5] flex justify-between p-4 bg-light-base-200 dark:bg-base-950">
                     <h3>{{ $vault->name }}</h3>
@@ -96,7 +97,7 @@
                     <div class="sticky top-0 z-[5] p-4 bg-light-base-50 dark:bg-base-900">
                         <div class="flex justify-between">
                             <input type="text" wire:model.live.debounce.500ms="nodeForm.name"
-                                class="flex flex-grow p-0 text-lg bg-transparent border-0 focus:ring-0 focus:outline-0" />
+                                class="flex flex-grow p-0 pr-2 text-lg bg-transparent border-0 focus:ring-0 focus:outline-0" />
 
                             <div class="flex items-center gap-2">
                                 <span wire:loading.flex wire:target="nodeForm.name, nodeForm.content"
