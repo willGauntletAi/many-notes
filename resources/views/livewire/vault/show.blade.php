@@ -207,11 +207,14 @@
             link(token) {
                 // external links
                 if (token.href.startsWith('http://') || token.href.startsWith('https://')) {
-                    return '<a href="' + token.href + '" target="_blank">' + token.text + '</a>';
+                    return '<a href="' + token.href + '" title="' + (token.title ?? '') + '" target="_blank">' +
+                        token
+                        .text + '</a>';
                 }
 
                 // internal links
-                return '<a href="" wire:click.prevent="openFilePath(\'' + token.href + '\')">' + token.text +
+                return '<a href="" wire:click.prevent="openFilePath(\'' + token.href + '\')" title="' + (token
+                        .title ?? '') + '">' + token.text +
                     '</a>';
             },
             listitem(token) {
