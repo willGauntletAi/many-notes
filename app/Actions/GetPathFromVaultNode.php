@@ -9,7 +9,7 @@ class GetPathFromVaultNode
     public function handle(VaultNode $node): string
     {
         $path =
-            'vaults' . DIRECTORY_SEPARATOR .
+            'private/vaults' . DIRECTORY_SEPARATOR .
             auth()->user()->id . DIRECTORY_SEPARATOR .
             $node->vault_id . DIRECTORY_SEPARATOR .
             $node->id . '.' . $node->extension;
