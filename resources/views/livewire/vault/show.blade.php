@@ -86,7 +86,7 @@
 
             <div class="absolute top-0 bottom-0 right-0 flex flex-col w-full overflow-y-auto transition-all text-start md:pl-60"
                 :class="{ 'md:pl-60': isSidebarOpen, '': !isSidebarOpen }">
-                <div class="flex flex-col h-full w-[48rem] mx-auto">
+                <div class="flex flex-col h-full w-full max-w-[48rem] mx-auto">
                     @if ($selectedFile)
                         <div class="sticky top-0 z-[5] p-4 bg-light-base-50 dark:bg-base-900">
                             <div class="flex justify-between">
