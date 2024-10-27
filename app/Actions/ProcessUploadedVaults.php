@@ -39,7 +39,8 @@ class ProcessUploadedVaults
             $entryName = $zip->getNameIndex($i);
 
             $isFile = substr($entryName, -1) !== DIRECTORY_SEPARATOR;
-            $name = pathinfo($entryName, PATHINFO_FILENAME);
+            $flags = !$isFile ? PATHINFO_BASENAME : PATHINFO_FILENAME;
+            $name = pathinfo($entryName, $flags);
             $extension = null;
             $content = null;
 
