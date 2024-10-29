@@ -2,7 +2,7 @@
 
 Many Notes is a markdown note-taking app designed for simplicity! Easily create or import your vaults and organize your thoughts right away.
 
-![Screenshot](.github/screenshots/light-dark-themes.png)
+![Screenshot](.github/screenshots/light-dark-themes.png?raw=true)
 
 ## Features
 
@@ -98,7 +98,7 @@ docker compose up -d
 
 ## Troubleshooting
 
-- Edit PHP_POST_MAX_SIZE and PHP_UPLOAD_MAX_FILE_SIZE if you're getting errors while importing big vaults  
+- Increase PHP_POST_MAX_SIZE and PHP_UPLOAD_MAX_FILE_SIZE if you're getting errors while importing big vaults  
 
 ## License
 
