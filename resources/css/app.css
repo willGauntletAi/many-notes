@@ -215,7 +215,7 @@
     margin: .67em 0;
     font-weight: var(--base-text-weight-semibold, 600);
     padding-bottom: .3em;
-    font-size: 2em;
+    font-size: 1.5em;
     border-bottom: 1px solid var(--borderColor-muted);
 }
 
@@ -419,28 +419,28 @@
 .markdown-body h2 {
     font-weight: var(--base-text-weight-semibold, 600);
     padding-bottom: .3em;
-    font-size: 1.5em;
+    font-size: 1.41em;
     border-bottom: 1px solid var(--borderColor-muted);
 }
 
 .markdown-body h3 {
     font-weight: var(--base-text-weight-semibold, 600);
-    font-size: 1.25em;
+    font-size: 1.32em;
 }
 
 .markdown-body h4 {
     font-weight: var(--base-text-weight-semibold, 600);
-    font-size: 1em;
+    font-size: 1.23em;
 }
 
 .markdown-body h5 {
     font-weight: var(--base-text-weight-semibold, 600);
-    font-size: .875em;
+    font-size: 1.14em;
 }
 
 .markdown-body h6 {
     font-weight: var(--base-text-weight-semibold, 600);
-    font-size: .85em;
+    font-size: 1.05em;
     color: var(--fgColor-muted);
 }
 
