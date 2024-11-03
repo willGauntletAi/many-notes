@@ -49,6 +49,11 @@
                                         {{ __('New folder') }}
                                     </x-menu.item>
 
+                                    <x-menu.item @click="$wire.dispatchTo('modals.import-file', 'open-modal')">
+                                        <x-icons.arrowUpTray class="w-4 h-4" />
+                                        {{ __('Import file') }}
+                                    </x-menu.item>
+
                                     <x-modal wire:model="showEditModal">
                                         <x-modal.open>
                                             <x-menu.item>
@@ -168,6 +173,7 @@
     </x-layouts.appMain>
 
     <livewire:modals.add-node :$vault />
+    <livewire:modals.import-file :$vault />
     <livewire:modals.edit-node :$vault />
     <livewire:modals.search-node :$vault />
 </div>

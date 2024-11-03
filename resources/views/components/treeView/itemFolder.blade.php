@@ -29,6 +29,12 @@
                     {{ __('New folder') }}
                 </x-menu.item>
 
+                <x-menu.item
+                    @click="$wire.dispatchTo('modals.import-file', 'open-modal', { parent: {{ $node->id }} })">
+                    <x-icons.arrowUpTray class="w-4 h-4" />
+                    {{ __('Import file') }}
+                </x-menu.item>
+
                 <x-menu.item @click="$wire.dispatchTo('modals.edit-node', 'open-modal', { node: {{ $node->id }} })">
                     <x-icons.pencilSquare class="w-4 h-4" />
                     {{ __('Rename') }}
