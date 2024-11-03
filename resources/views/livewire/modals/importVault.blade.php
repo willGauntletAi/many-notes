@@ -8,11 +8,11 @@
                 class="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg border-light-base-300 dark:border-base-500">
                 <label for="file-upload"
                     class="flex flex-col items-center justify-center w-full h-full gap-2 text-base font-medium cursor-pointer">
-                    <h6 class="font-semibold">{{ __('Browse file to upload') }}</h6>
+                    <h6 class="font-semibold">{{ __('Browse file to import') }}</h6>
                     <span class="text-sm">{{ __('ZIP files up to ' . ini_get('upload_max_filesize')) }}</span>
 
                     @error('file')
-                        <p class="text-sm text-error-500" aria-live="assertive">{{ $message }}</p>
+                        <p class="text-sm text-center text-error-500" aria-live="assertive">{{ $message }}</p>
                     @enderror
 
                     <!-- Progress Bar -->

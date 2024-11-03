@@ -71,7 +71,6 @@ class VaultNodeForm extends Form
         $this->reset(['name']);
     }
 
-
     public function update(): void
     {
         $this->validate();
