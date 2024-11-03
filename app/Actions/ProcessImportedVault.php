@@ -3,25 +3,13 @@
 namespace App\Actions;
 
 use ZipArchive;
+use App\Services\VaultFile;
+use App\Services\VaultFiles\Note;
 use App\Actions\GetPathFromVaultNode;
 use Illuminate\Support\Facades\Storage;
 
 class ProcessImportedVault
 {
-    private $validExtensions = [
-        'md',
-        'jpg',
-        'jpeg',
-        'png',
-        'gif',
-        'pdf',
-        'webp',
-        'mp4',
-        'avi',
-        'mp3',
-        'flac',
-    ];
-
     public function handle(string $fileName, string $filePath): void
     {
         $nodeIds = ['.' => null];
@@ -55,11 +43,11 @@ class ProcessImportedVault
                 $parentId = $nodeIds[$entryDirName];
                 $extension = pathinfo($entryName, PATHINFO_EXTENSION);
 
-                if (!in_array($extension, $this->validExtensions)) {
+                if (!in_array($extension, VaultFile::extensions())) {
                     continue;
                 }
 
-                if ($extension === 'md') {
+                if (in_array($extension, Note::extensions())) {
                     $content = $zip->getFromIndex($i);
                 }
             }
@@ -72,7 +60,7 @@ class ProcessImportedVault
                 'content' => $content,
             ]);
 
-            if ($isFile && $extension != 'md') {
+            if ($isFile && !in_array($extension, Note::extensions())) {
                 $relativePath = (new GetPathFromVaultNode())->handle($node);
                 Storage::disk('local')->put($relativePath, $zip->getFromIndex($i));
             }

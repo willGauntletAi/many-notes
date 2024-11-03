@@ -9,7 +9,7 @@
                 <span title="{{ $node->name }}" class="ml-1 overflow-hidden whitespace-nowrap text-ellipsis">
                     {{ $node->name }}
                 </span>
-                @if ($node->extension !== 'md')
+                @if (!in_array($node->extension, App\Services\VaultFiles\Note::extensions())) 
                     <x-treeView.badge>{{ $node->extension }}</x-treeView.badge>
                 @endif
             </span>

@@ -99,7 +99,7 @@
                                         <x-icons.spinner class="w-4 h-4 animate-spin" />
                                     </span>
 
-                                    @if ($nodeForm->extension == 'md')
+                                    @if (in_array($nodeForm->extension, App\Services\VaultFiles\Note::extensions()))
                                         <button type="button" x-show="isEditMode" @click="toggleEditMode"
                                             title="{{ __('Click to read') }}">
                                             <x-icons.bookOpen class="w-5 h-5" />
@@ -121,26 +121,26 @@
                             @enderror
                         </div>
                         <div class="flex flex-grow px-4">
-                            @if ($nodeForm->extension == 'md')
+                            @if (in_array($nodeForm->extension, App\Services\VaultFiles\Note::extensions()))
                                 <textarea wire:model.live.debounce.500ms="nodeForm.content" x-show="isEditMode" id="noteEdit"
                                     data-id="{{ $selectedFile }}" class="w-full h-full p-0 bg-transparent border-0 focus:ring-0 focus:outline-0"></textarea>
 
                                 <div x-show="!isEditMode" x-html="html" id="noteView"
                                     class="w-full h-full markdown-body">
                                 </div>
-                            @elseif (in_array($nodeForm->extension, ['webp', 'png', 'jpg', 'jpeg', 'gif']))
+                            @elseif (in_array($nodeForm->extension, App\Services\VaultFiles\Image::extensions()))
                                 <div>
                                     <img src="{{ $selectedFilePath }}" />
                                 </div>
-                            @elseif (in_array($nodeForm->extension, ['pdf']))
+                            @elseif (in_array($nodeForm->extension, App\Services\VaultFiles\Pdf::extensions()))
                                 <object type="application/pdf" data="{{ $selectedFilePath }}"
                                     class="w-full h-full"></object>
-                            @elseif (in_array($nodeForm->extension, ['mp4', 'avi']))
+                            @elseif (in_array($nodeForm->extension, App\Services\VaultFiles\Video::extensions()))
                                 <video class="w-full" controls>
                                     <source src="{{ $selectedFilePath }}" />
                                     {{ __('Your browser does not support the video tag') }}
                                 </video>
-                            @elseif (in_array($nodeForm->extension, ['mp3', 'flac']))
+                            @elseif (in_array($nodeForm->extension, App\Services\VaultFiles\Audio::extensions()))
                                 <div class="flex items-start justify-center w-full">
                                     <audio class="w-full" controls>
                                         <source src="{{ $selectedFilePath }}">
