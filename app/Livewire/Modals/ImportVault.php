@@ -5,7 +5,7 @@ namespace App\Livewire\Modals;
 use Livewire\Attributes\On;
 use Livewire\WithFileUploads;
 use Livewire\Attributes\Validate;
-use App\Actions\ProcessUploadedVaults;
+use App\Actions\ProcessImportedVault;
 
 class ImportVault extends Modal
 {
@@ -27,7 +27,7 @@ class ImportVault extends Modal
         $this->validate();
         $fileName = $this->file->getClientOriginalName();
         $filePath = $this->file->getRealPath();
-        (new ProcessUploadedVaults())->handle($fileName, $filePath);
+        (new ProcessImportedVault())->handle($fileName, $filePath);
         $this->dispatch('vault-imported');
         $this->closeModal();
     }

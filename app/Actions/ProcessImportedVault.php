@@ -6,7 +6,7 @@ use ZipArchive;
 use App\Actions\GetPathFromVaultNode;
 use Illuminate\Support\Facades\Storage;
 
-class ProcessUploadedVaults
+class ProcessImportedVault
 {
     private $validExtensions = [
         'md',
