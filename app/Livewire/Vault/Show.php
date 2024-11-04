@@ -88,6 +88,7 @@ class Show extends Component
     public function closeFile(): void
     {
         $this->reset(['selectedFile', 'selectedFilePath']);
+        $this->nodeForm->reset('node');
     }
 
     public function update(): void
