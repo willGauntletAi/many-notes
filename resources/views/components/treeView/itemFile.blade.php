@@ -2,7 +2,7 @@
 
 <div class="relative w-full">
     <x-menu>
-        <button x-ref="button" @click="$dispatch('file-open', {'node': {{ $node->id }}})"
+        <button x-ref="button" @click="openFile({{ $node->id }})"
             @contextmenu.prevent="menuOpen = !menuOpen" @keydown.escape="menuOpen = false"
             @auxclick.outside="menuOpen = false" class="flex items-center w-full">
             <span class="flex items-center w-full gap-2">

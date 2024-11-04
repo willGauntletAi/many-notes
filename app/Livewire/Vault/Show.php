@@ -39,7 +39,6 @@ class Show extends Component
         $this->nodeForm->setVault($this->vault);
     }
 
-    #[On('file-open')]
     public function openFile(VaultNode $node): void
     {
         $this->authorize('view', $node->vault);
@@ -59,7 +58,6 @@ class Show extends Component
         }
     }
 
-    #[On('file-path-open')]
     public function openFilePath(string $path): void
     {
         $currentPath = $this->nodeForm->node->ancestorsAndSelf()->get()->last()->full_path;
