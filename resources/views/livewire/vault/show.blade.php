@@ -212,6 +212,14 @@
                 this.renderListitem = markedRender.listitem.bind(markedRender);
             },
 
+            openFile(node) {
+                $wire.openFile(node);
+
+                if (window.innerWidth < 768) {
+                    this.isSidebarOpen = false;
+                }
+            },
+
             markdownToHtml() {
                 let el = document.getElementById('noteEdit');
                 let markdown = '';
