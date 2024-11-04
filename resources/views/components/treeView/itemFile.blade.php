@@ -23,7 +23,7 @@
                 </x-menu.item>
 
                 <x-menu.item wire:confirm="{{ __('Are you sure you want to delete this file?') }}"
-                    wire:click="deleteNode({{ $node->id }})">
+                    wire:click="$parent.deleteNode({{ $node->id }})">
                     <x-icons.trash class="w-4 h-4" />
                     {{ __('Delete') }}
                 </x-menu.item>

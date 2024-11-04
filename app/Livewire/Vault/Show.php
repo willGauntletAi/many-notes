@@ -8,10 +8,12 @@ use App\Models\VaultNode;
 use Livewire\Attributes\On;
 use App\Actions\ResolveTwoPaths;
 use App\Livewire\Forms\VaultForm;
-use App\Actions\GetPathFromVaultNode;
+use Illuminate\Support\Facades\DB;
 use App\Actions\GetUrlFromVaultNode;
+use App\Actions\GetPathFromVaultNode;
 use App\Actions\GetVaultNodeFromPath;
 use App\Livewire\Forms\VaultNodeForm;
+use Illuminate\Support\Facades\Storage;
 
 class Show extends Component
 {
@@ -107,6 +109,52 @@ class Show extends Component
         if ($this->nodeForm->node->wasChanged(['parent_id', 'name'])) {
             $this->dispatch('node-updated');
         }
+    }
+
+    public function deleteNode(VaultNode $node): void
+    {
+        $this->authorize('delete', $node->vault);
+
+        DB::beginTransaction();
+        try {
+            if ($node->is_file) {
+                $this->deleteFile($node);
+            } else {
+                $this->deleteFolder($node);
+            }
+
+            DB::commit();
+            $this->dispatch('node-updated');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+        }
+    }
+
+    private function deleteFile(VaultNode $node): void
+    {
+        if ($this->selectedFile == $node->id) {
+            $this->closeFile();
+        }
+
+        if ($node->extension !== 'md') {
+            $relativePath = (new GetPathFromVaultNode())->handle($node);
+            Storage::disk('local')->delete($relativePath);
+        }
+
+        $node->delete();
+    }
+
+    private function deleteFolder(VaultNode $node): void
+    {
+        foreach ($node->childs as $child) {
+            if ($child->is_file) {
+                $this->deleteFile($child);
+            } else {
+                $this->deleteFolder($child);
+            }
+        }
+
+        $node->delete();
     }
 
     public function render()
