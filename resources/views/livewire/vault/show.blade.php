@@ -24,8 +24,8 @@
                     <x-icons.spinner class="w-5 h-5 animate-spin" />
                 </div>
             </div>
-            <div x-show="isSidebarOpen && window.innerWidth < 768" @click="isSidebarOpen = false"
-                class="fixed inset-0 z-20 opacity-50 bg-base-950" x-transition:enter="ease-out duration-300"
+            <div x-show="isSidebarOpen && isSmallDevice" @click="closeSideBar"
+                class="fixed inset-0 z-20 opacity-50 bg-light-base-200 dark:bg-base-950" x-transition:enter="ease-out duration-300"
                 x-transition:leave="ease-in duration-200">
             </div>
             <div class="absolute top-0 left-0 z-30 flex flex-col h-full overflow-hidden overflow-y-auto transition-all w-60 bg-light-base-200 dark:bg-base-950"
@@ -43,7 +43,6 @@
                                 <x-menu.close>
                                     <x-menu.item @click="$wire.dispatchTo('modals.add-node', 'open-modal')">
                                         <x-icons.documentPlus class="w-4 h-4" />
-
                                         {{ __('New note') }}
                                     </x-menu.item>
 
@@ -62,7 +61,6 @@
                                         <x-modal.open>
                                             <x-menu.item>
                                                 <x-icons.pencilSquare class="w-4 h-4" />
-
                                                 {{ __('Edit vault') }}
                                             </x-menu.item>
                                         </x-modal.open>
@@ -81,7 +79,6 @@
 
                                     <x-menu.itemLink href="/vaults" wire:navigate>
                                         <x-icons.xMark class="w-4 h-4" />
-
                                         Close vault
                                         </x-menu.item>
                                 </x-menu.close>
@@ -94,7 +91,7 @@
             </div>
 
             <div class="absolute top-0 bottom-0 right-0 flex flex-col w-full overflow-y-auto transition-all text-start md:pl-60"
-                :class="{ 'md:pl-60': isSidebarOpen, '': !isSidebarOpen }">
+                :class="{ 'md:pl-60': isSidebarOpen, '': !isSidebarOpen }" id="nodeContainer">
                 <div class="flex flex-col h-full w-full max-w-[48rem] mx-auto">
                     @if ($selectedFile)
                         <div class="sticky top-0 z-[5] p-4 bg-light-base-50 dark:bg-base-900">
@@ -191,10 +188,6 @@
             html: '',
             renderListitem: null,
 
-            toggleEditMode() {
-                this.isEditMode = !this.isEditMode;
-            },
-
             init() {
                 this.$watch('isEditMode', value => {
                     if (value) {
@@ -216,12 +209,35 @@
                 this.renderListitem = markedRender.listitem.bind(markedRender);
             },
 
+            isSmallDevice() {
+                return window.innerWidth < 768;
+            },
+
+            closeSideBar() {
+                this.isSidebarOpen = false;
+            },
+
+            toggleEditMode() {
+                this.isEditMode = !this.isEditMode;
+            },
+
             openFile(node) {
                 $wire.openFile(node);
 
-                if (window.innerWidth < 768) {
-                    this.isSidebarOpen = false;
+                if (this.isSmallDevice()) {
+                    this.closeSideBar();
                 }
+
+                this.resetScrollPositions();
+            },
+
+            resetScrollPositions() {
+                if (!Number.isInteger(this.selectedFile)) {
+                    return;
+                }
+
+                let scrollElementId = this.isEditMode ? 'noteEdit' : 'nodeContainer';
+                document.getElementById(scrollElementId).scrollTop = 0;
             },
 
             markdownToHtml() {
@@ -254,15 +270,12 @@
                         // external links
                         if (token.href.startsWith('http://') || token.href.startsWith('https://')) {
                             return '<a href="' + token.href + '" title="' + (token.title ?? '') +
-                                '" target="_blank">' +
-                                token.text + '</a>';
+                                '" target="_blank">' + token.text + '</a>';
                         }
 
                         // internal links
                         return '<a href="" wire:click.prevent="openFilePath(\'' + token.href +
-                            '\')" title="' + (token
-                                .title ?? '') + '">' + token.text +
-                            '</a>';
+                            '\')" title="' + (token.title ?? '') + '">' + token.text + '</a>';
                     },
                     listitem(token) {
                         let html = renderListitem(token);
