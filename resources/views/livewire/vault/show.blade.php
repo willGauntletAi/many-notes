@@ -292,7 +292,7 @@
                     renderer
                 });
 
-                return marked.parse(el.value);
+                return DOMPurify.sanitize(marked.parse(el.value));
             },
         }))
     </script>
