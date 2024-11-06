@@ -228,15 +228,19 @@
                     this.closeSideBar();
                 }
 
-                this.resetScrollPositions();
+                this.resetScrollPosition();
             },
 
-            resetScrollPositions() {
+            resetScrollPosition() {
                 if (!Number.isInteger(this.selectedFile)) {
                     return;
                 }
 
                 let scrollElementId = this.isEditMode ? 'noteEdit' : 'nodeContainer';
+                if (document.getElementById(scrollElementId) == null) {
+                    return;
+                }
+
                 document.getElementById(scrollElementId).scrollTop = 0;
             },
 
