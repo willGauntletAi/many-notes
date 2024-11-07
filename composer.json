@@ -1,8 +1,10 @@
 {
-    "name": "laravel/laravel",
+    "name": "brufdev/many-notes",
+    "description": "A markdown note-taking app.",
+    "version": "0.1.0",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "keywords": ["note-taking", "markdown", "database"],
+    "homepage": "https://github.com/brufdev/many-notes",
     "license": "MIT",
     "require": {
         "php": "^8.2",
