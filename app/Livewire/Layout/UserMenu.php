@@ -8,6 +8,17 @@ use Illuminate\Support\Facades\Session;
 
 class UserMenu extends Component
 {
+    public string $appVersion;
+
+    public string $githubUrl;
+
+    public function mount(): void
+    {
+        $composerInfo = require base_path('vendor/composer/installed.php');
+        $this->appVersion = $composerInfo['root']['pretty_version'];
+        $this->githubUrl = 'https://github.com/brufdev/many-notes';
+    }
+
     /**
      * Log the current user out of the application.
      */
