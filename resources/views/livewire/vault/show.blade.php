@@ -25,8 +25,8 @@
                 </div>
             </div>
             <div x-show="isSidebarOpen && isSmallDevice" @click="closeSideBar"
-                class="fixed inset-0 z-20 opacity-50 bg-light-base-200 dark:bg-base-950" x-transition:enter="ease-out duration-300"
-                x-transition:leave="ease-in duration-200">
+                class="fixed inset-0 z-20 opacity-50 bg-light-base-200 dark:bg-base-950"
+                x-transition:enter="ease-out duration-300" x-transition:leave="ease-in duration-200">
             </div>
             <div class="absolute top-0 left-0 z-30 flex flex-col h-full overflow-hidden overflow-y-auto transition-all w-60 bg-light-base-200 dark:bg-base-950"
                 :class="{ 'translate-x-0': isSidebarOpen, '-translate-x-full hidden': !isSidebarOpen }">
@@ -105,16 +105,18 @@
                                         <x-icons.spinner class="w-4 h-4 animate-spin" />
                                     </span>
 
-                                    @if (in_array($nodeForm->extension, App\Services\VaultFiles\Note::extensions()))
-                                        <button type="button" x-show="isEditMode" @click="toggleEditMode"
-                                            title="{{ __('Click to read') }}">
-                                            <x-icons.bookOpen class="w-5 h-5" />
-                                        </button>
-                                        <button type="button" x-show="!isEditMode" @click="toggleEditMode"
-                                            title="{{ __('Click to edit') }}">
-                                            <x-icons.codeBracket class="w-5 h-5" />
-                                        </button>
-                                    @endif
+                                    <span class="flex">
+                                        @if (in_array($nodeForm->extension, App\Services\VaultFiles\Note::extensions()))
+                                            <button type="button" x-show="isEditMode" @click="toggleEditMode"
+                                                title="{{ __('Click to read') }}">
+                                                <x-icons.bookOpen class="w-5 h-5" />
+                                            </button>
+                                            <button type="button" x-show="!isEditMode" @click="toggleEditMode"
+                                                title="{{ __('Click to edit') }}">
+                                                <x-icons.codeBracket class="w-5 h-5" />
+                                            </button>
+                                        @endif
+                                    </span>
 
                                     <button type="button" wire:click="closeFile" title="{{ __('Close file') }}">
                                         <x-icons.xMark class="w-5 h-5" />
