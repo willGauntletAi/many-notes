@@ -21,7 +21,7 @@ Vaults are simply storage containers for your files, and Many Notes provides you
 
 ## Installation guide (Docker)
 
-Create a new directory named "many-notes" with this structure:
+Create a new directory named `many-notes` with this structure:
 
 ```
 mariadb/
@@ -30,7 +30,7 @@ mariadb/
 compose.yaml
 ```
 
-Edit compose.yaml and paste:
+Edit `compose.yaml` and paste:
 
 ```yaml
 services:
@@ -38,28 +38,12 @@ services:
     image: brufdev/many-notes:latest
     restart: unless-stopped
     environment:
-      - PHP_OPCACHE_ENABLE=1
-      - PHP_POST_MAX_SIZE=500M
-      - PHP_UPLOAD_MAX_FILE_SIZE=500M
-      - AUTORUN_ENABLED=true
-      - APP_TIMEZONE=UTC
-      - APP_URL=http://localhost # change url
-      - ASSET_URL=http://localhost # change url
       - DB_CONNECTION=mariadb
       - DB_HOST=many-notes-mariadb-1
       - DB_PORT=3306
       - DB_DATABASE=manynotes
       - DB_USERNAME=user
       - DB_PASSWORD=USER_PASSWORD # change password
-# Uncomment these lines if you want to configure an email service
-#     - MAIL_MAILER=smtp
-#     - MAIL_HOST=127.0.0.1
-#     - MAIL_PORT=2525
-#     - MAIL_USERNAME=null
-#     - MAIL_PASSWORD=null
-#     - MAIL_ENCRYPTION=null
-#     - MAIL_FROM_ADDRESS=hello@example.com
-#     - MAIL_FROM_NAME=${APP_NAME}
     volumes:
       - storage-public:/var/www/html/storage/app/public
       - storage-private:/var/www/html/storage/app/private
@@ -94,16 +78,51 @@ volumes:
   storage-logs:
 ```
 
-Make sure to change urls and passwords and feel free to customize anything else if you know what you're doing. Then run:
+Make sure to change the passwords and feel free to customize anything else if you know what you're doing. Read the customization section below.
+
+Then run:
 
 ```shell
 docker network create www
 docker compose up -d
 ```
 
-## Troubleshooting
+## Customization
 
-- Increase PHP_POST_MAX_SIZE and PHP_UPLOAD_MAX_FILE_SIZE if you're getting errors while importing big vaults  
+You can customize Many Notes by adding environment variables to the `compose.yaml` file.
+
+#### If you change the default port from 80 or use a reverse proxy with a custom URL, make sure to configure the application URL accordingly (default: http://localhost)
+
+```yaml
+- APP_URL=http://localhost
+- ASSET_URL=http://localhost
+```
+
+#### Configure a different timezone (default: UTC)
+
+```yaml
+- APP_TIMEZONE=UTC
+```
+
+#### Increase the upload size limit to allow for the import of larger files (default: 500M)
+
+```yaml
+- PHP_POST_MAX_SIZE=500M
+- PHP_UPLOAD_MAX_FILE_SIZE=500M
+```
+
+#### Configure an email service to send registration and password reset emails
+
+```yaml
+- MAIL_MAILER=smtp
+- MAIL_HOST=127.0.0.1
+- MAIL_PORT=2525
+- MAIL_USERNAME=null
+- MAIL_PASSWORD=null
+- MAIL_ENCRYPTION=null
+- MAIL_FROM_ADDRESS=hello@example.com
+- MAIL_FROM_NAME=ManyNotes
+```
 
 ## License
 
