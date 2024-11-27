@@ -19,7 +19,7 @@
         <div x-data="vault" x-cloak @sidebar-left-toggle.window="isSidebarOpen = !isSidebarOpen"
             class="relative flex w-full">
             <div wire:loading wire:target.except="nodeForm.name, nodeForm.content"
-                class="fixed inset-0 z-40 bg-light-base-200 dark:bg-base-950">
+                class="fixed inset-0 z-40 opacity-50 bg-light-base-200 dark:bg-base-950">
                 <div class="flex items-center justify-center h-full">
                     <x-icons.spinner class="w-5 h-5 animate-spin" />
                 </div>
