@@ -92,9 +92,9 @@
 
             <div class="absolute top-0 bottom-0 right-0 flex flex-col w-full overflow-y-auto transition-all text-start md:pl-60"
                 :class="{ 'md:pl-60': isSidebarOpen, '': !isSidebarOpen }" id="nodeContainer">
-                <div class="flex flex-col h-full w-full max-w-[48rem] mx-auto">
+                <div class="flex flex-col h-full w-full max-w-[48rem] mx-auto p-4 gap-2">
                     @if ($selectedFile)
-                        <div class="sticky top-0 z-[5] p-4 bg-light-base-50 dark:bg-base-900">
+                        <div class="z-[5] bg-light-base-50 dark:bg-base-900">
                             <div class="flex justify-between">
                                 <input type="text" wire:model.live.debounce.500ms="nodeForm.name"
                                     class="flex flex-grow p-0 pr-2 text-lg bg-transparent border-0 focus:ring-0 focus:outline-0" />
@@ -103,19 +103,6 @@
                                     <span wire:loading.flex wire:target="nodeForm.name, nodeForm.content"
                                         class="flex items-center">
                                         <x-icons.spinner class="w-4 h-4 animate-spin" />
-                                    </span>
-
-                                    <span class="flex">
-                                        @if (in_array($nodeForm->extension, App\Services\VaultFiles\Note::extensions()))
-                                            <button type="button" x-show="isEditMode" @click="toggleEditMode"
-                                                title="{{ __('Click to read') }}">
-                                                <x-icons.bookOpen class="w-5 h-5" />
-                                            </button>
-                                            <button type="button" x-show="!isEditMode" @click="toggleEditMode"
-                                                title="{{ __('Click to edit') }}">
-                                                <x-icons.codeBracket class="w-5 h-5" />
-                                            </button>
-                                        @endif
                                     </span>
 
                                     <button type="button" wire:click="closeFile" title="{{ __('Close file') }}">
@@ -128,35 +115,28 @@
                                 <p class="text-sm text-error-500" aria-live="assertive">{{ $message }}</p>
                             @enderror
                         </div>
-                        <div class="flex flex-grow px-4">
-                            @if (in_array($nodeForm->extension, App\Services\VaultFiles\Note::extensions()))
-                                <textarea wire:model.live.debounce.500ms="nodeForm.content" x-show="isEditMode" id="noteEdit"
-                                    data-id="{{ $selectedFile }}" class="w-full h-full p-0 bg-transparent border-0 focus:ring-0 focus:outline-0"></textarea>
-
-                                <div x-show="!isEditMode" x-html="html" id="noteView"
-                                    class="w-full h-full markdown-body">
-                                </div>
-                            @elseif (in_array($nodeForm->extension, App\Services\VaultFiles\Image::extensions()))
-                                <div>
-                                    <img src="{{ $selectedFilePath }}" />
-                                </div>
-                            @elseif (in_array($nodeForm->extension, App\Services\VaultFiles\Pdf::extensions()))
-                                <object type="application/pdf" data="{{ $selectedFilePath }}"
-                                    class="w-full h-full"></object>
-                            @elseif (in_array($nodeForm->extension, App\Services\VaultFiles\Video::extensions()))
-                                <video class="w-full" controls>
-                                    <source src="{{ $selectedFilePath }}" />
-                                    {{ __('Your browser does not support the video tag') }}
-                                </video>
-                            @elseif (in_array($nodeForm->extension, App\Services\VaultFiles\Audio::extensions()))
-                                <div class="flex items-start justify-center w-full">
-                                    <audio class="w-full" controls>
-                                        <source src="{{ $selectedFilePath }}">
-                                        {{ __('Your browser does not support the audio tag') }}
-                                    </audio>
-                                </div>
-                            @endif
-                        </div>
+                        @if (in_array($nodeForm->extension, App\Services\VaultFiles\Note::extensions()))
+                            <x-markdownEditor />
+                        @elseif (in_array($nodeForm->extension, App\Services\VaultFiles\Image::extensions()))
+                            <div>
+                                <img src="{{ $selectedFilePath }}" />
+                            </div>
+                        @elseif (in_array($nodeForm->extension, App\Services\VaultFiles\Pdf::extensions()))
+                            <object type="application/pdf" data="{{ $selectedFilePath }}"
+                                class="w-full h-full"></object>
+                        @elseif (in_array($nodeForm->extension, App\Services\VaultFiles\Video::extensions()))
+                            <video class="w-full" controls>
+                                <source src="{{ $selectedFilePath }}" />
+                                {{ __('Your browser does not support the video tag') }}
+                            </video>
+                        @elseif (in_array($nodeForm->extension, App\Services\VaultFiles\Audio::extensions()))
+                            <div class="flex items-start justify-center w-full">
+                                <audio class="w-full" controls>
+                                    <source src="{{ $selectedFilePath }}">
+                                    {{ __('Your browser does not support the audio tag') }}
+                                </audio>
+                            </div>
+                        @endif
                     @else
                         <div class="flex items-center justify-center w-full h-full gap-2">
                             <x-form.button @click="$wire.dispatchTo('modals.search-node', 'open-modal')">
@@ -179,6 +159,7 @@
     <livewire:modals.import-file :$vault />
     <livewire:modals.edit-node :$vault />
     <livewire:modals.search-node :$vault />
+    <livewire:modals.markdown-editor-search :$vault />
 </div>
 
 @script
@@ -266,8 +247,7 @@
                         } else {
                             // internal images
                             html = '<img src="/files/{{ $vault->id }}?path=' + token.href + '&node=' +
-                                node + '" alt="' +
-                                token.text + '" />';
+                                node + '" alt="' + token.text + '" />';
                         }
 
                         return '<span class="flex items-center justify-center">' + html + '</span>';
