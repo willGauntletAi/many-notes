@@ -9,7 +9,7 @@ class GetVaultNodeFromPath
 {
     public function handle(int $vaultId, string $path, ?int $parentId = null): VaultNode | null
     {
-        $path = Str::ltrim($path, '/');
+        $path = Str::ltrim(str_replace('%20', ' ', $path), '/');
         $pieces = explode('/', $path);
 
         if (count($pieces) == 1) {
