@@ -2,6 +2,10 @@
 
 Many Notes is a markdown note-taking app designed for simplicity! Easily create or import your vaults and organize your thoughts right away.
 
+Vaults are simply storage containers for your files, and Many Notes provides you with the flexibility to keep everything in one vault or to separate your files into multiple vaults.
+
+## Screenshots
+
 ![Screenshot](.github/screenshots/light-dark-themes.png?raw=true)
 
 ## Features
@@ -9,7 +13,8 @@ Many Notes is a markdown note-taking app designed for simplicity! Easily create 
 - Multiple users
 - Multiple vaults per user
 - File search
-- Tree view explorer for quick navigation
+- Tree view explorer with context menu
+- Smart markdown editor
 - Import/export vaults
 - Light/dark theme (automatically selected by your OS setting)
 - Mobile friendly
