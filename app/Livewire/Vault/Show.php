@@ -6,6 +6,7 @@ use App\Models\Vault;
 use Livewire\Component;
 use App\Models\VaultNode;
 use Livewire\Attributes\On;
+use Livewire\Attributes\Url;
 use App\Actions\ResolveTwoPaths;
 use App\Livewire\Forms\VaultForm;
 use Illuminate\Support\Facades\DB;
@@ -23,6 +24,7 @@ class Show extends Component
 
     public VaultNodeForm $nodeForm;
 
+    #[Url(as: 'file')]
     public ?int $selectedFile = null;
 
     public ?string $selectedFilePath = null;
@@ -37,6 +39,10 @@ class Show extends Component
         $this->vault = $vault;
         $this->form->setVault($this->vault);
         $this->nodeForm->setVault($this->vault);
+
+        if ($this->selectedFile) {
+            $this->openFile(VaultNode::find($this->selectedFile));
+        }
     }
 
     public function openFile(VaultNode $node): void
