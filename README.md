@@ -23,7 +23,7 @@ Vaults are simply storage containers for your files, and Many Notes provides you
 - Light/dark theme (automatically selected by your OS setting)
 - Mobile friendly
 
-## Installation guide (Docker)
+## Installation (Docker)
 
 Create a new directory called `many-notes`. Inside this directory, create a file named `compose.yaml` and paste the following content:
 
@@ -114,6 +114,26 @@ Configure an email service to send registration and password reset emails by add
 - MAIL_ENCRYPTION=null
 - MAIL_FROM_ADDRESS=hello@example.com
 - MAIL_FROM_NAME="Many Notes"
+```
+
+## Backup and restore
+
+All your non-note files are saved in the `storage-private` volume, while your notes are stored in the database.
+
+#### Backup database
+
+To back up your database, run:
+
+```shell
+docker exec many-notes-mariadb-1 mariadb-dump --all-databases -uroot -p"$MARIADB_ROOT_PASSWORD" > ./backup-many-notes-`date +%Y-%m-%d`.sql
+```
+
+#### Restore database
+
+To restore your database from a backup, run:
+
+```shell
+docker exec -i many-notes-mariadb-1 sh -c 'exec mariadb -uroot -p"$MARIADB_ROOT_PASSWORD"' < ./$BACKUP_FILE_NAME.sql
 ```
 
 ## License
