@@ -25,16 +25,7 @@ Vaults are simply storage containers for your files, and Many Notes provides you
 
 ## Installation guide (Docker)
 
-Create a new directory named `many-notes` with this structure:
-
-```
-mariadb/
-	data/
-	initdb/
-compose.yaml
-```
-
-Edit `compose.yaml` and paste:
+Create a new directory called `many-notes`. Inside this directory, create a file named `compose.yaml` and paste the following content:
 
 ```yaml
 services:
@@ -47,47 +38,36 @@ services:
       - DB_PORT=3306
       - DB_DATABASE=manynotes
       - DB_USERNAME=user
-      - DB_PASSWORD=USER_PASSWORD # change password
+      - DB_PASSWORD="USER_PASSWORD" # change password
     volumes:
       - storage-public:/var/www/html/storage/app/public
       - storage-private:/var/www/html/storage/app/private
       - storage-sessions:/var/www/html/storage/framework/sessions
       - storage-logs:/var/www/html/storage/logs
-    networks:
-      - www
     ports:
       - 80:8080
   mariadb:
-    image: mariadb:11.5
+    image: mariadb:11.6
     restart: unless-stopped
     environment:
-      - MARIADB_ROOT_PASSWORD=ROOT_PASSWORD # change password
+      - MARIADB_ROOT_PASSWORD="ROOT_PASSWORD" # change password
       - MARIADB_DATABASE=manynotes
       - MARIADB_USER=user
-      - MARIADB_PASSWORD=USER_PASSWORD # change password
+      - MARIADB_PASSWORD="USER_PASSWORD" # change password
     volumes:
-      - ./mariadb/data:/var/lib/mysql
-      - ./mariadb/initdb:/docker-entrypoint-initdb.d
-    networks:
-      - www
-
-networks:
-  www:
-    external: true
+      - mariadb-data:/var/lib/mysql
 
 volumes:
   storage-public:
   storage-private:
   storage-sessions:
   storage-logs:
+  mariadb-data:
 ```
 
-Make sure to change the passwords and feel free to customize anything else if you know what you're doing. Read the customization section below.
-
-Then run:
+Make sure to change the passwords and feel free to customize anything else if you know what you're doing. Read the customization section below before continue. Then run:
 
 ```shell
-docker network create www
 docker compose up -d
 ```
 
@@ -95,27 +75,35 @@ docker compose up -d
 
 You can customize Many Notes by adding environment variables to the `compose.yaml` file.
 
-#### If you change the default port from 80 or use a reverse proxy with a custom URL, make sure to configure the application URL accordingly (default: http://localhost)
+#### Custom URL (default: http://localhost)
+
+If you change the default port from 80 or use a reverse proxy with a custom URL, make sure to configure the application URL accordingly. For example, if you change the port to 8080, set:
 
 ```yaml
-- APP_URL=http://localhost
-- ASSET_URL=http://localhost
+- APP_URL=http://localhost:8080
+- ASSET_URL=http://localhost:8080
 ```
 
-#### Configure a different timezone (default: UTC)
+#### Custom timezone (default: UTC)
+
+Check all available timezones [here](https://www.php.net/manual/en/timezones.php). For example, if you want to set the timezone to Amsterdam, add:
 
 ```yaml
-- APP_TIMEZONE=UTC
+- APP_TIMEZONE=Europe/Amsterdam
 ```
 
-#### Increase the upload size limit to allow for the import of larger files (default: 500M)
+#### Custom upload size limit (default: 500M)
+
+Increase the upload size limit to allow for the import of larger files. For example, if you want to increase the limit to 1 GB, add:
 
 ```yaml
-- PHP_POST_MAX_SIZE=500M
-- PHP_UPLOAD_MAX_FILE_SIZE=500M
+- PHP_POST_MAX_SIZE=1G
+- PHP_UPLOAD_MAX_FILE_SIZE=1G
 ```
 
-#### Configure an email service to send registration and password reset emails
+#### Custom email service
+
+Configure an email service to send registration and password reset emails by adding:
 
 ```yaml
 - MAIL_MAILER=smtp
@@ -125,7 +113,7 @@ You can customize Many Notes by adding environment variables to the `compose.yam
 - MAIL_PASSWORD=null
 - MAIL_ENCRYPTION=null
 - MAIL_FROM_ADDRESS=hello@example.com
-- MAIL_FROM_NAME=ManyNotes
+- MAIL_FROM_NAME="Many Notes"
 ```
 
 ## License
