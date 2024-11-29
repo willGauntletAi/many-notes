@@ -12,7 +12,8 @@
                                 @click="$dispatch('{{ $searchType == 'image' ? 'mde-image' : 'mde-link' }}', { path: '/{{ $node->full_path_encoded . '.' . $node->extension }}' }); modalOpen = false"
                                 class="flex flex-col w-full gap-2 py-1 text-left">
                                 <span class="flex gap-2">
-                                    <span class="overflow-hidden whitespace-nowrap text-ellipsis" title="{{ $node->name }}">
+                                    <span class="overflow-hidden whitespace-nowrap text-ellipsis"
+                                        title="{{ $node->name }}">
                                         {{ $node->name }}
                                     </span>
 

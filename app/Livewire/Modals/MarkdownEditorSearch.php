@@ -4,11 +4,10 @@ namespace App\Livewire\Modals;
 
 use App\Models\Vault;
 use App\Models\VaultNode;
-use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use App\Services\VaultFiles\Image;
 use App\Livewire\Forms\VaultNodeForm;
-use Illuminate\Contracts\Database\Query\Builder;
+use Staudenmeir\LaravelAdjacencyList\Eloquent\Builder;
 use Staudenmeir\LaravelAdjacencyList\Eloquent\Collection;
 
 class MarkdownEditorSearch extends Modal
@@ -46,7 +45,6 @@ class MarkdownEditorSearch extends Modal
             ->select('id', 'name', 'extension')
             ->where('vault_id', $this->vault->id)
             ->where('is_file', true)
-            ->where('name', 'like', '%' . $this->search . '%')
             ->when($this->searchType == 'image', function (Builder $query) {
                 $query->whereIn('extension', Image::extensions());
             })
@@ -61,7 +59,7 @@ class MarkdownEditorSearch extends Modal
             $item->full_path = $item->ancestorsAndSelf()->get()->last()->full_path;
             $item->full_path_encoded = preg_replace('/\s/', '%20', $item->full_path);
             $item->dir_name = preg_replace('/' . $item->name . '$/', '', $item->full_path);
-            if (strlen($item->dir_name) == 1 ) {
+            if (strlen($item->dir_name) == 1) {
                 $item->dir_name = '';
             }
 
