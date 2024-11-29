@@ -5,18 +5,26 @@
 
         <div class="mt-4">
             @if (count($nodes))
-                <ul wire:loading.class="opacity-50">
+                <ul class="flex flex-col gap-2" wire:loading.class="opacity-50">
                     @foreach ($nodes as $node)
                         <li>
                             <button type="button" wire:click="$parent.openFile({{ $node->id }}); modalOpen = false"
-                                class="flex w-full gap-2 py-1 text-left">
-                                <span title="{{ $node->name }}"
-                                    class="overflow-hidden whitespace-nowrap text-ellipsis">
-                                    {{ $node->full_path }}
-                                </span>
+                                class="flex flex-col w-full gap-2 py-1 text-left">
+                                <span class="flex gap-2">
+                                    <span class="overflow-hidden whitespace-nowrap text-ellipsis"
+                                        title="{{ $node->name }}">
+                                        {{ $node->name }}
+                                    </span>
 
-                                @if ($node->extension !== 'md')
-                                    <x-treeView.badge>{{ $node->extension }}</x-treeView.badge>
+                                    @if ($node->extension !== 'md')
+                                        <x-treeView.badge>{{ $node->extension }}</x-treeView.badge>
+                                    @endif
+                                </span>
+                                @if (strlen($node->dir_name))
+                                    <span title="{{ $node->full_path }}"
+                                        class="overflow-hidden text-xs whitespace-nowrap text-ellipsis">
+                                        {{ $node->dir_name }}
+                                    </span>
                                 @endif
                             </button>
                         </li>
