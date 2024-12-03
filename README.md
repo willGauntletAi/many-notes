@@ -38,7 +38,7 @@ services:
       - DB_PORT=3306
       - DB_DATABASE=manynotes
       - DB_USERNAME=user
-      - DB_PASSWORD="USER_PASSWORD" # change password
+      - DB_PASSWORD=USER_PASSWORD # change password
     volumes:
       - storage-public:/var/www/html/storage/app/public
       - storage-private:/var/www/html/storage/app/private
@@ -50,10 +50,10 @@ services:
     image: mariadb:11.6
     restart: unless-stopped
     environment:
-      - MARIADB_ROOT_PASSWORD="ROOT_PASSWORD" # change password
+      - MARIADB_ROOT_PASSWORD=ROOT_PASSWORD # change password
       - MARIADB_DATABASE=manynotes
       - MARIADB_USER=user
-      - MARIADB_PASSWORD="USER_PASSWORD" # change password
+      - MARIADB_PASSWORD=USER_PASSWORD # change password
     volumes:
       - mariadb-data:/var/lib/mysql
 
