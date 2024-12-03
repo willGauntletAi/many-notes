@@ -1,7 +1,7 @@
 {
     "name": "brufdev/many-notes",
     "description": "A markdown note-taking app.",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "type": "project",
     "keywords": ["note-taking", "markdown", "database"],
     "homepage": "https://github.com/brufdev/many-notes",
