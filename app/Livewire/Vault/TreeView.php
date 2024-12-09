@@ -17,6 +17,17 @@ class TreeView extends Component
 
     public $showEditModal = false;
 
+    public function placeholder(): string
+    {
+        return <<<'HTML'
+        <div class="fixed inset-0 z-40 opacity-50 bg-light-base-200 dark:bg-base-950">
+            <div class="flex items-center justify-center h-full">
+                <x-icons.spinner class="w-5 h-5 animate-spin" />
+            </div>
+        </div>
+        HTML;
+    }
+
     public function render()
     {
         $constraint = function ($query) {

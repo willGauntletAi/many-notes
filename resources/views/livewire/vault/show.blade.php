@@ -87,7 +87,7 @@
                     </div>
                 </div>
 
-                <livewire:vault.tree-view :$vault />
+                <livewire:vault.tree-view lazy="on-load" :$vault />
             </div>
 
             <div class="absolute top-0 bottom-0 right-0 flex flex-col w-full overflow-y-auto transition-all text-start md:pl-60"
