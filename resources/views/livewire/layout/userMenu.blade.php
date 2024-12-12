@@ -64,8 +64,8 @@
                 <x-menu.itemLink href="/vaults" wire:navigate>
                     <x-icons.circleStack class="w-4 h-4" />
                     {{ __('Vaults') }}
-                </x-menu.item>
-            </x-menu.itemLink>
+                </x-menu.itemLink>
+            </x-menu.close>
 
             <x-menu.close>
                 <x-menu.itemDivider></x-menu.itemDivider>
