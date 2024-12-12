@@ -67,43 +67,42 @@
                 </x-menu.itemLink>
             </x-menu.close>
 
-            <x-menu.close>
-                <x-menu.itemDivider></x-menu.itemDivider>
+            <x-menu.itemDivider></x-menu.itemDivider>
 
-                <x-modal>
+            <x-modal>
+                <x-menu.close>
                     <x-menu.item @click="modalOpen = true">
                         <x-icons.informationCircle class="w-4 h-4" />
                         {{ __('About') }}
                     </x-menu.item>
+                </x-menu.close>
 
-                    <x-modal.panel title="About">
-                        <div class="flex flex-col gap-4">
-                            <p>
-                                {{ __('Many Notes is an open-source Markdown note-taking app.') }}
-                                {{ __('Follow the development and check for new versions on GitHub.') }}
-                            </p>
+                <x-modal.panel title="About">
+                    <div class="flex flex-col gap-4">
+                        <p>
+                            {{ __('Follow the development, report any issues, and check for new versions on GitHub.') }}
+                        </p>
 
-                            <div>
-                                <h2>Version</h2>
-                                <p>{{ $appVersion }}</p>
-                            </div>
-
-                            <div>
-                                <h2>Github</h2>
-                                <p>
-                                    <a href="{{ $githubUrl }}" target="_blank"
-                                        class="text-primary-400 dark:text-primary-500 hover:text-primary-300 dark:hover:text-primary-600">{{ $githubUrl }}</a>
-                                </p>
-                            </div>
+                        <div>
+                            <h2>{{ __('Version') }}</h2>
+                            <p>{{ $appVersion }}</p>
                         </div>
-                    </x-modal.panel>
-                </x-modal>
 
-                <x-menu.item wire:click="logout">
-                    <x-icons.arrowRightStartOnRectangle class="w-4 h-4" />
-                    {{ __('Logout') }}
-                </x-menu.item>
-            </x-menu.close>
+                        <div>
+                            <h2>{{ __('GitHub') }}</h2>
+                            <p>
+                                <a href="{{ $githubUrl }}" target="_blank"
+                                    class="text-primary-400 dark:text-primary-500 hover:text-primary-300 dark:hover:text-primary-600">{{ $githubUrl }}</a>
+                            </p>
+                        </div>
+                    </div>
+                </x-modal.panel>
+            </x-modal>
+
+            <x-menu.item wire:click="logout">
+                <x-icons.arrowRightStartOnRectangle class="w-4 h-4" />
+                {{ __('Logout') }}
+            </x-menu.item>
         </x-menu.items>
     </x-menu>
 </div>
