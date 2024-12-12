@@ -4,7 +4,7 @@
 
 <template x-teleport="body">
     <div x-show="modalOpen" @keydown.escape.window="modalOpen = false"
-        class="fixed inset-0 overflow-y-auto z-50 pt-[30%] sm:pt-0 text-light-base-700 dark:text-base-200">
+        class="fixed inset-0 z-50 pt-0 overflow-y-auto text-light-base-700 dark:text-base-200">
         <div class="fixed inset-0 opacity-50 bg-base-950"></div>
 
         <div class="relative flex justify-center min-h-full p-0 sm:p-4{{ $top ? '' : ' items-end sm:items-center' }}">
