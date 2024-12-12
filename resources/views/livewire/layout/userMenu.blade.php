@@ -9,6 +9,31 @@
                 {{ auth()->user()->name }}
             </div>
 
+            <x-menu.itemDivider></x-menu.itemDivider>
+
+            <x-modal>
+                <x-menu.close>
+                    <x-menu.item @click="modalOpen = true">
+                        <x-icons.user class="w-4 h-4" />
+                        {{ __('Profile') }}
+                    </x-menu.item>
+                </x-menu.close>
+
+                <x-modal.panel title="Edit profile">
+                    <x-form wire:submit="editProfile" class="flex flex-col gap-6">
+                        <x-form.input name="profileForm.name" placeholder="{{ __('Name') }}" type="text" required
+                            autofocus />
+
+                        <x-form.input name="profileForm.email" placeholder="{{ __('Email') }}" type="email"
+                            required />
+
+                        <div class="flex justify-end">
+                            <x-form.submit label="{{ __('Edit') }}" target="edit" />
+                        </div>
+                    </x-form>
+                </x-modal.panel>
+            </x-modal>
+
             <x-menu.close>
                 <x-menu.itemDivider></x-menu.itemDivider>
 
