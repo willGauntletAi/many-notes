@@ -34,6 +34,32 @@
                 </x-modal.panel>
             </x-modal>
 
+            <x-modal>
+                <x-menu.close>
+                    <x-menu.item @click="modalOpen = true">
+                        <x-icons.lockClosed class="w-4 h-4" />
+                        {{ __('Password') }}
+                    </x-menu.item>
+                </x-menu.close>
+
+                <x-modal.panel title="Edit password">
+                    <x-form wire:submit="editPassword" class="flex flex-col gap-6">
+                        <x-form.input name="passwordForm.current_password" placeholder="{{ __('Current password') }}"
+                            type="password" required autofocus />
+
+                        <x-form.input name="passwordForm.password" placeholder="{{ __('New password') }}"
+                            type="password" required />
+
+                        <x-form.input name="passwordForm.password_confirmation"
+                            placeholder="{{ __('Confirm password') }}" type="password" required />
+
+                        <div class="flex justify-end">
+                            <x-form.submit label="{{ __('Edit') }}" target="edit" />
+                        </div>
+                    </x-form>
+                </x-modal.panel>
+            </x-modal>
+
             <x-menu.close>
                 <x-menu.itemDivider></x-menu.itemDivider>
 

@@ -6,10 +6,13 @@ use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use App\Livewire\Forms\EditProfileForm;
 use Illuminate\Support\Facades\Session;
+use App\Livewire\Forms\EditPasswordForm;
 
 class UserMenu extends Component
 {
     public EditProfileForm $profileForm;
+
+    public EditPasswordForm $passwordForm;
 
     public string $appVersion;
 
@@ -28,6 +31,13 @@ class UserMenu extends Component
         $this->profileForm->update();
         $this->dispatch('close-modal');
         $this->dispatch('toast', message: __('Profile updated'), type: 'success');
+    }
+
+    public function editPassword(): void
+    {
+        $this->passwordForm->update();
+        $this->dispatch('close-modal');
+        $this->dispatch('toast', message: __('Password updated'), type: 'success');
     }
 
     /**
