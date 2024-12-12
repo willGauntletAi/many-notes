@@ -24,6 +24,8 @@ export default {
         600: '#0cb54f',
       },
       'error': colors.red,
+      'warning': colors.orange,
+      'info': colors.blue,
       'light-base': {
         50: '#ffffff',
         100: '#fcfcfc',
