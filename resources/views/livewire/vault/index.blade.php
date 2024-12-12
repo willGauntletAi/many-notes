@@ -29,7 +29,7 @@
 
                                 <x-modal.panel title="{{ __('Create new vault') }}">
                                     <x-form wire:submit="create" class="flex flex-col gap-6">
-                                        <x-form.input name="form.name" label="{{ __('Name') }}" type="name"
+                                        <x-form.input name="form.name" label="{{ __('Name') }}" type="text"
                                             required autofocus />
 
                                         <div class="flex justify-end">
