@@ -15,8 +15,6 @@ class TreeView extends Component
 
     public VaultNodeForm $nodeForm;
 
-    public $showEditModal = false;
-
     public function placeholder(): string
     {
         return <<<'HTML'

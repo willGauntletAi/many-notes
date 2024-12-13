@@ -12,8 +12,6 @@ class Row extends Component
 
     public VaultForm $form;
 
-    public $showEditModal = false;
-
     public function mount(): void
     {
         $this->form->setVault($this->vault);
@@ -25,7 +23,7 @@ class Row extends Component
         $this->validate();
         $this->form->update();
         $this->vault->refresh();
-        $this->reset('showEditModal');
+        $this->dispatch('close-modal');
         $this->dispatch('toast', message: __('Vault edited'), type: 'success');
     }
 

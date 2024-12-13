@@ -19,11 +19,10 @@
 
                 <x-menu.items>
                     <x-menu.close>
-                        <x-modal wire:model="showEditModal">
+                        <x-modal>
                             <x-modal.open>
                                 <x-menu.item>
                                     <x-icons.pencilSquare class="w-4 h-4" />
-
                                     {{ __('Edit') }}
                                 </x-menu.item>
                             </x-modal.open>
@@ -42,14 +41,12 @@
 
                         <x-menu.item x-on:click="$dispatch('vault-export')">
                             <x-icons.arrowDownTray class="w-4 h-4" />
-
                             {{ __('Export') }}
                         </x-menu.item>
 
                         <x-menu.item wire:confirm="{{ __('Are you sure you want to delete this vault?') }}"
                             wire:click="$dispatch('vault-delete')">
                             <x-icons.trash class="w-4 h-4" />
-
                             {{ __('Delete') }}
                         </x-menu.item>
                     </x-menu.close>
