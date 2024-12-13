@@ -69,6 +69,7 @@ class ImportFile extends Modal
         (new ProcessImportedFile())->handle($this->vault, $this->parent, $fileName, $filePath);
         $this->dispatch('node-updated');
         $this->closeModal();
+        $this->dispatch('toast', message: __('File imported'), type: 'success');
     }
 
     public function render()

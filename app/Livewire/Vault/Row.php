@@ -26,6 +26,7 @@ class Row extends Component
         $this->form->update();
         $this->vault->refresh();
         $this->reset('showEditModal');
+        $this->dispatch('toast', message: __('Vault edited'), type: 'success');
     }
 
     public function render()

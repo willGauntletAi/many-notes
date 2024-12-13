@@ -36,6 +36,8 @@ class AddNode extends Modal
         $this->form->create();
         $this->closeModal();
         $this->dispatch('node-updated');
+        $message = $this->form->is_file ? __('File created') : __('Folder created');
+        $this->dispatch('toast', message: $message, type: 'success');
     }
 
     public function render()

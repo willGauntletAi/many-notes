@@ -30,6 +30,7 @@ class ImportVault extends Modal
         (new ProcessImportedVault())->handle($fileName, $filePath);
         $this->dispatch('vault-imported');
         $this->closeModal();
+        $this->dispatch('toast', message: __('Vault imported'), type: 'success');
     }
 
     public function render()

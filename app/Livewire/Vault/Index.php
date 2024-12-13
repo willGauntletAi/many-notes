@@ -22,6 +22,7 @@ class Index extends Component
         $this->validate();
         $this->form->create();
         $this->reset('showCreateModal');
+        $this->dispatch('toast', message: __('Vault created'), type: 'success');
     }
 
     public function export(Vault $vault)
@@ -67,8 +68,8 @@ class Index extends Component
     public function delete(Vault $vault): void
     {
         $this->authorize('delete', $vault);
-
         $vault->delete();
+        $this->dispatch('toast', message: __('Vault deleted'), type: 'success');
     }
 
     public function render()

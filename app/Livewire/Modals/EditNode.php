@@ -33,6 +33,8 @@ class EditNode extends Modal
         $this->closeModal();
         $this->dispatch('node-updated');
         $this->dispatch('file-refresh', node: $this->form->node);
+        $message = $this->form->is_file ? __('File edited') : __('Folder edited');
+        $this->dispatch('toast', message: $message, type: 'success');
     }
 
     public function render()

@@ -102,6 +102,7 @@ class Show extends Component
         $this->vaultForm->update();
         $this->vault->refresh();
         $this->dispatch('close-modal');
+        $this->dispatch('toast', message: __('Vault edited'), type: 'success');
     }
 
     public function updated($name): void
@@ -131,6 +132,8 @@ class Show extends Component
 
             DB::commit();
             $this->dispatch('node-updated');
+            $message = $node->is_file ? __('File deleted') : __('Folder deleted');
+            $this->dispatch('toast', message: $message, type: 'success');
         } catch (\Throwable $e) {
             DB::rollBack();
         }
