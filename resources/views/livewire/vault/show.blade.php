@@ -57,7 +57,7 @@
                                         {{ __('Import file') }}
                                     </x-menu.item>
 
-                                    <x-modal wire:model="showEditModal">
+                                    <x-modal>
                                         <x-modal.open>
                                             <x-menu.item>
                                                 <x-icons.pencilSquare class="w-4 h-4" />
@@ -66,8 +66,8 @@
                                         </x-modal.open>
 
                                         <x-modal.panel title="{{ __('Edit vault') }}">
-                                            <x-form wire:submit="update" class="flex flex-col gap-6">
-                                                <x-form.input name="form.name" label="{{ __('Name') }}"
+                                            <x-form wire:submit="editVault" class="flex flex-col gap-6">
+                                                <x-form.input name="vaultForm.name" label="{{ __('Name') }}"
                                                     type="text" required autofocus />
 
                                                 <div class="flex justify-end">

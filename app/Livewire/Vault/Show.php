@@ -5,6 +5,7 @@ namespace App\Livewire\Vault;
 use App\Models\Vault;
 use Livewire\Component;
 use App\Models\VaultNode;
+use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
 use App\Actions\ResolveTwoPaths;
@@ -20,7 +21,7 @@ class Show extends Component
 {
     public Vault $vault;
 
-    public VaultForm $form;
+    public VaultForm $vaultForm;
 
     public VaultNodeForm $nodeForm;
 
@@ -31,13 +32,11 @@ class Show extends Component
 
     public bool $isEditMode = true;
 
-    public bool $showEditModal = false;
-
     public function mount(Vault $vault): void
     {
         $this->authorize('view', $vault);
         $this->vault = $vault;
-        $this->form->setVault($this->vault);
+        $this->vaultForm->setVault($this->vault);
         $this->nodeForm->setVault($this->vault);
 
         if ($this->selectedFile) {
@@ -97,17 +96,20 @@ class Show extends Component
         $this->nodeForm->reset('node');
     }
 
-    public function update(): void
+    public function editVault(): void
     {
         $this->authorize('update', $this->vault);
-        $this->validate();
-        $this->form->update();
+        $this->vaultForm->update();
         $this->vault->refresh();
-        $this->reset('showEditModal');
+        $this->dispatch('close-modal');
     }
 
-    public function updated(): void
+    public function updated($name): void
     {
+        if (!Str::of($name)->startsWith('nodeForm')) {
+            return;
+        }
+
         $this->nodeForm->update();
 
         if ($this->nodeForm->node->wasChanged(['parent_id', 'name'])) {
