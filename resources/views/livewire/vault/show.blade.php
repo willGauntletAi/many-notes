@@ -79,8 +79,8 @@
 
                                     <x-menu.itemLink href="/vaults" wire:navigate>
                                         <x-icons.xMark class="w-4 h-4" />
-                                        Close vault
-                                        </x-menu.item>
+                                        {{ __('Close vault') }}
+                                    </x-menu.itemLink>
                                 </x-menu.close>
                             </x-menu.items>
                         </x-menu>
