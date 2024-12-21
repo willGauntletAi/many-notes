@@ -6,14 +6,11 @@ use App\Models\Vault;
 use Livewire\Component;
 use App\Models\VaultNode;
 use Livewire\Attributes\On;
-use App\Livewire\Forms\VaultNodeForm;
 
 #[On('node-updated')]
 class TreeView extends Component
 {
     public Vault $vault;
-
-    public VaultNodeForm $nodeForm;
 
     public function placeholder(): string
     {
