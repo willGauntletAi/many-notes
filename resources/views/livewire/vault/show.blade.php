@@ -92,12 +92,12 @@
 
             <div class="absolute top-0 bottom-0 right-0 flex flex-col w-full overflow-y-auto transition-all text-start md:pl-60"
                 :class="{ 'md:pl-60': isSidebarOpen, '': !isSidebarOpen }" id="nodeContainer">
-                <div class="flex flex-col h-full w-full max-w-[48rem] mx-auto p-4 gap-2">
+                <div class="flex flex-col h-full w-full max-w-[48rem] mx-auto p-4 gap-4">
                     @if ($selectedFile)
                         <div class="z-[5] bg-light-base-50 dark:bg-base-900">
                             <div class="flex justify-between">
                                 <input type="text" wire:model.live.debounce.500ms="nodeForm.name"
-                                    class="flex flex-grow p-0 pr-2 text-lg bg-transparent border-0 focus:ring-0 focus:outline-0" />
+                                    class="flex flex-grow p-0 px-1 text-lg bg-transparent border-0 focus:ring-0 focus:outline-0" />
 
                                 <div class="flex items-center gap-2">
                                     <span wire:loading.flex wire:target="nodeForm.name, nodeForm.content"
@@ -105,9 +105,53 @@
                                         <x-icons.spinner class="w-4 h-4 animate-spin" />
                                     </span>
 
-                                    <button type="button" wire:click="closeFile" title="{{ __('Close file') }}">
-                                        <x-icons.xMark class="w-5 h-5" />
-                                    </button>
+                                    <div class="flex gap-2">
+                                        <x-menu>
+                                            <x-menu.button>
+                                                <x-icons.bars3 class="w-5 h-5" />
+                                            </x-menu.button>
+                                            <x-menu.items>
+                                                @if (in_array($nodeForm->extension, App\Services\VaultFiles\Note::extensions()))
+                                                    <x-modal>
+                                                        <x-modal.open>
+                                                            <x-menu.close>
+                                                                <x-menu.item>
+                                                                    <x-icons.documentDuplicate class="w-4 h-4" />
+                                                                    {{ __('Insert template') }}
+                                                                </x-menu.item>
+                                                            </x-menu.close>
+                                                        </x-modal.open>
+                
+                                                        <x-modal.panel title="{{ __('Choose a template') }}">
+                                                            @if ($templates && count($templates))
+                                                                <ul class="flex flex-col gap-3" wire:loading.class="opacity-50">
+                                                                    @foreach ($templates as $template)
+                                                                        <li class="border-b last:border-none border-light-base-300 dark:border-base-500">
+                                                                            <button type="button" wire:click="insertTemplate({{ $template->id }}); modalOpen = false"
+                                                                                class="flex w-full gap-2 pb-4 hover:text-primary-400 dark:hover:text-primary-500 text-light-base-950 dark:text-base-50">
+                                                                                <span class="overflow-hidden whitespace-nowrap text-ellipsis" title="{{ $template->name }}">
+                                                                                    {{ $template->name }}
+                                                                                </span>
+                                                                            </button>
+                                                                        </li>
+                                                                    @endforeach
+                                                                </ul>
+                                                            @else
+                                                                <p>{{ __('No templates found') }}</p>
+                                                            @endif
+                                                        </x-modal.panel>
+                                                    </x-modal>
+                                                @endif
+
+                                                <x-menu.close>
+                                                    <x-menu.item wire:click="closeFile">
+                                                        <x-icons.xMark class="w-4 h-4" />
+                                                        {{ __('Close file') }}
+                                                    </x-menu.item>
+                                                </x-menu.close>
+                                            </x-menu.items>
+                                        </x-menu>
+                                    </div>
                                 </div>
                             </div>
 

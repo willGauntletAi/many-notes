@@ -3,7 +3,7 @@
     @mde-image.window="image($event.detail.path); $nextTick(() => { editor.focus() });" {{ $attributes }}>
     <x-markdownEditor.toolbar x-show="!isSmallDevice()" x-cloak />
     <textarea wire:model.live.debounce.500ms="nodeForm.content" x-show="isEditMode" id="noteEdit"
-        class="w-full h-full p-0 bg-transparent border-0 focus:ring-0 focus:outline-0" @keyup.enter="newLine"></textarea>
+        class="w-full h-full p-0 px-1 bg-transparent border-0 focus:ring-0 focus:outline-0" @keyup.enter="newLine"></textarea>
     <div x-show="!isEditMode" x-html="html" id="noteView" class="overflow-y-auto markdown-body"></div>
     <x-markdownEditor.toolbar x-show="isSmallDevice()" x-cloak />
 </div>
@@ -83,7 +83,6 @@
                 let pieces = this.editor.value.substring(indexStart, indexEnd).split(/\r?\n/);
                 let indexInc = indexStart;
                 for (i in pieces) {
-                    //lines.push(Object.create({ 'lineStart': indexInc, 'lineText': pieces[i]}));
                     lines.push({
                         'lineStart': indexInc,
                         'lineText': pieces[i]
