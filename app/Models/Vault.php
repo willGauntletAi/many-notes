@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Vault extends Model
 {
@@ -20,6 +21,7 @@ class Vault extends Model
      * @var string[]
      */
     protected $fillable = [
+        'templates_node_id',
         'name',
     ];
 
@@ -37,5 +39,13 @@ class Vault extends Model
     public function nodes(): HasMany
     {
         return $this->hasMany(VaultNode::class);
+    }
+
+    /**
+     * Get the associated templates node.
+     */
+    public function templatesNode(): HasOne
+    {
+        return $this->hasOne(VaultNode::class, 'id', 'templates_node_id');
     }
 }

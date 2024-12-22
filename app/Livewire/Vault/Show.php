@@ -10,12 +10,14 @@ use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
 use App\Actions\ResolveTwoPaths;
 use App\Livewire\Forms\VaultForm;
+use App\Services\VaultFiles\Note;
 use Illuminate\Support\Facades\DB;
 use App\Actions\GetUrlFromVaultNode;
 use App\Actions\GetPathFromVaultNode;
 use App\Actions\GetVaultNodeFromPath;
 use App\Livewire\Forms\VaultNodeForm;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Collection;
 
 class Show extends Component
 {
@@ -25,6 +27,8 @@ class Show extends Component
 
     public VaultNodeForm $nodeForm;
 
+    public Collection $templates;
+
     #[Url(as: 'file')]
     public ?int $selectedFile = null;
 
@@ -32,12 +36,15 @@ class Show extends Component
 
     public bool $isEditMode = true;
 
+    private array $deletedNodes = [];
+
     public function mount(Vault $vault): void
     {
         $this->authorize('view', $vault);
         $this->vault = $vault;
         $this->vaultForm->setVault($this->vault);
         $this->nodeForm->setVault($this->vault);
+        $this->getTemplates();
 
         if ($this->selectedFile) {
             $this->openFile(VaultNode::find($this->selectedFile));
@@ -48,7 +55,7 @@ class Show extends Component
     {
         $this->authorize('view', $node->vault);
 
-        if ($node->vault != $this->vault || !$node->is_file) {
+        if (!$node->vault->is($this->vault) || !$node->is_file) {
             return;
         }
 
@@ -115,7 +122,66 @@ class Show extends Component
 
         if ($this->nodeForm->node->wasChanged(['parent_id', 'name'])) {
             $this->dispatch('node-updated');
+
+            if ($this->nodeForm->node->parent_id == $this->vault->templates_node_id) {
+                $this->getTemplates();
+            }
         }
+    }
+
+    public function setTemplateFolder(VaultNode $node): void
+    {
+        $this->authorize('update', $node->vault);
+
+        if ($this->vault->id !== $node->vault->id || $node->is_file) {
+            $this->dispatch('toast', message: __('Something went wrong'), type: 'error');
+            return;
+        }
+
+        $this->vault->update(['templates_node_id' => $node->id]);
+        $this->getTemplates();
+        $this->dispatch('toast', message: __('Template folder updated'), type: 'success');
+    }
+
+    public function insertTemplate(VaultNode $node): void
+    {
+        $this->authorize('update', $this->vault);
+
+        $sameVault = $this->vault->id === $node->vault->id;
+        $isNote = $node->is_file && in_array($node->extension, Note::extensions());
+        $isTemplate = $node->parent_id == $this->vault->templates_node_id;
+        if (!$sameVault || !$isNote || !$isTemplate || !$this->selectedFile || !$this->isEditMode) {
+            $this->dispatch('toast', message: __('Something went wrong'), type: 'error');
+            return;
+        }
+
+        $selectedNode = $this->nodeForm->node;
+        $now = now();
+        $content = $node->content;
+        $content = Str::replace('{{date}}', $now->format('Y-m-d'), $content);
+        $content = Str::replace('{{time}}', $now->format('H:i'), $content);
+        $content = Str::contains($content, '{{content}}')
+            ? Str::replace('{{content}}', $selectedNode->content, $content)
+            : $content . PHP_EOL . $selectedNode->content;
+        $selectedNode->update(['content' => $content]);
+        $this->nodeForm->setNode($selectedNode);
+        $this->dispatch('toast', message: __('Template inserted'), type: 'success');
+    }
+
+    #[On('templates-refresh')]
+    public function getTemplates(): void
+    {
+        if (!$this->vault->templatesNode) {
+            return;
+        }
+
+        $this->templates = $this->vault
+            ->templatesNode
+            ->childs()
+            ->where('is_file', true)
+            ->where('extension', 'LIKE', 'md')
+            ->orderBy('name')
+            ->get();
     }
 
     public function deleteNode(VaultNode $node): void
@@ -132,6 +198,15 @@ class Show extends Component
 
             DB::commit();
             $this->dispatch('node-updated');
+            $templateDeleted = !is_null(
+                array_find($this->deletedNodes, function ($node) {
+                    return $node->parent_id == $this->vault->templates_node_id;
+                })
+            );
+            if ($templateDeleted) {
+                $this->getTemplates();
+            }
+            $this->deletedNodes = [];
             $message = $node->is_file ? __('File deleted') : __('Folder deleted');
             $this->dispatch('toast', message: $message, type: 'success');
         } catch (\Throwable $e) {
@@ -150,6 +225,7 @@ class Show extends Component
             Storage::disk('local')->delete($relativePath);
         }
 
+        $this->deletedNodes[] = $node;
         $node->delete();
     }
 
@@ -163,6 +239,7 @@ class Show extends Component
             }
         }
 
+        $this->deletedNodes[] = $node;
         $node->delete();
     }
 

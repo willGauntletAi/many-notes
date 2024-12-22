@@ -57,12 +57,12 @@ class VaultNodeForm extends Form
         $this->content = $node->content;
     }
 
-    public function create(): void
+    public function create(): VaultNode
     {
         $this->validate();
 
         $this->name = Str::trim($this->name);
-        $this->vault->nodes()->create([
+        $node = $this->vault->nodes()->create([
             'parent_id' => $this->parent_id,
             'is_file' => $this->is_file,
             'name' => $this->name,
@@ -70,6 +70,8 @@ class VaultNodeForm extends Form
             'content' => $this->content,
         ]);
         $this->reset(['name']);
+
+        return $node;
     }
 
     public function update(): void

@@ -1,4 +1,4 @@
-@props(['node'])
+@props(['node']) 
 
 <div class="relative w-full">
     <x-menu>
@@ -38,6 +38,11 @@
                 <x-menu.item @click="$wire.dispatchTo('modals.edit-node', 'open-modal', { node: {{ $node->id }} })">
                     <x-icons.pencilSquare class="w-4 h-4" />
                     {{ __('Rename') }}
+                </x-menu.item>
+
+                <x-menu.item wire:click="$parent.setTemplateFolder({{ $node->id }})" title="{{ __('Set as template folder') }}">
+                    <x-icons.documentDuplicate class="w-4 h-4" />
+                    {{ __('Template folder') }}
                 </x-menu.item>
 
                 <x-menu.item wire:confirm="{{ __('Are you sure you want to delete this folder?') }}"
