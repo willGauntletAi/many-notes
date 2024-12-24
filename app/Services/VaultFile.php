@@ -12,12 +12,12 @@ class VaultFile
 {
     public static function extensions(bool $withDots = false): array
     {
-        return array_merge(
-            Audio::extensions($withDots),
-            Image::extensions($withDots),
-            Note::extensions($withDots),
-            Pdf::extensions($withDots),
-            Video::extensions($withDots),
-        );
+        return [
+            ...Audio::extensions($withDots),
+            ...Image::extensions($withDots),
+            ...Note::extensions($withDots),
+            ...Pdf::extensions($withDots),
+            ...Video::extensions($withDots),
+        ];
     }
 }
