@@ -16,7 +16,6 @@ use App\Actions\GetUrlFromVaultNode;
 use App\Actions\GetPathFromVaultNode;
 use App\Actions\GetVaultNodeFromPath;
 use App\Livewire\Forms\VaultNodeForm;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Collection;
 
 class Show extends Component
@@ -47,7 +46,14 @@ class Show extends Component
         $this->getTemplates();
 
         if ($this->selectedFile) {
-            $this->openFile(VaultNode::find($this->selectedFile));
+            $selectedFile = $vault->nodes()->where('id', $this->selectedFile)->first();
+
+            if (!$selectedFile) {
+                $this->selectedFile = null;
+                return;
+            }
+
+            $this->openFile($selectedFile);
         }
     }
 
@@ -146,7 +152,6 @@ class Show extends Component
     public function insertTemplate(VaultNode $node): void
     {
         $this->authorize('update', $this->vault);
-
         $sameVault = $this->vault->id === $node->vault->id;
         $isNote = $node->is_file && in_array($node->extension, Note::extensions());
         $isTemplate = $node->parent_id == $this->vault->templates_node_id;
@@ -218,11 +223,6 @@ class Show extends Component
     {
         if ($this->selectedFile == $node->id) {
             $this->closeFile();
-        }
-
-        if ($node->extension !== 'md') {
-            $relativePath = (new GetPathFromVaultNode())->handle($node);
-            Storage::disk('local')->delete($relativePath);
         }
 
         $this->deletedNodes[] = $node;
