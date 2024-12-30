@@ -28,6 +28,7 @@ class AddNode extends Modal
 
         $this->form->parent_id = $parent->id;
         $this->form->is_file = $isFile;
+        $this->form->extension = 'md';
         $this->openModal();
     }
 
