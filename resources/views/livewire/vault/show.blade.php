@@ -126,7 +126,7 @@
                                                             @if ($templates && count($templates))
                                                                 <ul class="flex flex-col gap-3" wire:loading.class="opacity-50">
                                                                     @foreach ($templates as $template)
-                                                                        <li class="border-b last:border-none border-light-base-300 dark:border-base-500">
+                                                                        <li class="border-b border-light-base-300 dark:border-base-500 last:border-none">
                                                                             <button type="button" wire:click="insertTemplate({{ $template->id }}); modalOpen = false"
                                                                                 class="flex w-full gap-2 pb-4 hover:text-primary-400 dark:hover:text-primary-500 text-light-base-950 dark:text-base-50">
                                                                                 <span class="overflow-hidden whitespace-nowrap text-ellipsis" title="{{ $template->name }}">
