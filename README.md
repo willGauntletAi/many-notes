@@ -1,4 +1,12 @@
-# Many Notes
+<p align="center" style="font-size: 2.5rem; font-weight: bold;">
+    Many Notes
+</p>
+
+<p align="center">
+    <img alt="Latest version" src="https://img.shields.io/github/v/release/brufdev/many-notes?label=version" />
+    <img alt="PHP version" src="https://img.shields.io/badge/PHP-8.4-777BB4?logo=php" />
+    <img alt="License" src="https://img.shields.io/github/license/brufdev/many-notes" />
+</p>
 
 Many Notes is a markdown note-taking app designed for simplicity! Easily create or import your vaults and organize your thoughts right away.
 
