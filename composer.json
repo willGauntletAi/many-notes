@@ -7,7 +7,7 @@
     "homepage": "https://github.com/brufdev/many-notes",
     "license": "MIT",
     "require": {
-        "php": "^8.2",
+        "php": "^8.4",
         "laravel/framework": "^11.9",
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.5",
