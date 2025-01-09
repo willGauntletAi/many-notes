@@ -85,7 +85,7 @@
                     }">
                         <ul>
                             <li class="relative p-3 mb-3 last:mb-0 bg-light-base-200 dark:bg-base-950" x-data="{ index: 1 }">
-                                <button type="button" class="w-full text-left font-semibold" @click="toggle(index)">
+                                <button type="button" class="w-full font-semibold text-left" @click="toggle(index)">
                                     <div class="flex items-center justify-between">
                                         <span>{{ __( 'Templates' ) }}</span>
                                         <x-icons.chevronRight x-show="!isSelected(index)" class="w-5 h-5" />
