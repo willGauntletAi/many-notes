@@ -1,11 +1,11 @@
 <div class="flex flex-col h-dvh">
     <x-layouts.appHeader>
         <div class="flex items-center gap-4">
-            <button type="button" @click="$dispatch('sidebar-left-toggle')">
+            <button type="button" @click="$dispatch('sidebar-left-toggle')" class="hover:text-light-base-950 hover:dark:text-base-50">
                 <x-icons.folder class="w-5 h-5" />
             </button>
 
-            <button type="button" @click="$wire.dispatchTo('modals.search-node', 'open-modal')">
+            <button type="button" @click="$wire.dispatchTo('modals.search-node', 'open-modal')" class="hover:text-light-base-950 hover:dark:text-base-50">
                 <x-icons.magnifyingGlass class="w-5 h-5" />
             </button>
         </div>

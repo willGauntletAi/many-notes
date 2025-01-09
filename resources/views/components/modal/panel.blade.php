@@ -10,7 +10,7 @@
         <div class="relative flex justify-center min-h-full p-0 sm:p-4{{ $top ? '' : ' items-end sm:items-center' }}">
             <div @click.outside="modalOpen = false" x-trap="modalOpen"
                 class="relative w-full overflow-hidden shadow-lg sm:mx-auto sm:max-w-md bg-light-base-50 dark:bg-base-900 rounded-t-xl sm:rounded-b-xl">
-                <div class="flex justify-between p-6 pb-0">
+                <div class="flex justify-between p-6 pb-0 text-light-base-950 dark:text-base-50">
                     <h3 class="text-lg">{{ $title }}</h3>
                     <x-modal.close class="flex items-center">
                         <button type="button">
