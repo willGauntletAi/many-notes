@@ -3,7 +3,8 @@
     @mde-image.window="image($event.detail.path); $nextTick(() => { editor.focus() });" {{ $attributes }}>
     <x-markdownEditor.toolbar x-show="!isSmallDevice()" x-cloak />
     <textarea wire:model.live.debounce.500ms="nodeForm.content" x-show="isEditMode" id="noteEdit"
-        class="w-full h-full p-0 px-1 bg-transparent border-0 focus:ring-0 focus:outline-0" @keyup.enter="newLine"></textarea>
+        class="w-full h-full p-0 px-1 bg-transparent border-0 focus:ring-0 focus:outline-0"
+        @keyup.enter="newLine" @select="parseSelection"></textarea>
     <div x-show="!isEditMode" x-html="html" id="noteView" class="overflow-y-auto markdown-body"></div>
     <x-markdownEditor.toolbar x-show="isSmallDevice()" x-cloak />
 </div>
@@ -15,6 +16,32 @@
 
             getSelection() {
                 return this.editor.value.substring(this.editor.selectionStart, this.editor.selectionEnd);
+            },
+
+            parseSelection() {
+                const selection = this.getSelection();
+
+                if (selection.length === 0) {
+                    return;
+                }
+
+                // Remove leading spaces
+                for (let i = 0; i < selection.length; i++) {
+                    if (selection[i] !== ' ') {
+                        break;
+                    }
+
+                    this.editor.selectionStart += 1;
+                }
+
+                // Remove trailing spaces
+                for (let i = selection.length - 1; i >= 0; i--) {
+                    if (selection[i] !== ' ') {
+                        break;
+                    }
+
+                    this.editor.selectionEnd -= 1;
+                }
             },
 
             changeSelection(text, moveSelectionStart, moveSelectionEnd = null) {
