@@ -72,6 +72,42 @@
             <x-modal>
                 <x-menu.close>
                     <x-menu.item @click="modalOpen = true">
+                        <x-icons.questionMarkCircle class="w-4 h-4" />
+                        {{ __('Help') }}
+                    </x-menu.item>
+                </x-menu.close>
+
+                <x-modal.panel title="Help">
+                    <div x-data="{
+                        selected: 1,
+                        isSelected(selection) { return this.selected == selection },
+                        toggle(selection) { this.selected = this.selected != selection ? selection : 0 },
+                    }">
+                        <ul>
+                            <li class="relative p-3 mb-3 last:mb-0 bg-light-base-200 dark:bg-base-950" x-data="{ index: 1 }">
+                                <button type="button" class="w-full text-left" @click="toggle(index)">
+                                    <div class="flex items-center justify-between">
+                                        <span>{{ __( 'Templates' ) }}</span>
+                                        <x-icons.chevronRight x-show="!isSelected(index)" class="w-4 h-4" />
+                                        <x-icons.chevronDown x-show="isSelected(index)" class="w-4 h-4" x-cloak />
+                                    </div>
+                                </button>
+                                <div class="relative overflow-hidden transition-all duration-700" x-show="isSelected(index)" x-collapse>
+                                    <div class="flex flex-col gap-3 pt-3">
+                                        <p>{{ __( 'To effectively use templates in the app, start by selecting a folder where you want to store all your template notes in the tree view component. Right-click on the desired folder and select "Template Folder" to designate it for templates.') }}</p>
+                                        <p>{!! __('Notes created within this designated folder will automatically be treated as templates. You can incorporate dynamic variables such as @{{date}}, @{{time}} and @{{content}} in these notes, which will be replaced upon template insertion.') !!}</p>
+                                        <p>{{ __( 'When you\'re ready to use a template, open any note and choose the "Insert Template" option from the menu, then select your desired template from the list that appears. This allows for efficient note-taking with consistent formatting and content.') }}</p>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </x-modal.panel>
+            </x-modal>
+
+            <x-modal>
+                <x-menu.close>
+                    <x-menu.item @click="modalOpen = true">
                         <x-icons.informationCircle class="w-4 h-4" />
                         {{ __('About') }}
                     </x-menu.item>
