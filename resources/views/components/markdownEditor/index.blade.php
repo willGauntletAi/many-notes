@@ -25,22 +25,19 @@
                     return;
                 }
 
-                // Remove leading spaces
+                // Remove leading whitespaces
                 for (let i = 0; i < selection.length; i++) {
-                    if (selection[i] !== ' ') {
+                    if (selection[i].match(/\s/) === null) {
                         break;
                     }
-
-                    this.editor.selectionStart += 1;
+                    this.editor.selectionStart++;
                 }
-
-                // Remove trailing spaces
+                // Remove trailing whitespaces
                 for (let i = selection.length - 1; i >= 0; i--) {
-                    if (selection[i] !== ' ') {
+                    if (selection[i].match(/\s/) === null) {
                         break;
                     }
-
-                    this.editor.selectionEnd -= 1;
+                    this.editor.selectionEnd--;
                 }
             },
 
