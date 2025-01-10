@@ -79,12 +79,28 @@
 
                 <x-modal.panel title="Help">
                     <div x-data="{
-                        selected: 1,
+                        selected: 0,
                         isSelected(selection) { return this.selected == selection },
                         toggle(selection) { this.selected = this.selected != selection ? selection : 0 },
                     }">
                         <ul>
                             <li class="relative p-3 mb-3 last:mb-0 bg-light-base-200 dark:bg-base-950" x-data="{ index: 1 }">
+                                <button type="button" class="w-full font-semibold text-left" @click="toggle(index)">
+                                    <div class="flex items-center justify-between">
+                                        <span>{{ __( 'Tree view' ) }}</span>
+                                        <x-icons.chevronRight x-show="!isSelected(index)" class="w-5 h-5" />
+                                        <x-icons.chevronDown x-show="isSelected(index)" class="w-5 h-5" x-cloak />
+                                    </div>
+                                </button>
+                                <div class="relative overflow-hidden transition-all duration-700" x-show="isSelected(index)" x-collapse>
+                                    <div class="flex flex-col gap-3 pt-3">
+                                        <p>{{ __('The tree view panel has a context menu with different options to help you build and organize your vault.') }}</p>
+                                        <p>{{ __('You can create multiple levels of folders, import files, select a template folder, and rename or delete files and folders.') }}</p>
+                                        <p>{{ __('To open the context menu, right-click on a file or folder if you\'re on a desktop or laptop, or long press it if you\'re on a mobile device.') }}</p>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="relative p-3 mb-3 last:mb-0 bg-light-base-200 dark:bg-base-950" x-data="{ index: 2 }">
                                 <button type="button" class="w-full font-semibold text-left" @click="toggle(index)">
                                     <div class="flex items-center justify-between">
                                         <span>{{ __( 'Templates' ) }}</span>
@@ -94,9 +110,9 @@
                                 </button>
                                 <div class="relative overflow-hidden transition-all duration-700" x-show="isSelected(index)" x-collapse>
                                     <div class="flex flex-col gap-3 pt-3">
-                                        <p>{{ __('To effectively use templates in the app, start by selecting a folder where you want to store all your template notes in the tree view component. Right-click on the desired folder and select "Template Folder" to designate it for templates.') }}</p>
-                                        <p>{!! __('Notes created within this designated folder will automatically be treated as templates. You can incorporate dynamic variables such as @{{date}}, @{{time}} and @{{content}} in these notes, which will be replaced upon template insertion.') !!}</p>
-                                        <p>{{ __('When you\'re ready to use a template, open any note and choose the "Insert Template" option from the menu, then select your desired template from the list that appears. This allows for efficient note-taking with consistent formatting and content.') }}</p>
+                                        <p>{{ __('To use templates, first choose a folder in the tree view where you want to keep your template notes. Right-click on that folder and select "Template Folder" to mark it for your templates.') }}</p>
+                                        <p>{!! __('Notes created in this special folder will automatically be seen as templates. You can add placeholders like @{{date}}, @{{time}} and @{{content}} in these notes, and they will be replaced with the correct information when you use the template.') !!}</p>
+                                        <p>{{ __('To use a template in your notes, just click on "Insert template" in the menu and pick one from the list. This will help you maintain consistent formatting in your notes.') }}</p>
                                     </div>
                                 </div>
                             </li>
