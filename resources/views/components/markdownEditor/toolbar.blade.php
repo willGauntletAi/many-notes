@@ -1,12 +1,7 @@
 <div {{ $attributes }} class="flex justify-between">
     <ul class="flex gap-1">
-        <li x-show="isEditMode">
-            <x-markdownEditor.button @click="toggleEditMode">
-                {{ __('Write') }}
-            </x-markdownEditor.button>
-        </li>
-        <li x-show="!isEditMode">
-            <x-markdownEditor.button @click="toggleEditMode">
+        <li>
+            <x-markdownEditor.button x-bind:class="!isEditMode ? 'bg-light-base-400 dark:bg-base-700' : ''" @click="toggleEditMode">
                 {{ __('Preview') }}
             </x-markdownEditor.button>
         </li>
