@@ -10,9 +10,9 @@
                         <li>
                             <button type="button"
                                 @click="$dispatch('{{ $searchType == 'image' ? 'mde-image' : 'mde-link' }}', { path: '/{{ $node->full_path_encoded . '.' . $node->extension }}' }); modalOpen = false"
-                                class="flex flex-col w-full gap-2 py-1 text-left">
+                                class="flex flex-col w-full gap-2 py-1 text-left hover:text-light-base-950 dark:hover:text-base-50">
                                 <span class="flex gap-2">
-                                    <span class="overflow-hidden whitespace-nowrap text-ellipsis"
+                                    <span class="overflow-hidden font-semibold whitespace-nowrap text-ellipsis" 
                                         title="{{ $node->name }}">
                                         {{ $node->name }}
                                     </span>
