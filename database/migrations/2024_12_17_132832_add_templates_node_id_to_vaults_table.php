@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('vaults', function (Blueprint $table) {
             $table->after('name', function (Blueprint $table) {
-                $table->foreignId('templates_node_id')->nullable()->constrained('vault_nodes');
+                $table->foreignId('templates_node_id')->nullable()->constrained('vault_nodes')->nullOnDelete();
             });
         });
     }
