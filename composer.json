@@ -3,7 +3,7 @@
     "description": "A markdown note-taking app.",
     "version": "0.2.1",
     "type": "project",
-    "keywords": ["note-taking", "markdown", "database"],
+    "keywords": ["note", "notes", "note-taking", "markdown", "php", "database"],
     "homepage": "https://github.com/brufdev/many-notes",
     "license": "MIT",
     "require": {
