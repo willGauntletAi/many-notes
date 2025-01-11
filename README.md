@@ -1,5 +1,5 @@
-<p align="center" style="font-size: 2.5rem; font-weight: bold;">
-    Many Notes
+<p align="center">
+    <img src=".github/images/logo.png" width="400" />
 </p>
 
 <p align="center">
@@ -14,10 +14,10 @@ Vaults are simply storage containers for your files, and Many Notes provides you
 
 ## Screenshots
 
-![Screenshot](.github/screenshots/theme-light.png?raw=true)
+![Screenshot](.github/images/theme-light.png?raw=true)
 *Light theme*
 
-![Screenshot](.github/screenshots/theme-dark.png?raw=true)
+![Screenshot](.github/images/theme-dark.png?raw=true)
 *Dark theme*
 
 ## Features
