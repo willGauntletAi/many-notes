@@ -21,6 +21,12 @@ class ProcessImportedFile
             abort(400);
         }
 
+        $content = null;
+        if (in_array($extension, Note::extensions())) {
+            $extension = 'md';
+            $content = file_get_contents($filePath);
+        }
+
         // Find new filename if it already exists
         $counter = 0;
         while (
@@ -34,11 +40,6 @@ class ProcessImportedFile
             $counter++;
         }
         $name = !$counter ? $name : $name . '-' . $counter;
-
-        $content = null;
-        if (in_array($extension, Note::extensions())) {
-            $content = file_get_contents($filePath);
-        }
 
         $node = $vault->nodes()->create([
             'parent_id' => $parent->id,
