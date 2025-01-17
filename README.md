@@ -33,113 +33,20 @@ Vaults are simply storage containers for your files, and Many Notes lets you cho
 
 ## Installation (Docker)
 
-Create a new directory called `many-notes`. Inside this directory, create a file named `compose.yaml` containing:
-
-```yaml
-services:
-  php:
-    image: brufdev/many-notes:latest
-    restart: unless-stopped
-    environment:
-      - DB_CONNECTION=mariadb
-      - DB_HOST=many-notes-mariadb-1
-      - DB_PORT=3306
-      - DB_DATABASE=manynotes
-      - DB_USERNAME=user
-      - DB_PASSWORD=USER_PASSWORD # change password
-    volumes:
-      - storage-public:/var/www/html/storage/app/public
-      - storage-private:/var/www/html/storage/app/private
-      - storage-sessions:/var/www/html/storage/framework/sessions
-      - storage-logs:/var/www/html/storage/logs
-    ports:
-      - 80:8080
-  mariadb:
-    image: mariadb:11.6
-    restart: unless-stopped
-    environment:
-      - MARIADB_ROOT_PASSWORD=ROOT_PASSWORD # change password
-      - MARIADB_DATABASE=manynotes
-      - MARIADB_USER=user
-      - MARIADB_PASSWORD=USER_PASSWORD # change password
-    volumes:
-      - mariadb-data:/var/lib/mysql
-
-volumes:
-  storage-public:
-  storage-private:
-  storage-sessions:
-  storage-logs:
-  mariadb-data:
-```
-
-Make sure to change the passwords and feel free to change anything else if you know what you're doing. Read the customization section below before continue. Then run:
-
-```shell
-docker compose up -d
-```
-
-## Customization
-
-You can customize Many Notes by adding environment variables to the `compose.yaml` file.
-
-### Custom URL (default: http://localhost)
-
-If you change the default port from 80 or use a reverse proxy with a custom URL, make sure to configure the application URL accordingly. For example, if you change the port to 8080, set:
-
-```yaml
-- APP_URL=http://localhost:8080
-- ASSET_URL=http://localhost:8080
-```
-
-### Custom timezone (default: UTC)
-
-Check all available timezones [here](https://www.php.net/manual/en/timezones.php). For example, if you want to set the timezone to Amsterdam, add:
-
-```yaml
-- APP_TIMEZONE=Europe/Amsterdam
-```
-
-### Custom upload size limit (default: 500M)
-
-Increase the upload size limit to allow for the import of larger files. For example, if you want to increase the limit to 1 GB, add:
-
-```yaml
-- PHP_POST_MAX_SIZE=1G
-- PHP_UPLOAD_MAX_FILE_SIZE=1G
-```
-
-### Custom email service
-
-Configure an email service to send registration and password reset emails by adding:
-
-```yaml
-- MAIL_MAILER=smtp
-- MAIL_HOST=127.0.0.1
-- MAIL_PORT=2525
-- MAIL_USERNAME=null
-- MAIL_PASSWORD=null
-- MAIL_ENCRYPTION=null
-- MAIL_FROM_ADDRESS=hello@example.com
-- MAIL_FROM_NAME="Many Notes"
-```
-
-### Use bind mounts instead of Docker volumes
-
-To use bind mounts, we must ensure that Many Notes has the necessary permissions to access the shared paths. Since this image runs with an unprivileged user, we need to add the host user IDs during the build phase.
-
-First, create the following folders inside your `many-notes` directory:
+First, create a new directory called `many-notes` with the following structure:
 
 ```
 many-notes/
-├── mariadb-data/
 ├── storage-logs/
 ├── storage-private/
 ├── storage-public/
-└── storage-sessions/
+├── storage-sessions/
+├── compose.yaml
+├── database.sqlite
+└── Dockerfile
 ```
 
-Next, create a file named `Dockerfile` containing:
+Next, add this to the `Dockerfile` file:
 
 ```Dockerfile
 FROM brufdev/many-notes:latest
@@ -151,42 +58,80 @@ RUN docker-php-serversideup-set-id www-data $UID:$GID && \
 USER www-data
 ```
 
-Finally, in your `compose.yaml`, replace:
+Finally, add this to the `compose.yaml` file:
 
 ```yaml
-    image: brufdev/many-notes:latest
-```
-
-with:
-
-```yaml
+services:
+  php:
     build:
       context: .
       args:
         UID: USER_ID # change id
         GID: GROUP_ID # change id
+    restart: unless-stopped
+    volumes:
+      - ./database.sqlite:/var/www/html/database/database.sqlite
+      - ./storage-logs:/var/www/html/storage/logs
+      - ./storage-private:/var/www/html/storage/app/private
+      - ./storage-public:/var/www/html/storage/app/public
+      - ./storage-sessions:/var/www/html/storage/framework/sessions
+    ports:
+      - 80:8080
 ```
 
-Make sure to update the IDs to match the host user IDs and update the paths to point to the folders you have created.
-
-## Backup and restore
-
-All your non-note files are saved in the `storage-private` volume, while your notes are stored in the database.
-
-### Backup database
-
-To back up your database, run:
+Many Notes must have the necessary permissions to access the shared paths. Since this image runs with an unprivileged user, the host user IDs must be added during the build phase. Make sure to update the IDs to match the host user IDs. Feel free to change anything else if you know what you're doing, and read the customization section below before continue. Then run:
 
 ```shell
-docker exec many-notes-mariadb-1 mariadb-dump --all-databases -uroot -p"$MARIADB_ROOT_PASSWORD" > ./backup-many-notes-`date +%Y-%m-%d`.sql
+docker compose up -d
 ```
 
-### Restore database
+## Customization
 
-To restore your database from a backup, run:
+You can customize Many Notes by adding environment variables to the `compose.yaml` file.
 
-```shell
-docker exec -i many-notes-mariadb-1 sh -c 'exec mariadb -uroot -p"$MARIADB_ROOT_PASSWORD"' < ./$BACKUP_FILE_NAME.sql
+### Custom URL (default: http://localhost)
+
+If you change the default port from 80 or use a reverse proxy with a custom URL, make sure to configure the application URL accordingly. For example, if you change the port to 8080, add:
+
+```yaml
+environment:
+  - APP_URL=http://localhost:8080
+  - ASSET_URL=http://localhost:8080
+```
+
+### Custom timezone (default: UTC)
+
+Check all available timezones [here](https://www.php.net/manual/en/timezones.php). For example, if you want to set the timezone to Amsterdam, add:
+
+```yaml
+environment:
+  - APP_TIMEZONE=Europe/Amsterdam
+```
+
+### Custom upload size limit (default: 500M)
+
+Increase the upload size limit to allow for the import of larger files. For example, if you want to increase the limit to 1 GB, add:
+
+```yaml
+environment:
+  - PHP_POST_MAX_SIZE=1G
+  - PHP_UPLOAD_MAX_FILE_SIZE=1G
+```
+
+### Custom email service
+
+Configure an email service to send registration and password reset emails by adding:
+
+```yaml
+environment:
+  - MAIL_MAILER=smtp
+  - MAIL_HOST=127.0.0.1
+  - MAIL_PORT=2525
+  - MAIL_USERNAME=null
+  - MAIL_PASSWORD=null
+  - MAIL_ENCRYPTION=null
+  - MAIL_FROM_ADDRESS=hello@example.com
+  - MAIL_FROM_NAME="Many Notes"
 ```
 
 ## License
