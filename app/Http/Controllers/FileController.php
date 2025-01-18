@@ -34,11 +34,11 @@ class FileController extends Controller
             }
 
             $currentPath = $node->ancestorsAndSelf()->get()->last()->full_path;
-            $path = (new ResolveTwoPaths())->handle($currentPath, $request->path);
+            $path = new ResolveTwoPaths()->handle($currentPath, $request->path);
         }
 
-        $node = (new GetVaultNodeFromPath())->handle($vault->id, $path);
-        $relativePath = (new GetPathFromVaultNode())->handle($node);
+        $node = new GetVaultNodeFromPath()->handle($vault->id, $path);
+        $relativePath = new GetPathFromVaultNode()->handle($node);
         $absolutePath = Storage::disk('local')->path($relativePath);
 
         ob_end_clean();

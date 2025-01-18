@@ -7,7 +7,9 @@ use App\Models\Vault;
 use App\Models\VaultNode;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use App\Actions\GetPathFromVault;
 use Livewire\Attributes\Validate;
+use Illuminate\Support\Facades\Storage;
 
 class VaultNodeForm extends Form
 {
@@ -60,7 +62,6 @@ class VaultNodeForm extends Form
     public function create(): VaultNode
     {
         $this->validate();
-
         $this->name = Str::trim($this->name);
         $node = $this->vault->nodes()->create([
             'parent_id' => $this->parent_id,
@@ -77,7 +78,6 @@ class VaultNodeForm extends Form
     public function update(): void
     {
         $this->validate();
-
         $this->name = Str::trim($this->name);
         $this->node->update([
             'parent_id' => $this->parent_id,

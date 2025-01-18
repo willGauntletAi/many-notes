@@ -6,13 +6,22 @@ use App\Models\VaultNode;
 
 class GetPathFromVaultNode
 {
-    public function handle(VaultNode $node): string
+    public function handle(VaultNode $node, bool $includeSelf = true): string
     {
-        $path =
-            'private/vaults' . DIRECTORY_SEPARATOR .
-            auth()->user()->id . DIRECTORY_SEPARATOR .
-            $node->vault_id . DIRECTORY_SEPARATOR .
-            $node->id . '.' . $node->extension;
+        $relativePath = $node->parent ?
+            $node->parent->ancestorsAndSelf->last()->full_path . '/' :
+            '';
+
+        $path = sprintf(
+            'private/vaults/%u/%s/%s',
+            auth()->user()->id,
+            $node->vault->name,
+            $relativePath,
+        );
+
+        if ($includeSelf) {
+            $path .= $node->name . ($node->is_file ? '.' . $node->extension : '');
+        }
 
         return $path;
     }

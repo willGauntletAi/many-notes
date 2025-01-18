@@ -27,7 +27,7 @@ class ImportVault extends Modal
         $this->validate();
         $fileName = $this->file->getClientOriginalName();
         $filePath = $this->file->getRealPath();
-        (new ProcessImportedVault())->handle($fileName, $filePath);
+        new ProcessImportedVault()->handle($fileName, $filePath);
         $this->dispatch('vault-imported');
         $this->closeModal();
         $this->dispatch('toast', message: __('Vault imported'), type: 'success');

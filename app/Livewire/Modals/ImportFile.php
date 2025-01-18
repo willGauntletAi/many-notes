@@ -66,7 +66,7 @@ class ImportFile extends Modal
         $this->validate();
         $fileName = $this->file->getClientOriginalName();
         $filePath = $this->file->getRealPath();
-        (new ProcessImportedFile())->handle($this->vault, $this->parent, $fileName, $filePath);
+        new ProcessImportedFile()->handle($this->vault, $this->parent, $fileName, $filePath);
         $this->dispatch('node-updated');
         $this->closeModal();
         $this->dispatch('toast', message: __('File imported'), type: 'success');

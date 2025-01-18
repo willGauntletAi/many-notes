@@ -66,7 +66,7 @@ class Show extends Component
         }
 
         $this->selectedFile = $node->id;
-        $this->selectedFilePath = (new GetUrlFromVaultNode())->handle($node);
+        $this->selectedFilePath = new GetUrlFromVaultNode()->handle($node);
         $this->nodeForm->setNode($node);
 
         if ($node->extension == 'md') {
@@ -79,8 +79,8 @@ class Show extends Component
     public function openFilePath(string $path): void
     {
         $currentPath = $this->nodeForm->node->ancestorsAndSelf()->get()->last()->full_path;
-        $resolvedPath = (new ResolveTwoPaths())->handle($currentPath, $path);
-        $node = (new GetVaultNodeFromPath())->handle($this->vault->id, $resolvedPath);
+        $resolvedPath = new ResolveTwoPaths()->handle($currentPath, $path);
+        $node = new GetVaultNodeFromPath()->handle($this->vault->id, $resolvedPath);
 
         if (is_null($node)) {
             abort(404);
@@ -99,7 +99,7 @@ class Show extends Component
         }
 
         $this->selectedFile = $node->id;
-        $this->selectedFilePath = (new GetPathFromVaultNode())->handle($node);
+        $this->selectedFilePath = new GetPathFromVaultNode()->handle($node);
         $this->nodeForm->setNode($node);
     }
 

@@ -16,6 +16,18 @@ class ProcessImportedVault
 
         // Create vault with zip name
         $vaultName = pathinfo($fileName, PATHINFO_FILENAME);
+
+        // Find new vault name if it already exists
+        $counter = 0;
+        while (
+            auth()->user()->vaults()
+                ->where('name', $vaultName)
+                ->exists()
+        ) {
+            $counter++;
+        }
+        $vaultName .= $counter > 0 ? "-$counter" : '';
+
         $vault = auth()->user()->vaults()->create([
             'name' => $vaultName,
         ]);
@@ -26,22 +38,21 @@ class ProcessImportedVault
         for ($i = 0; $i < $zip->count(); $i++) {
             $entryName = $zip->getNameIndex($i);
 
-            $isFile = substr($entryName, -1) !== DIRECTORY_SEPARATOR;
+            $isFile = substr($entryName, -1) !== '/';
             $flags = !$isFile ? PATHINFO_BASENAME : PATHINFO_FILENAME;
             $name = pathinfo($entryName, $flags);
             $extension = null;
             $content = null;
 
             if (!$isFile) {
-                // ZipArchive folder paths end with a DIRECTORY_SEPARATOR that should
+                // ZipArchive folder paths end with a / that should
                 // be removed in order for pathinfo() return the correct dirname
-                $entryDirName = substr($entryName, 0, -1);
-                $entryParentDirName = pathinfo(substr($entryName, 0, -1), PATHINFO_DIRNAME);
+                $entryDirName = rtrim($entryName, '/');
+                $entryParentDirName = pathinfo($entryDirName, PATHINFO_DIRNAME);
                 $parentId = $nodeIds[$entryParentDirName];
             } else {
-                $entryDirName = pathinfo($entryName, PATHINFO_DIRNAME);
+                ['dirname' => $entryDirName, 'extension' => $extension] = pathinfo($entryName);
                 $parentId = $nodeIds[$entryDirName];
-                $extension = pathinfo($entryName, PATHINFO_EXTENSION);
 
                 if (!in_array($extension, VaultFile::extensions())) {
                     continue;
@@ -67,7 +78,7 @@ class ProcessImportedVault
                 $name = !$counter ? $name : $name . '-' . $counter;
             }
 
-            $node = $vault->nodes()->create([
+            $node = $vault->nodes()->createQuietly([
                 'parent_id' => $parentId,
                 'is_file' => $isFile,
                 'name' => $name,
@@ -75,9 +86,11 @@ class ProcessImportedVault
                 'content' => $content,
             ]);
 
-            if ($isFile && !in_array($extension, Note::extensions())) {
-                $relativePath = (new GetPathFromVaultNode())->handle($node);
+            $relativePath = new GetPathFromVaultNode()->handle($node);
+            if ($isFile) {
                 Storage::disk('local')->put($relativePath, $zip->getFromIndex($i));
+            } else {
+                Storage::disk('local')->makeDirectory($relativePath);
             }
 
             if (!array_key_exists($entryDirName, $nodeIds)) {

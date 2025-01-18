@@ -21,7 +21,6 @@ class Index extends Component
 
     public function create(): void
     {
-        $this->validate();
         $this->form->create();
         $this->reset('showCreateModal');
         $this->dispatch('toast', message: __('Vault created'), type: 'success');
@@ -34,7 +33,7 @@ class Index extends Component
         $zipFileName = $vault->id . '.zip';
         $nodes = $vault->nodes()->whereNull('parent_id')->get();
 
-        if ($zip->open(public_path($zipFileName), ZipArchive::CREATE) === TRUE) {
+        if ($zip->open(public_path($zipFileName), ZipArchive::CREATE) === true) {
             $this->exportNodes($zip, $nodes);
             $zip->close();
 
@@ -51,7 +50,7 @@ class Index extends Component
                 if ($node->extension === 'md') {
                     $zip->addFromString("$nodePath.$node->extension", $node->content);
                 } else {
-                    $relativePath = (new GetPathFromVaultNode())->handle($node);
+                    $relativePath = new GetPathFromVaultNode()->handle($node);
                     $filePath = Storage::disk('local')->path($relativePath);
                     $zip->addFile($filePath, "$nodePath.$node->extension");
                 }
