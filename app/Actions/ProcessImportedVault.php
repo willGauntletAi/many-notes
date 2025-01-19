@@ -62,20 +62,6 @@ class ProcessImportedVault
                     $extension = 'md';
                     $content = $zip->getFromIndex($i);
                 }
-
-                // Find new filename if it already exists
-                $counter = 0;
-                while (
-                    $vault->nodes()
-                        ->where('parent_id', $parentId)
-                        ->where('is_file', true)
-                        ->where('name', !$counter ? $name : $name . '-' . $counter)
-                        ->where('extension', $extension)
-                        ->exists()
-                ) {
-                    $counter++;
-                }
-                $name = !$counter ? $name : $name . '-' . $counter;
             }
 
             $node = $vault->nodes()->createQuietly([

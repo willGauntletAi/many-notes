@@ -163,10 +163,15 @@ class Show extends Component
         $selectedNode = $this->nodeForm->node;
         $now = now();
         $content = $node->content;
-        $content = Str::replace('{{date}}', $now->format('Y-m-d'), $content);
-        $content = Str::replace('{{time}}', $now->format('H:i'), $content);
-        $content = Str::contains($content, '{{content}}')
-            ? Str::replace('{{content}}', $selectedNode->content, $content)
+
+        $content = str_replace(
+            ['{{date}}', '{{time}}'],
+            [$now->format('Y-m-d'), $now->format('H:i')],
+            $content,
+        );
+
+        $content = str_contains($content, '{{content}}')
+            ? str_replace('{{content}}', $selectedNode->content, $content)
             : $content . PHP_EOL . $selectedNode->content;
         $selectedNode->update(['content' => $content]);
         $this->nodeForm->setNode($selectedNode);
