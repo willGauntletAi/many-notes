@@ -14,9 +14,11 @@ use App\Livewire\Dashboard\Index as DashboardIndex;
 Route::middleware('auth')->group(function () {
     Route::get('/', DashboardIndex::class)->name('dashboard.index');
 
-    Route::get('vaults', VaultIndex::class)->name('vaults.index');
-    Route::get('vaults/last', VaultLast::class)->name('vaults.last');
-    Route::get('vaults/{vault}', VaultShow::class)->name('vaults.show');
+    Route::prefix('vaults')->group(function () {
+        Route::get('/', VaultIndex::class)->name('vaults.index');
+        Route::get('/last', VaultLast::class)->name('vaults.last');
+        Route::get('/{vault}', VaultShow::class)->name('vaults.show');
+    });
 
     Route::get('files/{vault}', [FileController::class, 'show'])->name('files.show');
 });
