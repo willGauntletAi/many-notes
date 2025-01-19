@@ -33,6 +33,8 @@ Vaults are simply storage containers for your files, and Many Notes lets you cho
 
 ## Installation (Docker)
 
+**Read the [upgrading guide](UPGRADING.md) if you are upgrading from a previous version.**
+
 First, create a new directory called `many-notes` with the following structure:
 
 ```
