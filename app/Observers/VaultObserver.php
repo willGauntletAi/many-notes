@@ -27,6 +27,10 @@ class VaultObserver
      */
     public function updating(Vault $vault): void
     {
+        if (!$vault->isDirty('name')) {
+            return;
+        }
+
         $relativePath = new GetPathFromUser()->handle();
 
         if (Storage::disk('local')->exists($relativePath . $vault->name)) {
