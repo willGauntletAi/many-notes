@@ -18,15 +18,16 @@ class ProcessImportedVault
         $vaultName = pathinfo($fileName, PATHINFO_FILENAME);
 
         // Find new vault name if it already exists
-        $counter = 0;
-        while (
-            auth()->user()->vaults()
-                ->where('name', $vaultName)
-                ->exists()
-        ) {
-            $counter++;
+        $vault = auth()->user()
+            ->vaults()
+            ->where('name', 'like', "$vaultName%")
+            ->orderByDesc('name')
+            ->first();
+        if ($vault) {
+            $vaultName .= preg_match('/-(\d+)$/', $vault->name, $matches) === 1 ?
+                '-' . ((int) $matches[1] + 1) :
+                '-1';
         }
-        $vaultName .= $counter > 0 ? "-$counter" : '';
 
         $vault = auth()->user()->vaults()->create([
             'name' => $vaultName,
