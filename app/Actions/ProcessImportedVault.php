@@ -36,7 +36,7 @@ class ProcessImportedVault
         // Create vault nodes with valid zip files and folders
         $zip = new ZipArchive();
         $zip->open($filePath);
-        for ($i = 0; $i < $zip->count(); $i++) {
+        for ($i = 0, $zipCount = $zip->count(); $i < $zipCount; $i++) {
             $entryName = $zip->getNameIndex($i);
 
             $isFile = substr($entryName, -1) !== '/';
