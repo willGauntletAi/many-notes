@@ -131,7 +131,7 @@ For example, to enable GitHub OAuth, add:
 environment:
   - GITHUB_CLIENT_ID=CLIENT_ID # change id
   - GITHUB_CLIENT_SECRET=CLIENT_SECRET # change secret
-  - GITHUB_REDIRECT=${APP_URL}/oauth/github/callback
+  - GITHUB_REDIRECT=http://localhost/oauth/github/callback # change url
 ```
 
 For example, to enable GitHub and Google OAuth, add:
@@ -140,10 +140,10 @@ For example, to enable GitHub and Google OAuth, add:
 environment:
   - GITHUB_CLIENT_ID=CLIENT_ID # change id
   - GITHUB_CLIENT_SECRET=CLIENT_SECRET # change secret
-  - GITHUB_REDIRECT=${APP_URL}/oauth/github/callback
+  - GITHUB_REDIRECT=http://localhost/oauth/github/callback # change url
   - GOOGLE_CLIENT_ID=CLIENT_ID # change id
   - GOOGLE_CLIENT_SECRET=CLIENT_SECRET # change secret
-  - GOOGLE_REDIRECT=${APP_URL}/oauth/google/callback
+  - GOOGLE_REDIRECT=http://localhost/oauth/google/callback # change url
 ```
 
 ### Custom email service
