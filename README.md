@@ -24,6 +24,7 @@ Vaults are simply storage containers for your files, and Many Notes lets you cho
 
 - Multiple users
 - Multiple vaults per user
+- OAuth support
 - File search
 - Tree view explorer with context menu
 - Smart markdown editor
@@ -118,6 +119,31 @@ Increase the upload size limit to allow for the import of larger files. For exam
 environment:
   - PHP_POST_MAX_SIZE=1G
   - PHP_UPLOAD_MAX_FILE_SIZE=1G
+```
+
+### Enable OAuth providers
+
+Many Notes supports a convenient way to authenticate with OAuth providers. Typically, these credentials may be retrieved by creating a "developer application" within the dashboard of the service you wish to use. Many Notes currently supports authentication via Facebook, Twitter, LinkedIn, Google, GitHub, GitLab, Bitbucket, and Slack.
+
+For example, to enable GitHub OAuth, add: 
+
+```yaml
+environment:
+  - GITHUB_CLIENT_ID=CLIENT_ID # change id
+  - GITHUB_CLIENT_SECRET=CLIENT_SECRET # change secret
+  - GITHUB_REDIRECT=${APP_URL}/oauth/github/callback
+```
+
+For example, to enable GitHub and Google OAuth, add:
+
+```yaml
+environment:
+  - GITHUB_CLIENT_ID=CLIENT_ID # change id
+  - GITHUB_CLIENT_SECRET=CLIENT_SECRET # change secret
+  - GITHUB_REDIRECT=${APP_URL}/oauth/github/callback
+  - GOOGLE_CLIENT_ID=CLIENT_ID # change id
+  - GOOGLE_CLIENT_SECRET=CLIENT_SECRET # change secret
+  - GOOGLE_REDIRECT=${APP_URL}/oauth/google/callback
 ```
 
 ### Custom email service
