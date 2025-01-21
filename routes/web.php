@@ -39,7 +39,9 @@ Route::middleware(['guest', 'throttle'])->group(function () {
             fn ($provider) => $provider->value,
             new GetAvailableOAuthProviders()->handle(),
         ));
-        Route::get('/{provider}', OAuthLogin::class)->where('provider', $providers);
-        Route::get('/{provider}/callback', OAuthLoginCallback::class)->where('provider', $providers);
+        if (!empty($providers)) {
+            Route::get('/{provider}', OAuthLogin::class)->where('provider', $providers);
+            Route::get('/{provider}/callback', OAuthLoginCallback::class)->where('provider', $providers);
+        }
     });
 });
