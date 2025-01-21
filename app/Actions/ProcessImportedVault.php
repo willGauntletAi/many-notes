@@ -18,13 +18,23 @@ class ProcessImportedVault
         $vaultName = pathinfo($fileName, PATHINFO_FILENAME);
 
         // Find new vault name if it already exists
-        $vault = auth()->user()
+        $vaultExists = auth()
+            ->user()
             ->vaults()
-            ->where('name', 'like', "$vaultName%")
-            ->orderByDesc('name')
-            ->first();
-        if ($vault) {
-            $vaultName .= preg_match('/-(\d+)$/', $vault->name, $matches) === 1 ?
+            ->where('name', 'like', "$vaultName")
+            ->exists();
+        if ($vaultExists) {
+            $vaults = array_column(
+                auth()->user()
+                    ->vaults()
+                    ->select('name')
+                    ->where('name', 'like', "$vaultName-%")
+                    ->get()
+                    ->toArray(),
+                'name',
+            );
+            natcasesort($vaults);
+            $vaultName .= count($vaults) && preg_match('/-(\d+)$/', end($vaults), $matches) === 1 ?
                 '-' . ((int) $matches[1] + 1) :
                 '-1';
         }

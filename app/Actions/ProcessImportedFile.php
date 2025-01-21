@@ -27,15 +27,28 @@ class ProcessImportedFile
         }
 
         // Find new filename if it already exists
-        $node = $vault->nodes()
+        $nodeExists = $vault->nodes()
             ->where('parent_id', $parent->id)
             ->where('is_file', true)
-            ->where('name', 'like', "$name%")
+            ->where('name', 'like', "$name")
             ->where('extension', 'md')
-            ->orderByDesc('name')
-            ->first();
-        if (preg_match('/-(\d+)$/', $node->name, $matches) === 1) {
-            $name .= '-' . ((int) $matches[1] + 1);
+            ->exists();
+        if ($nodeExists) {
+            $nodes = array_column(
+                $vault->nodes()
+                    ->select('name')
+                    ->where('parent_id', $parent->id)
+                    ->where('is_file', true)
+                    ->where('name', 'like', "$name-%")
+                    ->where('extension', 'md')
+                    ->get()
+                    ->toArray(),
+                'name',
+            );
+            natcasesort($nodes);
+            $name .= count($nodes) && preg_match('/-(\d+)$/', end($nodes), $matches) === 1 ?
+                '-' . ((int) $matches[1] + 1) :
+                '-1';
         }
 
         $node = $vault->nodes()->createQuietly([
