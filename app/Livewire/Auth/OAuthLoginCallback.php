@@ -28,7 +28,7 @@ class OAuthLoginCallback extends Component
             return;
         }
 
-        $user = User::updateOrCreate(
+        $user = User::firstOrCreate(
             ['email' => $providerUser->getEmail()],
             [
                 'name' => $providerUser->getName(),
