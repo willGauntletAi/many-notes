@@ -131,7 +131,7 @@ For example, to enable GitHub OAuth, add:
 environment:
   - GITHUB_CLIENT_ID=CLIENT_ID # change id
   - GITHUB_CLIENT_SECRET=CLIENT_SECRET # change secret
-  - GITHUB_REDIRECT=http://localhost/oauth/github/callback # change url
+  - GITHUB_REDIRECT_URI=http://localhost/oauth/github/callback # change uri
 ```
 
 **Authentik and Keycloak providers require additional configuration.**
@@ -140,20 +140,20 @@ To enable GitHub OAuth, add:
 
 ```yaml
 environment:
+  - AUTHENTIK_BASE_URL=http://your-authentik-domain # change url
   - AUTHENTIK_CLIENT_ID=CLIENT_ID # change id
   - AUTHENTIK_CLIENT_SECRET=CLIENT_SECRET # change secret
-  - AUTHENTIK_REDIRECT=http://localhost/oauth/authentik/callback # change url
-  - AUTHENTIK_BASE_URL=http://your-authentik-domain # change url
+  - AUTHENTIK_REDIRECT_URI=http://localhost/oauth/authentik/callback # change uri
 ```
 
 To enable Keycloak OAuth, add:
 
 ```yaml
 environment:
+  - KEYCLOAK_BASE_URL=http://your-keycloak-domain # change url
   - KEYCLOAK_CLIENT_ID=CLIENT_ID # change id
   - KEYCLOAK_CLIENT_SECRET=CLIENT_SECRET # change secret
-  - KEYCLOAK_REDIRECT=http://localhost/oauth/keycloak/callback # change url
-  - KEYCLOAK_BASE_URL=http://your-keycloak-domain # change url
+  - KEYCLOAK_REDIRECT_URI=http://localhost/oauth/keycloak/callback # change uri
   - KEYCLOAK_REALM=YOUR_REALM # change realm
 ```
 

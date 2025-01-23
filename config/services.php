@@ -32,57 +32,57 @@ return [
         'base_url' => env('AUTHENTIK_BASE_URL'),
         'client_id' => env('AUTHENTIK_CLIENT_ID'),
         'client_secret' => env('AUTHENTIK_CLIENT_SECRET'),
-        'redirect' => env('AUTHENTIK_REDIRECT'),
+        'redirect' => env('AUTHENTIK_REDIRECT_URI'),
     ],
 
     'bitbucket' => [
         'client_id' => env('BITBUCKET_CLIENT_ID'),
         'client_secret' => env('BITBUCKET_CLIENT_SECRET'),
-        'redirect' => env('BITBUCKET_REDIRECT'),
+        'redirect' => env('BITBUCKET_REDIRECT_URI'),
     ],
 
     'facebook' => [
         'client_id' => env('FACEBOOK_CLIENT_ID'),
         'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
-        'redirect' => env('FACEBOOK_REDIRECT'),
+        'redirect' => env('FACEBOOK_REDIRECT_URI'),
     ],
 
     'github' => [
         'client_id' => env('GITHUB_CLIENT_ID'),
         'client_secret' => env('GITHUB_CLIENT_SECRET'),
-        'redirect' => env('GITHUB_REDIRECT'),
+        'redirect' => env('GITHUB_REDIRECT_URI'),
     ],
 
     'gitlab' => [
         'client_id' => env('GITLAB_CLIENT_ID'),
         'client_secret' => env('GITLAB_CLIENT_SECRET'),
-        'redirect' => env('GITLAB_REDIRECT'),
+        'redirect' => env('GITLAB_REDIRECT_URI'),
     ],
 
     'google' => [
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
-        'redirect' => env('GOOGLE_REDIRECT'),
+        'redirect' => env('GOOGLE_REDIRECT_URI'),
     ],
 
     'keycloak' => [
+        'base_url' => env('KEYCLOAK_BASE_URL'),
         'client_id' => env('KEYCLOAK_CLIENT_ID'),
         'client_secret' => env('KEYCLOAK_CLIENT_SECRET'),
-        'redirect' => env('KEYCLOAK_REDIRECT'),
-        'base_url' => env('KEYCLOAK_BASE_URL'),
+        'redirect' => env('KEYCLOAK_REDIRECT_URI'),
         'realms' => env('KEYCLOAK_REALM'),
     ],
 
     'linkedin' => [
         'client_id' => env('LINKEDIN_CLIENT_ID'),
         'client_secret' => env('LINKEDIN_CLIENT_SECRET'),
-        'redirect' => env('LINKEDIN_REDIRECT'),
+        'redirect' => env('LINKEDIN_REDIRECT_URI'),
     ],
 
     'slack' => [
         'client_id' => env('SLACK_CLIENT_ID'),
         'client_secret' => env('SLACK_CLIENT_SECRET'),
-        'redirect' => env('SLACK_REDIRECT'),
+        'redirect' => env('SLACK_REDIRECT_URI'),
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
@@ -92,7 +92,7 @@ return [
     'twitter' => [
         'client_id' => env('TWITTER_CLIENT_ID'),
         'client_secret' => env('TWITTER_CLIENT_SECRET'),
-        'redirect' => env('TWITTER_REDIRECT'),
+        'redirect' => env('TWITTER_REDIRECT_URI'),
     ],
 
 ];
