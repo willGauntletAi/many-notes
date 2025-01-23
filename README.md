@@ -123,9 +123,9 @@ environment:
 
 ### Enable OAuth providers
 
-Many Notes supports a convenient way to authenticate with OAuth providers. Typically, these credentials may be retrieved by creating a "developer application" within the dashboard of the service you wish to use. Many Notes currently supports authentication via Facebook, Twitter, LinkedIn, Google, GitHub, GitLab, Bitbucket, and Slack.
+Many Notes supports a convenient way to authenticate with OAuth providers. Typically, these credentials may be retrieved by creating a "developer application" within the dashboard of the service you wish to use. Many Notes currently supports authentication via Facebook, Twitter, LinkedIn, Google, GitHub, GitLab, Bitbucket, Slack, Authentik, and Keycloak. You can enable multiple providers simultaneously by adding the corresponding environment variables.
 
-For example, to enable GitHub OAuth, add: 
+For example, to enable GitHub OAuth, add:
 
 ```yaml
 environment:
@@ -134,16 +134,27 @@ environment:
   - GITHUB_REDIRECT=http://localhost/oauth/github/callback # change url
 ```
 
-For example, to enable GitHub and Google OAuth, add:
+**Authentik and Keycloak providers require additional configuration.**
+
+To enable GitHub OAuth, add:
 
 ```yaml
 environment:
-  - GITHUB_CLIENT_ID=CLIENT_ID # change id
-  - GITHUB_CLIENT_SECRET=CLIENT_SECRET # change secret
-  - GITHUB_REDIRECT=http://localhost/oauth/github/callback # change url
-  - GOOGLE_CLIENT_ID=CLIENT_ID # change id
-  - GOOGLE_CLIENT_SECRET=CLIENT_SECRET # change secret
-  - GOOGLE_REDIRECT=http://localhost/oauth/google/callback # change url
+  - AUTHENTIK_CLIENT_ID=CLIENT_ID # change id
+  - AUTHENTIK_CLIENT_SECRET=CLIENT_SECRET # change secret
+  - AUTHENTIK_REDIRECT=http://localhost/oauth/authentik/callback # change url
+  - AUTHENTIK_BASE_URL=http://your-authentik-domain # change url
+```
+
+To enable Keycloak OAuth, add:
+
+```yaml
+environment:
+  - KEYCLOAK_CLIENT_ID=CLIENT_ID # change id
+  - KEYCLOAK_CLIENT_SECRET=CLIENT_SECRET # change secret
+  - KEYCLOAK_REDIRECT=http://localhost/oauth/keycloak/callback # change url
+  - KEYCLOAK_BASE_URL=http://your-keycloak-domain # change url
+  - KEYCLOAK_REALM=YOUR_REALM # change realm
 ```
 
 ### Custom email service
