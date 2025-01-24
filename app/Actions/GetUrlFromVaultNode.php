@@ -10,8 +10,6 @@ class GetUrlFromVaultNode
     {
         $path = $node->ancestorsAndSelf()->get()->last()->full_path;
 
-        $url = '/files/' . $node->vault_id . '?path=' . $path . '.' . $node->extension;
-
-        return $url;
+        return '/files/' . $node->vault_id . '?path=' . $path . '.' . $node->extension;
     }
 }

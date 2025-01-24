@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Vault;
 
+use Throwable;
 use App\Models\Vault;
 use Livewire\Component;
 use App\Models\VaultNode;
@@ -45,7 +46,7 @@ class Show extends Component
         $this->nodeForm->setVault($this->vault);
         $this->getTemplates();
 
-        if ($this->selectedFile) {
+        if ((int) $this->selectedFile > 0) {
             $selectedFile = $vault->nodes()->where('id', $this->selectedFile)->first();
 
             if (!$selectedFile) {
@@ -155,7 +156,9 @@ class Show extends Component
         $sameVault = $this->vault->id === $node->vault->id;
         $isNote = $node->is_file && in_array($node->extension, Note::extensions());
         $isTemplate = $node->parent_id == $this->vault->templates_node_id;
-        if (!$sameVault || !$isNote || !$isTemplate || !$this->selectedFile || !$this->isEditMode) {
+        $fileSelected = (int) $this->selectedFile > 0;
+
+        if (!$sameVault || !$isNote || !$isTemplate || !$fileSelected || !$this->isEditMode) {
             $this->dispatch('toast', message: __('Something went wrong'), type: 'error');
             return;
         }
@@ -209,9 +212,10 @@ class Show extends Component
             DB::commit();
             $this->dispatch('node-updated');
             $templateDeleted = !is_null(
-                array_find($this->deletedNodes, function ($node) {
-                    return $node->parent_id == $this->vault->templates_node_id;
-                })
+                array_find(
+                    $this->deletedNodes,
+                    fn($node): bool => $node->parent_id == $this->vault->templates_node_id
+                )
             );
             if ($templateDeleted) {
                 $this->getTemplates();
@@ -219,7 +223,7 @@ class Show extends Component
             $this->deletedNodes = [];
             $message = $node->is_file ? __('File deleted') : __('Folder deleted');
             $this->dispatch('toast', message: $message, type: 'success');
-        } catch (\Throwable $e) {
+        } catch (Throwable) {
             DB::rollBack();
         }
     }

@@ -7,9 +7,7 @@ use App\Models\Vault;
 use App\Models\VaultNode;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-use App\Actions\GetPathFromVault;
 use Livewire\Attributes\Validate;
-use Illuminate\Support\Facades\Storage;
 
 class VaultNodeForm extends Form
 {
@@ -17,16 +15,16 @@ class VaultNodeForm extends Form
 
     public ?VaultNode $node = null;
 
-    public $parent_id = null;
+    public ?int $parent_id = null;
 
     public $is_file = true;
 
     #[Validate]
     public $name = '';
 
-    public $extension = null;
+    public ?string $extension = null;
 
-    public $content = null;
+    public ?string $content = null;
 
     public function rules(): array
     {

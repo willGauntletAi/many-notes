@@ -46,7 +46,7 @@ class ProcessImportedFile
                 'name',
             );
             natcasesort($nodes);
-            $name .= count($nodes) && preg_match('/-(\d+)$/', end($nodes), $matches) === 1 ?
+            $name .= count($nodes) && preg_match('/-(\d+)$/', (string) end($nodes), $matches) === 1 ?
                 '-' . ((int) $matches[1] + 1) :
                 '-1';
         }

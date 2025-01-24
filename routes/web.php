@@ -16,10 +16,10 @@ use App\Actions\GetAvailableOAuthProviders;
 use App\Livewire\Vault\Index as VaultIndex;
 use App\Livewire\Dashboard\Index as DashboardIndex;
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth')->group(function (): void {
     Route::get('/', DashboardIndex::class)->name('dashboard.index');
 
-    Route::prefix('vaults')->group(function () {
+    Route::prefix('vaults')->group(function (): void {
         Route::get('/', VaultIndex::class)->name('vaults.index');
         Route::get('/last', VaultLast::class)->name('vaults.last');
         Route::get('/{vault}', VaultShow::class)->name('vaults.show');
@@ -28,18 +28,19 @@ Route::middleware('auth')->group(function () {
     Route::get('files/{vault}', [FileController::class, 'show'])->name('files.show');
 });
 
-Route::middleware(['guest', 'throttle'])->group(function () {
+Route::middleware(['guest', 'throttle'])->group(function (): void {
     Route::get('register', Register::class)->name('register');
     Route::get('login', Login::class)->name('login');
     Route::get('forgot-password', ForgotPassword::class)->name('forgot.password');
     Route::get('reset-password/{token}', ResetPassword::class)->name('password.reset');
 
-    Route::prefix('oauth')->group(function () {
+    Route::prefix('oauth')->group(function (): void {
         $providers = implode('|', array_map(
             fn ($provider) => $provider->value,
             new GetAvailableOAuthProviders()->handle(),
         ));
-        if (!empty($providers)) {
+
+        if ($providers !== '') {
             Route::get('/{provider}', OAuthLogin::class)->where('provider', $providers);
             Route::get('/{provider}/callback', OAuthLoginCallback::class)->where('provider', $providers);
         }

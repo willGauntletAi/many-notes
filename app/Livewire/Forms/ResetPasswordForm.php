@@ -53,7 +53,7 @@ class ResetPasswordForm extends Form
         // database. Otherwise we will parse the error and return the response.
         $status = Password::reset(
             $this->only('email', 'password', 'password_confirmation', 'token'),
-            function ($user) {
+            function ($user): void {
                 $user->forceFill([
                     'password' => Hash::make($this->password),
                     'remember_token' => Str::random(60),

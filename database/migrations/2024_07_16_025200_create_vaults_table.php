@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('vaults', function (Blueprint $table) {
+        Schema::create('vaults', function (Blueprint $table): void {
             $table->id();
             $table->string('name');
             $table->foreignId('created_by')->constrained('users');
@@ -19,13 +19,5 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
-    }
-
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('vaults');
     }
 };

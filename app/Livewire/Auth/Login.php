@@ -13,7 +13,7 @@ class Login extends Component
 
     public array $providers;
 
-    public function mount()
+    public function mount(): void
     {
         $this->providers = new GetAvailableOAuthProviders()->handle();
     }

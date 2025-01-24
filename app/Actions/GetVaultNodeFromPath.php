@@ -15,15 +15,13 @@ class GetVaultNodeFromPath
         if (count($pieces) == 1) {
             $pathParts = pathinfo($pieces[0]);
 
-            $node = VaultNode::query()
+            return VaultNode::query()
                 ->where('vault_id', $vaultId)
                 ->where('parent_id', $parentId)
                 ->where('is_file', true)
                 ->where('name', 'LIKE', $pathParts['filename'])
                 ->where('extension', 'LIKE', $pathParts['extension'] ?? 'md')
                 ->first();
-
-            return $node;
         }
 
         $node = VaultNode::query()

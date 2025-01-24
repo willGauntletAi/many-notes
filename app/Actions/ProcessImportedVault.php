@@ -34,7 +34,7 @@ class ProcessImportedVault
                 'name',
             );
             natcasesort($vaults);
-            $vaultName .= count($vaults) && preg_match('/-(\d+)$/', end($vaults), $matches) === 1 ?
+            $vaultName .= count($vaults) && preg_match('/-(\d+)$/', (string) end($vaults), $matches) === 1 ?
                 '-' . ((int) $matches[1] + 1) :
                 '-1';
         }
@@ -49,8 +49,8 @@ class ProcessImportedVault
         for ($i = 0, $zipCount = $zip->count(); $i < $zipCount; $i++) {
             $entryName = $zip->getNameIndex($i);
 
-            $isFile = substr($entryName, -1) !== '/';
-            $flags = !$isFile ? PATHINFO_BASENAME : PATHINFO_FILENAME;
+            $isFile = !str_ends_with($entryName, '/');
+            $flags = $isFile ? PATHINFO_FILENAME : PATHINFO_BASENAME;
             $name = pathinfo($entryName, $flags);
             $extension = null;
             $content = null;

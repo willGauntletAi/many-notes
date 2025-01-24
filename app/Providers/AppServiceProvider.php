@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Override;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use SocialiteProviders\Authentik\Provider;
@@ -12,6 +13,7 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Register any application services.
      */
+    #[Override]
     public function register(): void
     {
         //
@@ -22,10 +24,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Event::listen(function (SocialiteWasCalled $event) {
+        Event::listen(function (SocialiteWasCalled $event): void {
             $event->extendSocialite('authentik', Provider::class);
         });
-        Event::listen(function (SocialiteWasCalled $event) {
+        Event::listen(function (SocialiteWasCalled $event): void {
             $event->extendSocialite('keycloak', Provider::class);
         });
     }

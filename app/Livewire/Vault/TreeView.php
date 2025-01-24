@@ -25,7 +25,7 @@ class TreeView extends Component
 
     public function render()
     {
-        $constraint = function ($query) {
+        $constraint = function ($query): void {
             $query->whereNull('parent_id')->where('vault_id', $this->vault->id);
         };
 

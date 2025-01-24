@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('vault_nodes', function (Blueprint $table) {
+        Schema::create('vault_nodes', function (Blueprint $table): void {
             $table->id();
             $table->foreignId('vault_id')->constrained('vaults');
             $table->foreignId('parent_id')->nullable()->constrained('vault_nodes');
@@ -22,13 +22,5 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
-    }
-
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('vault_nodes');
     }
 };

@@ -11,18 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('vaults', function (Blueprint $table) {
+        Schema::table('vaults', function (Blueprint $table): void {
             $table->dropSoftDeletes();
-        });
-    }
-
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::table('vaults', function (Blueprint $table) {
-            //
         });
     }
 };

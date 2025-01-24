@@ -16,7 +16,7 @@ class OAuthLoginCallback extends Component
     {
         try {
             $providerUser = Socialite::driver($provider)->user();
-        } catch (Exception $e) {
+        } catch (Exception) {
             session()->flash('error', __('An error occurred while authenticating.'));
             $this->redirect('/login', true);
             return;

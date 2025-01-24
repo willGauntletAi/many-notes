@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Vault;
 
+use Throwable;
 use ZipArchive;
 use App\Models\Vault;
 use Livewire\Component;
@@ -11,6 +12,7 @@ use App\Livewire\Forms\VaultForm;
 use Illuminate\Support\Facades\DB;
 use App\Actions\GetPathFromVaultNode;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Staudenmeir\LaravelAdjacencyList\Eloquent\Collection;
 
 class Index extends Component
@@ -26,19 +28,21 @@ class Index extends Component
         $this->dispatch('toast', message: __('Vault created'), type: 'success');
     }
 
-    public function export(Vault $vault)
+    public function export(Vault $vault): ?BinaryFileResponse
     {
         $this->authorize('view', $vault);
         $zip = new ZipArchive;
         $zipFileName = $vault->id . '.zip';
         $nodes = $vault->nodes()->whereNull('parent_id')->get();
 
-        if ($zip->open(public_path($zipFileName), ZipArchive::CREATE) === true) {
-            $this->exportNodes($zip, $nodes);
-            $zip->close();
-
-            return response()->download(public_path($zipFileName), $vault->name . '.zip')->deleteFileAfterSend(true);
+        if ($zip->open(public_path($zipFileName), ZipArchive::CREATE) === false) {
+            $this->dispatch('toast', message: __('Something went wrong'), type: 'error');
+            return null;
         }
+
+        $this->exportNodes($zip, $nodes);
+        $zip->close();
+        return response()->download(public_path($zipFileName), $vault->name . '.zip')->deleteFileAfterSend(true);
     }
 
     private function exportNodes(ZipArchive &$zip, Collection $nodes, string $path = ''): void
@@ -76,7 +80,7 @@ class Index extends Component
             $vault->delete();
             DB::commit();
             $this->dispatch('toast', message: __('Vault deleted'), type: 'success');
-        } catch (\Throwable $e) {
+        } catch (Throwable) {
             DB::rollBack();
             $this->dispatch('toast', message: __('Something went wrong'), type: 'error');
         }
