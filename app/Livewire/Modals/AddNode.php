@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Modals;
 
+use App\Livewire\Forms\VaultNodeForm;
 use App\Models\Vault;
 use App\Models\VaultNode;
 use Livewire\Attributes\On;
-use App\Livewire\Forms\VaultNodeForm;
 
 class AddNode extends Modal
 {
@@ -22,7 +24,7 @@ class AddNode extends Modal
     #[On('open-modal')]
     public function open(?VaultNode $parent = null, bool $isFile = true): void
     {
-        if (!is_null($parent->vault)) {
+        if (! is_null($parent->vault)) {
             $this->authorize('update', $parent->vault);
         }
 
@@ -37,7 +39,7 @@ class AddNode extends Modal
         $node = $this->form->create();
         $this->closeModal();
         $this->dispatch('node-updated');
-        if ($node->parent_id == $this->form->vault->templates_node_id) {
+        if ($node->parent_id === $this->form->vault->templates_node_id) {
             $this->dispatch('templates-refresh');
         }
         $message = $this->form->is_file ? __('File created') : __('Folder created');

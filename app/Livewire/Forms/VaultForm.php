@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Forms;
 
-use Livewire\Form;
 use App\Models\Vault;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Validate;
+use Livewire\Form;
 
-class VaultForm extends Form
+final class VaultForm extends Form
 {
     public ?Vault $vault = null;
 

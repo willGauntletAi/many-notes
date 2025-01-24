@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enums;
 
-Enum OAuthProviders: string
+enum OAuthProviders: string
 {
     case Authentik = 'authentik';
     case Bitbucket = 'bitbucket';

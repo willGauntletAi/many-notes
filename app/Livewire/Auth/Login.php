@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Auth;
 
-use Livewire\Component;
+use App\Actions\GetAvailableOAuthProviders;
 use App\Livewire\Forms\LoginForm;
 use Illuminate\Support\Facades\Session;
-use App\Actions\GetAvailableOAuthProviders;
+use Livewire\Component;
 
-class Login extends Component
+final class Login extends Component
 {
     public LoginForm $form;
 

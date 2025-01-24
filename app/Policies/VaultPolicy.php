@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
 use App\Models\User;
 use App\Models\Vault;
-use Illuminate\Auth\Access\Response;
 
-class VaultPolicy
+final class VaultPolicy
 {
     /**
      * Determine whether the user can view the model.

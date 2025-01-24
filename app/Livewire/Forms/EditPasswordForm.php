@@ -1,15 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Forms;
 
-use Livewire\Form;
 use Illuminate\Support\Arr;
-use Livewire\Attributes\Validate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
+use Livewire\Attributes\Validate;
+use Livewire\Form;
 
-class EditPasswordForm extends Form
+final class EditPasswordForm extends Form
 {
     #[Validate]
     public string $current_password = '';

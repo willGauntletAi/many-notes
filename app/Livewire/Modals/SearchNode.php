@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Modals;
 
+use App\Livewire\Forms\VaultNodeForm;
 use App\Models\Vault;
 use App\Models\VaultNode;
 use Livewire\Attributes\On;
-use App\Livewire\Forms\VaultNodeForm;
 use Staudenmeir\LaravelAdjacencyList\Eloquent\Builder;
 use Staudenmeir\LaravelAdjacencyList\Eloquent\Collection;
 
@@ -40,8 +42,8 @@ class SearchNode extends Modal
             ->select('id', 'name', 'extension')
             ->where('vault_id', $this->vault->id)
             ->where('is_file', true)
-            ->when(strlen($this->search), function (Builder $query): void {
-                $query->where('name', 'like', '%' . $this->search . '%');
+            ->when(mb_strlen($this->search), function (Builder $query): void {
+                $query->where('name', 'like', '%'.$this->search.'%');
             })
             ->orderByDesc('updated_at')
             ->limit(5)
@@ -49,8 +51,8 @@ class SearchNode extends Modal
 
         $this->nodes->transform(function (VaultNode $item): VaultNode {
             $item->full_path = $item->ancestorsAndSelf()->get()->last()->full_path;
-            $item->dir_name = preg_replace('/' . $item->name . '$/', '', (string) $item->full_path);
-            if (strlen((string) $item->dir_name) == 1) {
+            $item->dir_name = preg_replace('/'.$item->name.'$/', '', (string) $item->full_path);
+            if (mb_strlen((string) $item->dir_name) === 1) {
                 $item->dir_name = '';
             }
 

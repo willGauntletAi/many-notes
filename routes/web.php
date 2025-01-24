@@ -1,20 +1,20 @@
 <?php
 
-use App\Livewire\Auth\Login;
-use App\Enums\OAuthProviders;
-use App\Livewire\Auth\Register;
-use App\Livewire\Auth\OAuthLogin;
-use Illuminate\Container\Container;
-use App\Livewire\Auth\ResetPassword;
-use App\Livewire\Auth\ForgotPassword;
-use Illuminate\Support\Facades\Route;
+declare(strict_types=1);
+
+use App\Actions\GetAvailableOAuthProviders;
 use App\Http\Controllers\FileController;
+use App\Livewire\Auth\ForgotPassword;
+use App\Livewire\Auth\Login;
+use App\Livewire\Auth\OAuthLogin;
 use App\Livewire\Auth\OAuthLoginCallback;
+use App\Livewire\Auth\Register;
+use App\Livewire\Auth\ResetPassword;
+use App\Livewire\Dashboard\Index as DashboardIndex;
+use App\Livewire\Vault\Index as VaultIndex;
 use App\Livewire\Vault\Last as VaultLast;
 use App\Livewire\Vault\Show as VaultShow;
-use App\Actions\GetAvailableOAuthProviders;
-use App\Livewire\Vault\Index as VaultIndex;
-use App\Livewire\Dashboard\Index as DashboardIndex;
+use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->group(function (): void {
     Route::get('/', DashboardIndex::class)->name('dashboard.index');

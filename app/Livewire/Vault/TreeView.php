@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Vault;
 
 use App\Models\Vault;
-use Livewire\Component;
 use App\Models\VaultNode;
 use Livewire\Attributes\On;
+use Livewire\Component;
 
 #[On('node-updated')]
-class TreeView extends Component
+final class TreeView extends Component
 {
     public Vault $vault;
 

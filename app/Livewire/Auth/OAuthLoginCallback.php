@@ -1,16 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Auth;
 
-use Exception;
 use App\Models\User;
-use Livewire\Component;
-use Illuminate\Support\Str;
+use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
+use Livewire\Component;
 
-class OAuthLoginCallback extends Component
+final class OAuthLoginCallback extends Component
 {
     public function mount($provider): void
     {
@@ -19,12 +21,14 @@ class OAuthLoginCallback extends Component
         } catch (Exception) {
             session()->flash('error', __('An error occurred while authenticating.'));
             $this->redirect('/login', true);
+
             return;
         }
 
-        if (!filter_var($providerUser->getEmail(), FILTER_VALIDATE_EMAIL)) {
+        if (! filter_var($providerUser->getEmail(), FILTER_VALIDATE_EMAIL)) {
             session()->flash('error', __('No email address found.'));
             $this->redirect('/login', true);
+
             return;
         }
 

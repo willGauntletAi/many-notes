@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Modals;
 
-use Livewire\Attributes\On;
-use Livewire\WithFileUploads;
-use Livewire\Attributes\Validate;
 use App\Actions\ProcessImportedVault;
+use Livewire\Attributes\On;
+use Livewire\Attributes\Validate;
+use Livewire\WithFileUploads;
 
 class ImportVault extends Modal
 {

@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Modals;
 
+use App\Livewire\Forms\VaultNodeForm;
 use App\Models\Vault;
 use App\Models\VaultNode;
 use Livewire\Attributes\On;
-use App\Livewire\Forms\VaultNodeForm;
 
 class EditNode extends Modal
 {

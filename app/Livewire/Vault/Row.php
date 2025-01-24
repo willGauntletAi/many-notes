@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Vault;
 
 use App\Livewire\Forms\VaultForm;
 use App\Models\Vault;
 use Livewire\Component;
 
-class Row extends Component
+final class Row extends Component
 {
     public Vault $vault;
 

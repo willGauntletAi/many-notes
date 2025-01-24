@@ -1,25 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Vault;
 
-use Throwable;
+use App\Actions\GetPathFromVaultNode;
+use App\Actions\GetUrlFromVaultNode;
+use App\Actions\GetVaultNodeFromPath;
+use App\Actions\ResolveTwoPaths;
+use App\Livewire\Forms\VaultForm;
+use App\Livewire\Forms\VaultNodeForm;
 use App\Models\Vault;
-use Livewire\Component;
 use App\Models\VaultNode;
+use App\Services\VaultFiles\Note;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
-use App\Actions\ResolveTwoPaths;
-use App\Livewire\Forms\VaultForm;
-use App\Services\VaultFiles\Note;
-use Illuminate\Support\Facades\DB;
-use App\Actions\GetUrlFromVaultNode;
-use App\Actions\GetPathFromVaultNode;
-use App\Actions\GetVaultNodeFromPath;
-use App\Livewire\Forms\VaultNodeForm;
-use Illuminate\Database\Eloquent\Collection;
+use Livewire\Component;
+use Throwable;
 
-class Show extends Component
+final class Show extends Component
 {
     public Vault $vault;
 
@@ -49,8 +51,9 @@ class Show extends Component
         if ((int) $this->selectedFile > 0) {
             $selectedFile = $vault->nodes()->where('id', $this->selectedFile)->first();
 
-            if (!$selectedFile) {
+            if (! $selectedFile) {
                 $this->selectedFile = null;
+
                 return;
             }
 
@@ -62,7 +65,7 @@ class Show extends Component
     {
         $this->authorize('view', $node->vault);
 
-        if (!$node->vault->is($this->vault) || !$node->is_file) {
+        if (! $node->vault->is($this->vault) || ! $node->is_file) {
             return;
         }
 
@@ -70,7 +73,7 @@ class Show extends Component
         $this->selectedFilePath = new GetUrlFromVaultNode()->handle($node);
         $this->nodeForm->setNode($node);
 
-        if ($node->extension == 'md') {
+        if ($node->extension === 'md') {
             $this->dispatch('file-render-markup');
         } else {
             $this->reset('isEditMode');
@@ -95,7 +98,7 @@ class Show extends Component
     {
         $this->authorize('view', $node->vault);
 
-        if ($node->id != $this->selectedFile) {
+        if ($node->id !== $this->selectedFile) {
             return;
         }
 
@@ -121,7 +124,7 @@ class Show extends Component
 
     public function updated($name): void
     {
-        if (!Str::of($name)->startsWith('nodeForm')) {
+        if (! Str::of($name)->startsWith('nodeForm')) {
             return;
         }
 
@@ -130,7 +133,7 @@ class Show extends Component
         if ($this->nodeForm->node->wasChanged(['parent_id', 'name'])) {
             $this->dispatch('node-updated');
 
-            if ($this->nodeForm->node->parent_id == $this->vault->templates_node_id) {
+            if ($this->nodeForm->node->parent_id === $this->vault->templates_node_id) {
                 $this->getTemplates();
             }
         }
@@ -142,6 +145,7 @@ class Show extends Component
 
         if ($this->vault->id !== $node->vault->id || $node->is_file) {
             $this->dispatch('toast', message: __('Something went wrong'), type: 'error');
+
             return;
         }
 
@@ -155,11 +159,12 @@ class Show extends Component
         $this->authorize('update', $this->vault);
         $sameVault = $this->vault->id === $node->vault->id;
         $isNote = $node->is_file && in_array($node->extension, Note::extensions());
-        $isTemplate = $node->parent_id == $this->vault->templates_node_id;
+        $isTemplate = $node->parent_id === $this->vault->templates_node_id;
         $fileSelected = (int) $this->selectedFile > 0;
 
-        if (!$sameVault || !$isNote || !$isTemplate || !$fileSelected || !$this->isEditMode) {
+        if (! $sameVault || ! $isNote || ! $isTemplate || ! $fileSelected || ! $this->isEditMode) {
             $this->dispatch('toast', message: __('Something went wrong'), type: 'error');
+
             return;
         }
 
@@ -175,7 +180,7 @@ class Show extends Component
 
         $content = str_contains($content, '{{content}}')
             ? str_replace('{{content}}', $selectedNode->content, $content)
-            : $content . PHP_EOL . $selectedNode->content;
+            : $content.PHP_EOL.$selectedNode->content;
         $selectedNode->update(['content' => $content]);
         $this->nodeForm->setNode($selectedNode);
         $this->dispatch('toast', message: __('Template inserted'), type: 'success');
@@ -184,7 +189,7 @@ class Show extends Component
     #[On('templates-refresh')]
     public function getTemplates(): void
     {
-        if (!$this->vault->templatesNode) {
+        if (! $this->vault->templatesNode) {
             return;
         }
 
@@ -211,10 +216,10 @@ class Show extends Component
 
             DB::commit();
             $this->dispatch('node-updated');
-            $templateDeleted = !is_null(
+            $templateDeleted = ! is_null(
                 array_find(
                     $this->deletedNodes,
-                    fn($node): bool => $node->parent_id == $this->vault->templates_node_id
+                    fn ($node): bool => $node->parent_id === $this->vault->templates_node_id
                 )
             );
             if ($templateDeleted) {
@@ -228,9 +233,14 @@ class Show extends Component
         }
     }
 
+    public function render()
+    {
+        return view('livewire.vault.show');
+    }
+
     private function deleteFile(VaultNode $node): void
     {
-        if ($this->selectedFile == $node->id) {
+        if ($this->selectedFile === $node->id) {
             $this->closeFile();
         }
 
@@ -250,10 +260,5 @@ class Show extends Component
 
         $this->deletedNodes[] = $node;
         $node->delete();
-    }
-
-    public function render()
-    {
-        return view('livewire.vault.show');
     }
 }

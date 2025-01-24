@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Layout;
 
-use Livewire\Component;
-use Illuminate\Support\Facades\Auth;
-use App\Livewire\Forms\EditProfileForm;
-use Illuminate\Support\Facades\Session;
 use App\Livewire\Forms\EditPasswordForm;
+use App\Livewire\Forms\EditProfileForm;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
+use Livewire\Component;
 
-class UserMenu extends Component
+final class UserMenu extends Component
 {
     public EditProfileForm $profileForm;
 

@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Auth;
 
-use Livewire\Component;
 use App\Livewire\Forms\RegisterForm;
+use Livewire\Component;
 
-class Register extends Component
+final class Register extends Component
 {
     public RegisterForm $form;
 

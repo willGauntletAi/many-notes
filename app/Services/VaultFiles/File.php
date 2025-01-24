@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\VaultFiles;
 
 class File
 {
     public static function extensionsWithDots(array $extensions): array
     {
-        return array_map(fn(string $value): string => '.' . $value, $extensions);
+        return array_map(fn (string $value): string => '.'.$value, $extensions);
     }
 }

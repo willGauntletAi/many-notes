@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Auth;
 
-use Livewire\Component;
 use App\Livewire\Forms\ForgotPasswordForm;
+use Livewire\Component;
 
-class ForgotPassword extends Component
+final class ForgotPassword extends Component
 {
     public ForgotPasswordForm $form;
 

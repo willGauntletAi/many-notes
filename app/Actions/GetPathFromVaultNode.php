@@ -1,15 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions;
 
 use App\Models\VaultNode;
 
-class GetPathFromVaultNode
+final class GetPathFromVaultNode
 {
     public function handle(VaultNode $node, bool $includeSelf = true): string
     {
         $relativePath = $node->parent ?
-            $node->parent->ancestorsAndSelf->last()->full_path . '/' :
+            $node->parent->ancestorsAndSelf->last()->full_path.'/' :
             '';
 
         $path = sprintf(
@@ -20,7 +22,7 @@ class GetPathFromVaultNode
         );
 
         if ($includeSelf) {
-            $path .= $node->name . ($node->is_file ? '.' . $node->extension : '');
+            $path .= $node->name.($node->is_file ? '.'.$node->extension : '');
         }
 
         return $path;

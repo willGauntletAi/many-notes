@@ -1,14 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions;
 
-use ZipArchive;
 use App\Services\VaultFile;
 use App\Services\VaultFiles\Note;
-use App\Actions\GetPathFromVaultNode;
 use Illuminate\Support\Facades\Storage;
+use ZipArchive;
 
-class ProcessImportedVault
+final class ProcessImportedVault
 {
     public function handle(string $fileName, string $filePath): void
     {
@@ -35,7 +36,7 @@ class ProcessImportedVault
             );
             natcasesort($vaults);
             $vaultName .= count($vaults) && preg_match('/-(\d+)$/', (string) end($vaults), $matches) === 1 ?
-                '-' . ((int) $matches[1] + 1) :
+                '-'.((int) $matches[1] + 1) :
                 '-1';
         }
 
@@ -49,23 +50,23 @@ class ProcessImportedVault
         for ($i = 0, $zipCount = $zip->count(); $i < $zipCount; $i++) {
             $entryName = $zip->getNameIndex($i);
 
-            $isFile = !str_ends_with($entryName, '/');
+            $isFile = ! str_ends_with($entryName, '/');
             $flags = $isFile ? PATHINFO_FILENAME : PATHINFO_BASENAME;
             $name = pathinfo($entryName, $flags);
             $extension = null;
             $content = null;
 
-            if (!$isFile) {
+            if (! $isFile) {
                 // ZipArchive folder paths end with a / that should
                 // be removed in order for pathinfo() return the correct dirname
-                $entryDirName = rtrim($entryName, '/');
+                $entryDirName = mb_rtrim($entryName, '/');
                 $entryParentDirName = pathinfo($entryDirName, PATHINFO_DIRNAME);
                 $parentId = $nodeIds[$entryParentDirName];
             } else {
                 ['dirname' => $entryDirName, 'extension' => $extension] = pathinfo($entryName);
                 $parentId = $nodeIds[$entryDirName];
 
-                if (!in_array($extension, VaultFile::extensions())) {
+                if (! in_array($extension, VaultFile::extensions())) {
                     continue;
                 }
 
@@ -90,7 +91,7 @@ class ProcessImportedVault
                 Storage::disk('local')->makeDirectory($relativePath);
             }
 
-            if (!array_key_exists($entryDirName, $nodeIds)) {
+            if (! array_key_exists($entryDirName, $nodeIds)) {
                 $nodeIds[$entryDirName] = $node->id;
             }
         }

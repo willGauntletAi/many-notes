@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions;
 
 use App\Models\Vault;
 
-class GetPathFromVault
+final class GetPathFromVault
 {
     public function handle(Vault $vault): string
     {

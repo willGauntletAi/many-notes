@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Forms;
 
-use Livewire\Form;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Validate;
+use Livewire\Form;
 
-class EditProfileForm extends Form
+final class EditProfileForm extends Form
 {
     #[Validate]
     public string $name;

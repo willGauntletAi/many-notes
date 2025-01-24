@@ -1,13 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Observers;
 
-use App\Models\VaultNode;
-use App\Actions\GetPathFromVault;
 use App\Actions\GetPathFromVaultNode;
+use App\Models\VaultNode;
 use Illuminate\Support\Facades\Storage;
 
-class VaultNodeObserver
+final class VaultNodeObserver
 {
     /**
      * Handle the VaultNode "creating" event.
@@ -34,25 +35,25 @@ class VaultNodeObserver
     {
         $relativePath = new GetPathFromVaultNode()->handle($node, false);
 
-        if (Storage::disk('local')->exists($relativePath . $node->name)) {
+        if (Storage::disk('local')->exists($relativePath.$node->name)) {
             abort(500);
         }
 
         if ($node->isDirty('name')) {
             $paths = [
-                $relativePath . $node->getOriginal('name'),
-                $relativePath . $node->name,
+                $relativePath.$node->getOriginal('name'),
+                $relativePath.$node->name,
             ];
             if ($node->is_file) {
-                $paths[0] .= '.' . $node->extension;
-                $paths[1] .= '.' . $node->extension;
+                $paths[0] .= '.'.$node->extension;
+                $paths[1] .= '.'.$node->extension;
             }
             Storage::disk('local')->move(...$paths);
         }
 
         if ($node->is_file) {
             Storage::disk('local')->put(
-                $relativePath . $node->name . '.' . $node->extension,
+                $relativePath.$node->name.'.'.$node->extension,
                 $node->content ?? '',
             );
         }

@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Forms;
 
-use Livewire\Form;
-use Livewire\Attributes\Validate;
 use Illuminate\Support\Facades\Password;
+use Livewire\Attributes\Validate;
+use Livewire\Form;
 
-class ForgotPasswordForm extends Form
+final class ForgotPasswordForm extends Form
 {
     #[Validate('required|string|email')]
     public string $email = '';
@@ -25,7 +27,7 @@ class ForgotPasswordForm extends Form
             $this->only('email')
         );
 
-        if ($status != Password::RESET_LINK_SENT) {
+        if ($status !== Password::RESET_LINK_SENT) {
             $this->addError('email', __($status));
 
             return;

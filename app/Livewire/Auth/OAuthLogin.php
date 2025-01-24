@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Auth;
 
-use Livewire\Component;
 use Laravel\Socialite\Facades\Socialite;
+use Livewire\Component;
 
-class OAuthLogin extends Component
+final class OAuthLogin extends Component
 {
     public function mount($provider): void
     {

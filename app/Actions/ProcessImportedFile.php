@@ -1,22 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions;
 
 use App\Models\Vault;
 use App\Models\VaultNode;
-use Illuminate\Http\File;
 use App\Services\VaultFile;
 use App\Services\VaultFiles\Note;
-use App\Actions\GetPathFromVaultNode;
+use Illuminate\Http\File;
 use Illuminate\Support\Facades\Storage;
 
-class ProcessImportedFile
+final class ProcessImportedFile
 {
     public function handle(Vault $vault, VaultNode $parent, string $fileName, string $filePath): void
     {
         ['filename' => $name, 'extension' => $extension] = pathinfo($fileName);
 
-        if (!in_array($extension, VaultFile::extensions())) {
+        if (! in_array($extension, VaultFile::extensions())) {
             abort(400);
         }
 
@@ -47,7 +48,7 @@ class ProcessImportedFile
             );
             natcasesort($nodes);
             $name .= count($nodes) && preg_match('/-(\d+)$/', (string) end($nodes), $matches) === 1 ?
-                '-' . ((int) $matches[1] + 1) :
+                '-'.((int) $matches[1] + 1) :
                 '-1';
         }
 

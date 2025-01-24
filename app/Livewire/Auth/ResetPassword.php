@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Auth;
 
-use Livewire\Component;
 use App\Livewire\Forms\ResetPasswordForm;
+use Livewire\Component;
 
-class ResetPassword extends Component
+final class ResetPassword extends Component
 {
     public ResetPasswordForm $form;
 
@@ -20,7 +22,7 @@ class ResetPassword extends Component
 
     public function send(): void
     {
-        if (!$this->form->resetPassword()) {
+        if (! $this->form->resetPassword()) {
             return;
         }
 

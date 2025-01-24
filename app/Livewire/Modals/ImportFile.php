@@ -1,15 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Modals;
 
+use App\Actions\ProcessImportedFile;
 use App\Models\Vault;
 use App\Models\VaultNode;
 use App\Services\VaultFile;
 use Illuminate\Support\Arr;
 use Livewire\Attributes\On;
-use Livewire\WithFileUploads;
 use Livewire\Attributes\Validate;
-use App\Actions\ProcessImportedFile;
+use Livewire\WithFileUploads;
 
 class ImportFile extends Modal
 {
@@ -31,7 +33,7 @@ class ImportFile extends Modal
         return [
             'file' => [
                 'required',
-                'mimes:' . Arr::join(VaultFile::extensions(), ','),
+                'mimes:'.Arr::join(VaultFile::extensions(), ','),
             ],
         ];
     }

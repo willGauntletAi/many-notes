@@ -1,17 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
-use App\Models\Vault;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
-use App\Actions\ResolveTwoPaths;
-use Illuminate\Support\Facades\Gate;
 use App\Actions\GetPathFromVaultNode;
 use App\Actions\GetVaultNodeFromPath;
+use App\Actions\ResolveTwoPaths;
+use App\Models\Vault;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
-class FileController extends Controller
+final class FileController extends Controller
 {
     /**
      * Show the file for a given user.
@@ -20,16 +22,16 @@ class FileController extends Controller
     {
         Gate::authorize('view', $request->vault);
 
-        if (!$request->has('path')) {
+        if (! $request->has('path')) {
             abort(404);
         }
 
         $path = $request->path;
 
-        if (!Str::of($request->path)->startsWith('/') && $request->has('node')) {
+        if (! Str::of($request->path)->startsWith('/') && $request->has('node')) {
             $node = $vault->nodes()->findOrFail($request->node);
 
-            if ($node->vault_id != $vault->id) {
+            if ($node->vault_id !== $vault->id) {
                 abort(404);
             }
 
@@ -42,6 +44,7 @@ class FileController extends Controller
         $absolutePath = Storage::disk('local')->path($relativePath);
 
         ob_end_clean();
+
         return response()->file($absolutePath);
     }
 }

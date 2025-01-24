@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
 
     /*
@@ -67,7 +69,7 @@ return [
         'disk' => null,        // Example: 'local', 's3'              | Default: 'default'
         'rules' => [
             'file',
-            'max:' . Monolog\Utils::expandIniShorthandBytes(ini_get('upload_max_filesize')),
+            'max:'.Monolog\Utils::expandIniShorthandBytes(ini_get('upload_max_filesize')),
         ],       // Example: ['file', 'mimes:png,jpg']  | Default: ['required', 'file', 'max:12288'] (12MB)
         'directory' => null,   // Example: 'tmp'                      | Default: 'livewire-tmp'
         'middleware' => null,  // Example: 'throttle:5,1'             | Default: 'throttle:60,1'
