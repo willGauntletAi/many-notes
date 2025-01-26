@@ -36,7 +36,7 @@ final class Index extends Component
     public function export(Vault $vault): ?BinaryFileResponse
     {
         $this->authorize('view', $vault);
-        $zip = new ZipArchive;
+        $zip = new ZipArchive();
         $zipFileName = $vault->id . '.zip';
         $nodes = $vault->nodes()->whereNull('parent_id')->get();
 

@@ -17,7 +17,7 @@ final class Image extends File
 
     /**
      * Get the extensions for the image files.
-     * 
+     *
      * @return list<string>
      */
     public static function extensions(bool $withDots = false): array

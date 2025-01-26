@@ -13,7 +13,7 @@ final class Pdf extends File
 
     /**
      * Get the extensions for the pdf files.
-     * 
+     *
      * @return list<string>
      */
     public static function extensions(bool $withDots = false): array

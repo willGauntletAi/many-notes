@@ -45,7 +45,7 @@ class SearchNode extends Modal
             ->where('vault_id', $this->vault->id)
             ->where('is_file', true)
             ->when(mb_strlen($this->search), function (Builder $query): void {
-                $query->where('name', 'like', '%'.$this->search.'%');
+                $query->where('name', 'like', '%' . $this->search . '%');
             })
             ->orderByDesc('updated_at')
             ->limit(5)
@@ -58,7 +58,7 @@ class SearchNode extends Modal
              * @phpstan-ignore-next-line larastan.noUnnecessaryCollectionCall
              */
             $fullPath = $node->ancestorsAndSelf()->get()->last()->full_path;
-            $dirName = preg_replace('/'.$node->name.'$/', '', $fullPath);
+            $dirName = preg_replace('/' . $node->name . '$/', '', $fullPath);
 
             $this->nodes[] = [
                 'id' => $node->id,

@@ -54,7 +54,7 @@ class MarkdownEditorSearch extends Modal
                 $query->whereIn('extension', Image::extensions());
             })
             ->when(mb_strlen($this->search), function (Builder $query): void {
-                $query->where('name', 'like', '%'.$this->search.'%');
+                $query->where('name', 'like', '%' . $this->search . '%');
             })
             ->orderByDesc('updated_at')
             ->limit(5)
@@ -68,7 +68,7 @@ class MarkdownEditorSearch extends Modal
              */
             $fullPath = $node->ancestorsAndSelf()->get()->last()->full_path;
             $fullPathEncoded = preg_replace('/\s/', '%20', $fullPath);
-            $dirName = preg_replace('/'.$node->name.'$/', '', $fullPath);
+            $dirName = preg_replace('/' . $node->name . '$/', '', $fullPath);
 
             $this->nodes[] = [
                 'id' => $node->id,

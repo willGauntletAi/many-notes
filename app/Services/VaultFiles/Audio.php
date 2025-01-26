@@ -14,7 +14,7 @@ final class Audio extends File
 
     /**
      * Get the extensions for the audio files.
-     * 
+     *
      * @return list<string>
      */
     public static function extensions(bool $withDots = false): array

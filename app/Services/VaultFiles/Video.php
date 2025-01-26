@@ -14,7 +14,7 @@ final class Video extends File
 
     /**
      * Get the extensions for the video files.
-     * 
+     *
      * @return list<string>
      */
     public static function extensions(bool $withDots = false): array

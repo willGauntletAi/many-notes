@@ -14,7 +14,7 @@ final class Note extends File
 
     /**
      * Get the extensions for the note files.
-     * 
+     *
      * @return list<string>
      */
     public static function extensions(bool $withDots = false): array

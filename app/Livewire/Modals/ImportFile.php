@@ -39,7 +39,7 @@ class ImportFile extends Modal
         return [
             'file' => [
                 'required',
-                'mimes:'.Arr::join(VaultFile::extensions(), ','),
+                'mimes:' . Arr::join(VaultFile::extensions(), ','),
             ],
         ];
     }
