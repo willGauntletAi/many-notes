@@ -225,7 +225,7 @@ final class Show extends Component
             $templateDeleted = !is_null(
                 array_find(
                     $this->deletedNodes,
-                    fn ($node): bool => $node->parent_id === $this->vault->templates_node_id
+                    fn (VaultNode $node): bool => $node->parent_id === $this->vault->templates_node_id,
                 )
             );
             if ($templateDeleted) {

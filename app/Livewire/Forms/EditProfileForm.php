@@ -27,7 +27,7 @@ final class EditProfileForm extends Form
             'name' => [
                 'required',
                 'string',
-                'max:255'
+                'max:255',
             ],
             'email' => [
                 'required',
@@ -35,7 +35,7 @@ final class EditProfileForm extends Form
                 'lowercase',
                 'email',
                 'max:255',
-                Rule::unique(User::class)->ignore(auth()->user())
+                Rule::unique(User::class)->ignore(auth()->user()),
             ],
         ];
     }

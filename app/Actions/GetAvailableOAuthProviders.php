@@ -14,7 +14,7 @@ final class GetAvailableOAuthProviders
         return array_filter(
             OAuthProviders::cases(),
             /** @phpstan-ignore-next-line */
-            fn ($provider) => config("services.{$provider->value}.client_id"),
+            fn (OAuthProviders $provider): ?string => config("services.{$provider->value}.client_id"),
         );
     }
 }
