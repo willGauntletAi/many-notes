@@ -19,7 +19,7 @@ final class ProcessImportedFile
         $name = $pathInfo['filename'];
         $extension = $pathInfo['extension'] ?? '';
 
-        if (! in_array($extension, VaultFile::extensions())) {
+        if (!in_array($extension, VaultFile::extensions())) {
             abort(400);
         }
 
@@ -51,7 +51,7 @@ final class ProcessImportedFile
             );
             natcasesort($nodes);
             $name .= count($nodes) && preg_match('/-(\d+)$/', end($nodes), $matches) === 1 ?
-                '-'.((int) $matches[1] + 1) :
+                '-' . ((int) $matches[1] + 1) :
                 '-1';
         }
 

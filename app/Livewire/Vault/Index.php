@@ -37,7 +37,7 @@ final class Index extends Component
     {
         $this->authorize('view', $vault);
         $zip = new ZipArchive;
-        $zipFileName = $vault->id.'.zip';
+        $zipFileName = $vault->id . '.zip';
         $nodes = $vault->nodes()->whereNull('parent_id')->get();
 
         if ($zip->open(public_path($zipFileName), ZipArchive::CREATE) !== true) {
@@ -49,7 +49,7 @@ final class Index extends Component
         $this->exportNodes($zip, $nodes);
         $zip->close();
 
-        return response()->download(public_path($zipFileName), $vault->name.'.zip')->deleteFileAfterSend(true);
+        return response()->download(public_path($zipFileName), $vault->name . '.zip')->deleteFileAfterSend(true);
     }
 
     public function delete(Vault $vault): void

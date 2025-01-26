@@ -25,7 +25,7 @@ final class GetPathFromVaultNode
              * @phpstan-ignore-next-line larastan.noUnnecessaryCollectionCall
              */
             $fullPath = $node->parent->ancestorsAndSelf()->get()->last()->full_path;
-            $relativePath = $fullPath.'/';
+            $relativePath = $fullPath . '/';
         }
 
         $path = sprintf(
@@ -36,7 +36,7 @@ final class GetPathFromVaultNode
         );
 
         if ($includeSelf) {
-            $path .= $node->name.($node->is_file ? '.'.$node->extension : '');
+            $path .= $node->name . ($node->is_file ? '.' . $node->extension : '');
         }
 
         return $path;

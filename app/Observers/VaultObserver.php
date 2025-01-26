@@ -17,11 +17,11 @@ final class VaultObserver
     {
         $relativePath = new GetPathFromUser()->handle();
 
-        if (Storage::disk('local')->exists($relativePath.$vault->name)) {
+        if (Storage::disk('local')->exists($relativePath . $vault->name)) {
             abort(500);
         }
 
-        Storage::disk('local')->makeDirectory($relativePath.$vault->name);
+        Storage::disk('local')->makeDirectory($relativePath . $vault->name);
     }
 
     /**
@@ -29,21 +29,21 @@ final class VaultObserver
      */
     public function updating(Vault $vault): void
     {
-        if (! $vault->isDirty('name')) {
+        if (!$vault->isDirty('name')) {
             return;
         }
 
         $relativePath = new GetPathFromUser()->handle();
 
-        if (Storage::disk('local')->exists($relativePath.$vault->name)) {
+        if (Storage::disk('local')->exists($relativePath . $vault->name)) {
             abort(500);
         }
 
         /** @var string $originalName */
         $originalName = $vault->getOriginal('name');
         Storage::disk('local')->move(
-            $relativePath.$originalName,
-            $relativePath.$vault->name,
+            $relativePath . $originalName,
+            $relativePath . $vault->name,
         );
     }
 
@@ -53,6 +53,6 @@ final class VaultObserver
     public function deleting(Vault $vault): void
     {
         $relativePath = new GetPathFromUser()->handle();
-        Storage::disk('local')->deleteDirectory($relativePath.$vault->name);
+        Storage::disk('local')->deleteDirectory($relativePath . $vault->name);
     }
 }

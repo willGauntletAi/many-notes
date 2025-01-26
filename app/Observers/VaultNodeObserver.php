@@ -35,7 +35,7 @@ final class VaultNodeObserver
     {
         $relativePath = new GetPathFromVaultNode()->handle($node, false);
 
-        if (Storage::disk('local')->exists($relativePath.$node->name)) {
+        if (Storage::disk('local')->exists($relativePath . $node->name)) {
             abort(500);
         }
 
@@ -43,19 +43,19 @@ final class VaultNodeObserver
             /** @var string $originalName */
             $originalName = $node->getOriginal('name');
             $paths = [
-                $relativePath.$originalName,
-                $relativePath.$node->name,
+                $relativePath . $originalName,
+                $relativePath . $node->name,
             ];
             if ($node->is_file) {
-                $paths[0] .= '.'.$node->extension;
-                $paths[1] .= '.'.$node->extension;
+                $paths[0] .= '.' . $node->extension;
+                $paths[1] .= '.' . $node->extension;
             }
             Storage::disk('local')->move(...$paths);
         }
 
         if ($node->is_file) {
             Storage::disk('local')->put(
-                $relativePath.$node->name.'.'.$node->extension,
+                $relativePath . $node->name . '.' . $node->extension,
                 $node->content ?? '',
             );
         }

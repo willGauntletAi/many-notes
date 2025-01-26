@@ -54,7 +54,7 @@ final class Show extends Component
         if ((int) $this->selectedFile > 0) {
             $selectedFile = $vault->nodes()->where('id', $this->selectedFile)->first();
 
-            if (! $selectedFile) {
+            if (!$selectedFile) {
                 $this->selectedFile = null;
 
                 return;
@@ -68,7 +68,7 @@ final class Show extends Component
     {
         $this->authorize('view', $node->vault);
 
-        if (! $node->vault || ! $node->vault->is($this->vault) || ! $node->is_file) {
+        if (!$node->vault || !$node->vault->is($this->vault) || !$node->is_file) {
             return;
         }
 
@@ -132,7 +132,7 @@ final class Show extends Component
 
     public function updated(string $name): void
     {
-        if (! str_starts_with($name, 'nodeForm')) {
+        if (!str_starts_with($name, 'nodeForm')) {
             return;
         }
 
@@ -151,7 +151,7 @@ final class Show extends Component
     {
         $this->authorize('update', $node->vault);
 
-        if (! $node->vault || $this->vault->id !== $node->vault->id || $node->is_file) {
+        if (!$node->vault || $this->vault->id !== $node->vault->id || $node->is_file) {
             $this->dispatch('toast', message: __('Something went wrong'), type: 'error');
 
             return;
@@ -170,7 +170,7 @@ final class Show extends Component
         $isTemplate = $node->parent_id === $this->vault->templates_node_id;
         $fileSelected = (int) $this->selectedFile > 0;
 
-        if (! $sameVault || ! $isNote || ! $isTemplate || ! $fileSelected || ! $this->isEditMode) {
+        if (!$sameVault || !$isNote || !$isTemplate || !$fileSelected || !$this->isEditMode) {
             $this->dispatch('toast', message: __('Something went wrong'), type: 'error');
 
             return;
@@ -186,7 +186,7 @@ final class Show extends Component
         );
         $content = str_contains($content, '{{content}}')
             ? str_replace('{{content}}', (string) $selectedNode->content, $content)
-            : $content.PHP_EOL.$selectedNode->content;
+            : $content . PHP_EOL . $selectedNode->content;
         $selectedNode->update(['content' => $content]);
         $this->nodeForm->setNode($selectedNode);
         $this->dispatch('toast', message: __('Template inserted'), type: 'success');
@@ -195,7 +195,7 @@ final class Show extends Component
     #[On('templates-refresh')]
     public function getTemplates(): void
     {
-        if (! $this->vault->templatesNode) {
+        if (!$this->vault->templatesNode) {
             return;
         }
 
@@ -222,7 +222,7 @@ final class Show extends Component
 
             DB::commit();
             $this->dispatch('node-updated');
-            $templateDeleted = ! is_null(
+            $templateDeleted = !is_null(
                 array_find(
                     $this->deletedNodes,
                     fn ($node): bool => $node->parent_id === $this->vault->templates_node_id

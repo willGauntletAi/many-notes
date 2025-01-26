@@ -36,7 +36,7 @@ final class ProcessImportedVault
             );
             natcasesort($vaults);
             $vaultName .= count($vaults) && preg_match('/-(\d+)$/', end($vaults), $matches) === 1 ?
-                '-'.((int) $matches[1] + 1) :
+                '-' . ((int) $matches[1] + 1) :
                 '-1';
         }
 
@@ -50,17 +50,17 @@ final class ProcessImportedVault
         for ($i = 0, $zipCount = $zip->count(); $i < $zipCount; $i++) {
             $entryName = $zip->getNameIndex($i);
 
-            if (! $entryName) {
+            if (!$entryName) {
                 continue;
             }
 
-            $isFile = ! str_ends_with($entryName, '/');
+            $isFile = !str_ends_with($entryName, '/');
             $flags = $isFile ? PATHINFO_FILENAME : PATHINFO_BASENAME;
             $name = pathinfo($entryName, $flags);
             $extension = null;
             $content = null;
 
-            if (! $isFile) {
+            if (!$isFile) {
                 // ZipArchive folder paths end with a / that should
                 // be removed in order for pathinfo() return the correct dirname
                 $entryDirName = mb_rtrim($entryName, '/');
@@ -72,7 +72,7 @@ final class ProcessImportedVault
                 $extension = $pathInfo['extension'] ?? '';
                 $parentId = $nodeIds[$entryDirName];
 
-                if (! in_array($extension, VaultFile::extensions())) {
+                if (!in_array($extension, VaultFile::extensions())) {
                     continue;
                 }
 
@@ -99,7 +99,7 @@ final class ProcessImportedVault
                 Storage::disk('local')->makeDirectory($relativePath);
             }
 
-            if (! array_key_exists($entryDirName, $nodeIds)) {
+            if (!array_key_exists($entryDirName, $nodeIds)) {
                 $nodeIds[$entryDirName] = $node->id;
             }
         }

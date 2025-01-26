@@ -23,14 +23,14 @@ final class FileController extends Controller
     {
         Gate::authorize('view', $request->vault);
 
-        if (! $request->has('path')) {
+        if (!$request->has('path')) {
             abort(404);
         }
 
         /** @var string $path */
         $path = $request->path;
 
-        if (! str_starts_with($path, '/') && $request->has('node')) {
+        if (!str_starts_with($path, '/') && $request->has('node')) {
             /** @var VaultNode $node */
             $node = $vault->nodes()->findOrFail($request->node);
 

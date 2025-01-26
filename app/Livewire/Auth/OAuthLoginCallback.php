@@ -25,7 +25,7 @@ final class OAuthLoginCallback extends Component
             return;
         }
 
-        if (! filter_var($providerUser->getEmail(), FILTER_VALIDATE_EMAIL)) {
+        if (!filter_var($providerUser->getEmail(), FILTER_VALIDATE_EMAIL)) {
             session()->flash('error', __('No email address found.'));
             $this->redirect('/login', true);
 

@@ -24,7 +24,7 @@ final class ResetPassword extends Component
 
     public function send(): void
     {
-        if (! $this->form->resetPassword()) {
+        if (!$this->form->resetPassword()) {
             return;
         }
 
