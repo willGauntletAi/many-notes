@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Livewire\Modals;
 
-use App\Livewire\Forms\VaultNodeForm;
 use App\Models\Vault;
 use App\Models\VaultNode;
 use Livewire\Attributes\On;
+use Illuminate\Contracts\View\View;
+use App\Livewire\Forms\VaultNodeForm;
+use Illuminate\Contracts\View\Factory;
 
 class EditNode extends Modal
 {
@@ -39,7 +41,7 @@ class EditNode extends Modal
         $this->dispatch('toast', message: $message, type: 'success');
     }
 
-    public function render()
+    public function render(): Factory|View
     {
         return view('livewire.modals.editNode');
     }

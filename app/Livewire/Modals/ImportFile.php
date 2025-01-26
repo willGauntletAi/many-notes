@@ -4,14 +4,17 @@ declare(strict_types=1);
 
 namespace App\Livewire\Modals;
 
-use App\Actions\ProcessImportedFile;
 use App\Models\Vault;
 use App\Models\VaultNode;
 use App\Services\VaultFile;
 use Illuminate\Support\Arr;
 use Livewire\Attributes\On;
-use Livewire\Attributes\Validate;
 use Livewire\WithFileUploads;
+use Livewire\Attributes\Validate;
+use Illuminate\Contracts\View\View;
+use App\Actions\ProcessImportedFile;
+use Illuminate\Contracts\View\Factory;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class ImportFile extends Modal
 {
@@ -26,8 +29,11 @@ class ImportFile extends Modal
     public string $fileMimes;
 
     #[Validate]
-    public $file;
+    public ?TemporaryUploadedFile $file = null;
 
+    /**
+     * @return array<string, list<string>>
+     */
     public function rules(): array
     {
         return [
@@ -47,7 +53,7 @@ class ImportFile extends Modal
     }
 
     #[On('open-modal')]
-    public function open(?VaultNode $parent = null): void
+    public function open(VaultNode $parent): void
     {
         $this->parent = $parent;
 
@@ -66,6 +72,11 @@ class ImportFile extends Modal
     public function updatedFile(): void
     {
         $this->validate();
+
+        if (is_null($this->file)) {
+            return;
+        }
+
         $fileName = $this->file->getClientOriginalName();
         $filePath = $this->file->getRealPath();
         new ProcessImportedFile()->handle($this->vault, $this->parent, $fileName, $filePath);
@@ -74,7 +85,7 @@ class ImportFile extends Modal
         $this->dispatch('toast', message: __('File imported'), type: 'success');
     }
 
-    public function render()
+    public function render(): Factory|View
     {
         return view('livewire.modals.importFile');
     }

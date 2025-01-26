@@ -6,6 +6,8 @@ namespace App\Livewire\Vault;
 
 use App\Livewire\Forms\VaultForm;
 use App\Models\Vault;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Livewire\Component;
 
 final class Row extends Component
@@ -29,7 +31,7 @@ final class Row extends Component
         $this->dispatch('toast', message: __('Vault edited'), type: 'success');
     }
 
-    public function render()
+    public function render(): Factory|View
     {
         return view('livewire.vault.row');
     }

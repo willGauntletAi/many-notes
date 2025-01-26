@@ -6,8 +6,11 @@ namespace App\Livewire\Vault;
 
 use App\Models\Vault;
 use App\Models\VaultNode;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Livewire\Attributes\On;
 use Livewire\Component;
+use Staudenmeir\LaravelAdjacencyList\Eloquent\Builder;
 
 #[On('node-updated')]
 final class TreeView extends Component
@@ -25,9 +28,9 @@ final class TreeView extends Component
         HTML;
     }
 
-    public function render()
+    public function render(): Factory|View
     {
-        $constraint = function ($query): void {
+        $constraint = function (Builder $query): void {
             $query->whereNull('parent_id')->where('vault_id', $this->vault->id);
         };
 

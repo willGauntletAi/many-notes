@@ -40,8 +40,10 @@ final class VaultNodeObserver
         }
 
         if ($node->isDirty('name')) {
+            /** @var string $originalName */
+            $originalName = $node->getOriginal('name');
             $paths = [
-                $relativePath.$node->getOriginal('name'),
+                $relativePath.$originalName,
                 $relativePath.$node->name,
             ];
             if ($node->is_file) {

@@ -6,7 +6,6 @@ namespace App\Models;
 
 use App\Observers\VaultNodeObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -15,13 +14,12 @@ use Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships;
 #[ObservedBy([VaultNodeObserver::class])]
 final class VaultNode extends Model
 {
-    use HasFactory;
     use HasRecursiveRelationships;
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var string[]
+     * @var list<string>
      */
     protected $fillable = [
         'parent_id',
@@ -33,6 +31,8 @@ final class VaultNode extends Model
 
     /**
      * Get the associated vault.
+     *
+     * @return BelongsTo<Vault, $this>
      */
     public function vault(): BelongsTo
     {
@@ -41,12 +41,19 @@ final class VaultNode extends Model
 
     /**
      * Get the nodes for the vault.
+     *
+     * @return HasMany<VaultNode, $this>
      */
     public function childs(): HasMany
     {
         return $this->hasMany(self::class, 'parent_id');
     }
 
+    /**
+     * Get the custom paths for the model.
+     *
+     * @return list<array{name: string, column: string, separator: string, reverse: bool}>
+     */
     public function getCustomPaths(): array
     {
         return [

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Livewire\Auth;
 
 use App\Livewire\Forms\ForgotPasswordForm;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Livewire\Component;
 
 final class ForgotPassword extends Component
@@ -16,7 +18,7 @@ final class ForgotPassword extends Component
         $this->form->sendPasswordResetLink();
     }
 
-    public function render()
+    public function render(): Factory|View
     {
         return view('livewire.auth.forgot-password');
     }

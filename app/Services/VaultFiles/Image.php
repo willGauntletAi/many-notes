@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace App\Services\VaultFiles;
 
-class Image extends File
+final class Image extends File
 {
+    /** @var list<string> */
     private static array $extensions = [
         'jpg',
         'jpeg',
@@ -14,6 +15,11 @@ class Image extends File
         'webp',
     ];
 
+    /**
+     * Get the extensions for the image files.
+     * 
+     * @return list<string>
+     */
     public static function extensions(bool $withDots = false): array
     {
         return $withDots ? parent::extensionsWithDots(self::$extensions) : self::$extensions;

@@ -6,6 +6,8 @@ namespace App\Livewire\Layout;
 
 use App\Livewire\Forms\EditPasswordForm;
 use App\Livewire\Forms\EditProfileForm;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Livewire\Component;
@@ -23,6 +25,7 @@ final class UserMenu extends Component
     public function mount(): void
     {
         $this->profileForm->setUser();
+        /** @var array{root: array{pretty_version: string}} $composerInfo */
         $composerInfo = require base_path('vendor/composer/installed.php');
         $this->appVersion = $composerInfo['root']['pretty_version'];
         $this->githubUrl = 'https://github.com/brufdev/many-notes';
@@ -55,7 +58,7 @@ final class UserMenu extends Component
         $this->redirect(route('login', absolute: false), navigate: true);
     }
 
-    public function render()
+    public function render(): Factory|View
     {
         return view('livewire.layout.userMenu');
     }

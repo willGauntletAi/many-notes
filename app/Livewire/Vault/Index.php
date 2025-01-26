@@ -6,8 +6,11 @@ namespace App\Livewire\Vault;
 
 use App\Actions\GetPathFromVaultNode;
 use App\Livewire\Forms\VaultForm;
+use App\Models\User;
 use App\Models\Vault;
 use App\Models\VaultNode;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -21,7 +24,7 @@ final class Index extends Component
 {
     public VaultForm $form;
 
-    public $showCreateModal = false;
+    public bool $showCreateModal = false;
 
     public function create(): void
     {
@@ -37,7 +40,7 @@ final class Index extends Component
         $zipFileName = $vault->id.'.zip';
         $nodes = $vault->nodes()->whereNull('parent_id')->get();
 
-        if ($zip->open(public_path($zipFileName), ZipArchive::CREATE) === false) {
+        if ($zip->open(public_path($zipFileName), ZipArchive::CREATE) !== true) {
             $this->dispatch('toast', message: __('Something went wrong'), type: 'error');
 
             return null;
@@ -67,13 +70,19 @@ final class Index extends Component
         }
     }
 
-    public function render()
+    public function render(): Factory|View
     {
+        /** @var User $currentUser */
+        $currentUser = auth()->user();
+
         return view('livewire.vault.index', [
-            'vaults' => auth()->user()->vaults()->orderBy('updated_at', 'DESC')->get(),
+            'vaults' => $currentUser->vaults()->orderBy('updated_at', 'DESC')->get(),
         ]);
     }
 
+    /**
+     * @param  Collection<int, VaultNode>  $nodes
+     */
     private function exportNodes(ZipArchive &$zip, Collection $nodes, string $path = ''): void
     {
         foreach ($nodes as $node) {
@@ -81,7 +90,7 @@ final class Index extends Component
 
             if ($node->is_file) {
                 if ($node->extension === 'md') {
-                    $zip->addFromString("$nodePath.$node->extension", $node->content);
+                    $zip->addFromString("$nodePath.$node->extension", (string) $node->content);
                 } else {
                     $relativePath = new GetPathFromVaultNode()->handle($node);
                     $filePath = Storage::disk('local')->path($relativePath);

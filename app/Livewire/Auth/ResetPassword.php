@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Livewire\Auth;
 
 use App\Livewire\Forms\ResetPasswordForm;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Livewire\Component;
 
 final class ResetPassword extends Component
@@ -17,7 +19,7 @@ final class ResetPassword extends Component
     public function mount(string $token): void
     {
         $this->form->setToken($token);
-        $this->form->setEmail(request()->string('email'));
+        $this->form->setEmail(request()->string('email')->toString());
     }
 
     public function send(): void
@@ -29,7 +31,7 @@ final class ResetPassword extends Component
         $this->redirect(route('login', absolute: false), navigate: true);
     }
 
-    public function render()
+    public function render(): Factory|View
     {
         return view('livewire.auth.reset-password');
     }

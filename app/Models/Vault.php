@@ -6,7 +6,6 @@ namespace App\Models;
 
 use App\Observers\VaultObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -15,12 +14,10 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 #[ObservedBy([VaultObserver::class])]
 final class Vault extends Model
 {
-    use HasFactory;
-
     /**
      * The attributes that are mass assignable.
      *
-     * @var string[]
+     * @var list<string>
      */
     protected $fillable = [
         'templates_node_id',
@@ -29,6 +26,8 @@ final class Vault extends Model
 
     /**
      * Get the associated user.
+     *
+     * @return BelongsTo<User, $this>
      */
     public function user(): BelongsTo
     {
@@ -37,6 +36,8 @@ final class Vault extends Model
 
     /**
      * Get the nodes for the vault.
+     *
+     * @return HasMany<VaultNode, $this>
      */
     public function nodes(): HasMany
     {
@@ -45,6 +46,8 @@ final class Vault extends Model
 
     /**
      * Get the associated templates node.
+     *
+     * @return HasOne<VaultNode, $this>
      */
     public function templatesNode(): HasOne
     {

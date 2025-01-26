@@ -4,20 +4,34 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Models\User;
+use App\Models\Vault;
 use App\Models\VaultNode;
 
 final class GetPathFromVaultNode
 {
     public function handle(VaultNode $node, bool $includeSelf = true): string
     {
-        $relativePath = $node->parent ?
-            $node->parent->ancestorsAndSelf->last()->full_path.'/' :
-            '';
+        /** @var User $currentUser */
+        $currentUser = auth()->user();
+        /** @var Vault $vault */
+        $vault = $node->vault;
+        $relativePath = '';
+
+        if ($node->parent) {
+            /**
+             * @var string $fullPath
+             *
+             * @phpstan-ignore-next-line larastan.noUnnecessaryCollectionCall
+             */
+            $fullPath = $node->parent->ancestorsAndSelf()->get()->last()->full_path;
+            $relativePath = $fullPath.'/';
+        }
 
         $path = sprintf(
             'private/vaults/%u/%s/%s',
-            auth()->user()->id,
-            $node->vault->name,
+            $currentUser->id,
+            $vault->name,
             $relativePath,
         );
 

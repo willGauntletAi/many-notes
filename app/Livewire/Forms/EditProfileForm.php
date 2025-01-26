@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Livewire\Forms;
 
 use App\Models\User;
-use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Unique;
 use Livewire\Attributes\Validate;
 use Livewire\Form;
 
@@ -18,6 +18,9 @@ final class EditProfileForm extends Form
     #[Validate]
     public string $email;
 
+    /**
+     * @return array<string, list<string|Unique>>
+     */
     public function rules(): array
     {
         return [
@@ -28,18 +31,24 @@ final class EditProfileForm extends Form
 
     public function setUser(): void
     {
-        $this->name = auth()->user()->name;
-        $this->email = auth()->user()->email;
+        /** @var User $currentUser */
+        $currentUser = auth()->user();
+
+        $this->name = $currentUser->name;
+        $this->email = $currentUser->email;
     }
 
     public function update(): void
     {
-        $this->name = Str::trim($this->name);
-        $this->email = Str::trim($this->email);
+        /** @var User $currentUser */
+        $currentUser = auth()->user();
+
+        $this->name = mb_trim($this->name);
+        $this->email = mb_trim($this->email);
 
         $this->validate();
 
-        auth()->user()->update([
+        $currentUser->update([
             'name' => $this->name,
             'email' => $this->email,
         ]);

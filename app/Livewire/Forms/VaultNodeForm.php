@@ -8,6 +8,7 @@ use App\Models\Vault;
 use App\Models\VaultNode;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Unique;
 use Livewire\Attributes\Validate;
 use Livewire\Form;
 
@@ -19,15 +20,18 @@ final class VaultNodeForm extends Form
 
     public ?int $parent_id = null;
 
-    public $is_file = true;
+    public bool $is_file = true;
 
     #[Validate]
-    public $name = '';
+    public string $name = '';
 
     public ?string $extension = null;
 
     public ?string $content = null;
 
+    /**
+     * @return array<string, list<string|Unique>>
+     */
     public function rules(): array
     {
         return [
@@ -53,7 +57,7 @@ final class VaultNodeForm extends Form
     {
         $this->node = $node;
         $this->parent_id = $node->parent_id;
-        $this->is_file = $node->is_file;
+        $this->is_file = (bool) $node->is_file;
         $this->name = $node->name;
         $this->extension = $node->extension;
         $this->content = $node->content;
@@ -78,6 +82,11 @@ final class VaultNodeForm extends Form
     public function update(): void
     {
         $this->validate();
+
+        if (is_null($this->node)) {
+            return;
+        }
+
         $this->name = Str::trim($this->name);
         $this->node->update([
             'parent_id' => $this->parent_id,

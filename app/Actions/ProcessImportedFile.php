@@ -15,7 +15,9 @@ final class ProcessImportedFile
 {
     public function handle(Vault $vault, VaultNode $parent, string $fileName, string $filePath): void
     {
-        ['filename' => $name, 'extension' => $extension] = pathinfo($fileName);
+        $pathInfo = pathinfo($fileName);
+        $name = $pathInfo['filename'];
+        $extension = $pathInfo['extension'] ?? '';
 
         if (! in_array($extension, VaultFile::extensions())) {
             abort(400);
@@ -35,6 +37,7 @@ final class ProcessImportedFile
             ->where('extension', 'md')
             ->exists();
         if ($nodeExists) {
+            /** @var list<string> $nodes */
             $nodes = array_column(
                 $vault->nodes()
                     ->select('name')
@@ -47,7 +50,7 @@ final class ProcessImportedFile
                 'name',
             );
             natcasesort($nodes);
-            $name .= count($nodes) && preg_match('/-(\d+)$/', (string) end($nodes), $matches) === 1 ?
+            $name .= count($nodes) && preg_match('/-(\d+)$/', end($nodes), $matches) === 1 ?
                 '-'.((int) $matches[1] + 1) :
                 '-1';
         }
@@ -61,7 +64,9 @@ final class ProcessImportedFile
         ]);
 
         $relativePath = new GetPathFromVaultNode()->handle($node);
-        ['dirname' => $savePath, 'basename' => $saveName] = pathinfo($relativePath);
+        $pathInfo = pathinfo($relativePath);
+        $savePath = $pathInfo['dirname'] ?? '';
+        $saveName = $pathInfo['basename'];
         Storage::putFileAs($savePath, new File($filePath), $saveName);
     }
 }

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Livewire\Auth;
 
 use App\Livewire\Forms\RegisterForm;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Livewire\Component;
 
 final class Register extends Component
@@ -18,7 +20,7 @@ final class Register extends Component
         $this->redirect(route('vaults.index', absolute: false), navigate: true);
     }
 
-    public function render()
+    public function render(): Factory|View
     {
         return view('livewire.auth.register');
     }

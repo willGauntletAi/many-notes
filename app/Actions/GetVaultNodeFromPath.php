@@ -11,7 +11,7 @@ final class GetVaultNodeFromPath
 {
     public function handle(int $vaultId, string $path, ?int $parentId = null): ?VaultNode
     {
-        $path = Str::ltrim(str_replace('%20', ' ', $path), '/');
+        $path = mb_ltrim(str_replace('%20', ' ', $path), '/');
         $pieces = explode('/', $path);
 
         if (count($pieces) === 1) {
@@ -26,13 +26,13 @@ final class GetVaultNodeFromPath
                 ->first();
         }
 
+        /** @var VaultNode $node */
         $node = VaultNode::query()
             ->where('vault_id', $vaultId)
             ->where('parent_id', $parentId)
             ->where('is_file', false)
             ->where('name', 'LIKE', $pieces[0])
             ->first();
-
         $path = Str::after($path, '/');
 
         return $this->handle($vaultId, $path, $node->id);

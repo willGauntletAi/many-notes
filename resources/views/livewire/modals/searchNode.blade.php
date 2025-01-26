@@ -8,22 +8,22 @@
                 <ul class="flex flex-col gap-2" wire:loading.class="opacity-50">
                     @foreach ($nodes as $node)
                         <li>
-                            <button type="button" wire:click="$parent.openFile({{ $node->id }}); modalOpen = false"
+                            <button type="button" wire:click="$parent.openFile({{ $node['id'] }}); modalOpen = false"
                                 class="flex flex-col w-full gap-2 py-1 text-left hover:text-light-base-950 dark:hover:text-base-50">
                                 <span class="flex gap-2">
                                     <span class="overflow-hidden font-semibold whitespace-nowrap text-ellipsis"
-                                        title="{{ $node->name }}">
-                                        {{ $node->name }}
+                                        title="{{ $node['name'] }}">
+                                        {{ $node['name'] }}
                                     </span>
 
-                                    @if ($node->extension !== 'md')
-                                        <x-treeView.badge>{{ $node->extension }}</x-treeView.badge>
+                                    @if ($node['extension'] !== 'md')
+                                        <x-treeView.badge>{{ $node['extension'] }}</x-treeView.badge>
                                     @endif
                                 </span>
-                                @if (strlen($node->dir_name))
-                                    <span title="{{ $node->full_path }}"
+                                @if ($node['dir_name'] !== '')
+                                    <span title="{{ $node['full_path'] }}"
                                         class="overflow-hidden text-xs whitespace-nowrap text-ellipsis">
-                                        {{ $node->dir_name }}
+                                        {{ $node['dir_name'] }}
                                     </span>
                                 @endif
                             </button>

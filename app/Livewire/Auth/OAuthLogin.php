@@ -9,7 +9,7 @@ use Livewire\Component;
 
 final class OAuthLogin extends Component
 {
-    public function mount($provider): void
+    public function mount(string $provider): void
     {
         $this->redirect(Socialite::driver($provider)->redirect()->getTargetUrl());
     }

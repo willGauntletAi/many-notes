@@ -12,6 +12,11 @@ use App\Services\VaultFiles\Video;
 
 final class VaultFile
 {
+    /**
+     * Get the extensions for the vault files.
+     *
+     * @return list<string>
+     */
     public static function extensions(bool $withDots = false): array
     {
         return [

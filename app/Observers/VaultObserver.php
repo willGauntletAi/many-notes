@@ -39,8 +39,10 @@ final class VaultObserver
             abort(500);
         }
 
+        /** @var string $originalName */
+        $originalName = $vault->getOriginal('name');
         Storage::disk('local')->move(
-            $relativePath.$vault->getOriginal('name'),
+            $relativePath.$originalName,
             $relativePath.$vault->name,
         );
     }

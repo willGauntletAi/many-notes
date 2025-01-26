@@ -14,7 +14,7 @@ use Livewire\Component;
 
 final class OAuthLoginCallback extends Component
 {
-    public function mount($provider): void
+    public function mount(string $provider): void
     {
         try {
             $providerUser = Socialite::driver($provider)->user();

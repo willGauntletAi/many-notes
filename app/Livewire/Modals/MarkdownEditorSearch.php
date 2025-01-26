@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Livewire\Modals;
 
-use App\Livewire\Forms\VaultNodeForm;
 use App\Models\Vault;
 use App\Models\VaultNode;
-use App\Services\VaultFiles\Image;
 use Livewire\Attributes\On;
+use App\Services\VaultFiles\Image;
+use Illuminate\Contracts\View\View;
+use App\Livewire\Forms\VaultNodeForm;
+use Illuminate\Contracts\View\Factory;
 use Staudenmeir\LaravelAdjacencyList\Eloquent\Builder;
 use Staudenmeir\LaravelAdjacencyList\Eloquent\Collection;
 
@@ -18,7 +20,8 @@ class MarkdownEditorSearch extends Modal
 
     public Vault $vault;
 
-    public Collection $nodes;
+    /** @var list<array<string, mixed>> */
+    public array $nodes;
 
     public bool $show = false;
 
@@ -43,7 +46,7 @@ class MarkdownEditorSearch extends Modal
 
     public function search(): void
     {
-        $this->nodes = VaultNode::query()
+        $nodes = VaultNode::query()
             ->select('id', 'name', 'extension')
             ->where('vault_id', $this->vault->id)
             ->where('is_file', true)
@@ -57,19 +60,28 @@ class MarkdownEditorSearch extends Modal
             ->limit(5)
             ->get();
 
-        $this->nodes->transform(function (VaultNode $item): VaultNode {
-            $item->full_path = $item->ancestorsAndSelf()->get()->last()->full_path;
-            $item->full_path_encoded = preg_replace('/\s/', '%20', (string) $item->full_path);
-            $item->dir_name = preg_replace('/'.$item->name.'$/', '', (string) $item->full_path);
-            if (mb_strlen((string) $item->dir_name) === 1) {
-                $item->dir_name = '';
-            }
+        $this->nodes = [];
+        foreach ($nodes as $node) {
+            /**
+             * @var string $fullPath
+             * @phpstan-ignore-next-line larastan.noUnnecessaryCollectionCall
+             */
+            $fullPath = $node->ancestorsAndSelf()->get()->last()->full_path;
+            $fullPathEncoded = preg_replace('/\s/', '%20', $fullPath);
+            $dirName = preg_replace('/'.$node->name.'$/', '', $fullPath);
 
-            return $item;
-        });
+            $this->nodes[] = [
+                'id' => $node->id,
+                'name' => $node->name,
+                'extension' => $node->extension,
+                'full_path' => $fullPath,
+                'full_path_encoded' => $fullPathEncoded,
+                'dir_name' => $dirName,
+            ];
+        };
     }
 
-    public function render()
+    public function render(): Factory|View
     {
         $this->search();
 
