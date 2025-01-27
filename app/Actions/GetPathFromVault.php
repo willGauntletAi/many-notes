@@ -11,12 +11,12 @@ final readonly class GetPathFromVault
 {
     public function handle(Vault $vault): string
     {
-        /** @var User $currentUser */
-        $currentUser = auth()->user();
+        /** @var User $user */
+        $user = $vault->user;
 
         return sprintf(
             'private/vaults/%u/%s/',
-            $currentUser->id,
+            $user->id,
             $vault->name,
         );
     }

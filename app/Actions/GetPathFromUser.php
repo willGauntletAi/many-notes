@@ -8,14 +8,11 @@ use App\Models\User;
 
 final readonly class GetPathFromUser
 {
-    public function handle(): string
+    public function handle(User $user): string
     {
-        /** @var User $currentUser */
-        $currentUser = auth()->user();
-
         return sprintf(
             'private/vaults/%u/',
-            $currentUser->id,
+            $user->id,
         );
     }
 }

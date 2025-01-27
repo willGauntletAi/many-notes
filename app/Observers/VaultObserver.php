@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Observers;
 
 use App\Actions\GetPathFromUser;
+use App\Models\User;
 use App\Models\Vault;
 use Illuminate\Support\Facades\Storage;
 
@@ -15,7 +16,10 @@ final readonly class VaultObserver
      */
     public function creating(Vault $vault): void
     {
-        $relativePath = new GetPathFromUser()->handle();
+        /** @var User $user */
+        $user = $vault->user;
+
+        $relativePath = new GetPathFromUser()->handle($user);
 
         if (Storage::disk('local')->exists($relativePath . $vault->name)) {
             abort(500);
@@ -29,11 +33,14 @@ final readonly class VaultObserver
      */
     public function updating(Vault $vault): void
     {
+        /** @var User $user */
+        $user = $vault->user;
+
         if (!$vault->isDirty('name')) {
             return;
         }
 
-        $relativePath = new GetPathFromUser()->handle();
+        $relativePath = new GetPathFromUser()->handle($user);
 
         if (Storage::disk('local')->exists($relativePath . $vault->name)) {
             abort(500);
@@ -52,7 +59,10 @@ final readonly class VaultObserver
      */
     public function deleting(Vault $vault): void
     {
-        $relativePath = new GetPathFromUser()->handle();
+        /** @var User $user */
+        $user = $vault->user;
+
+        $relativePath = new GetPathFromUser()->handle($user);
         Storage::disk('local')->deleteDirectory($relativePath . $vault->name);
     }
 }

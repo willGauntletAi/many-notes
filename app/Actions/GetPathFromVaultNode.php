@@ -12,10 +12,10 @@ final readonly class GetPathFromVaultNode
 {
     public function handle(VaultNode $node, bool $includeSelf = true): string
     {
-        /** @var User $currentUser */
-        $currentUser = auth()->user();
         /** @var Vault $vault */
         $vault = $node->vault;
+        /** @var User $user */
+        $user = $vault->user;
         $relativePath = '';
 
         if ($node->parent) {
@@ -30,7 +30,7 @@ final readonly class GetPathFromVaultNode
 
         $path = sprintf(
             'private/vaults/%u/%s/%s',
-            $currentUser->id,
+            $user->id,
             $vault->name,
             $relativePath,
         );
