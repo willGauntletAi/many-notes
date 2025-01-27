@@ -8,7 +8,7 @@ use App\Actions\GetPathFromVaultNode;
 use App\Models\VaultNode;
 use Illuminate\Support\Facades\Storage;
 
-final class VaultNodeObserver
+final readonly class VaultNodeObserver
 {
     /**
      * Handle the VaultNode "creating" event.

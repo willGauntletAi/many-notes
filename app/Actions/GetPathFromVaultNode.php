@@ -8,7 +8,7 @@ use App\Models\User;
 use App\Models\Vault;
 use App\Models\VaultNode;
 
-final class GetPathFromVaultNode
+final readonly class GetPathFromVaultNode
 {
     public function handle(VaultNode $node, bool $includeSelf = true): string
     {

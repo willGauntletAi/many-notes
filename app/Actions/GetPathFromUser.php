@@ -6,7 +6,7 @@ namespace App\Actions;
 
 use App\Models\User;
 
-final class GetPathFromUser
+final readonly class GetPathFromUser
 {
     public function handle(): string
     {

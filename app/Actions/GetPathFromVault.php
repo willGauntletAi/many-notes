@@ -7,7 +7,7 @@ namespace App\Actions;
 use App\Models\User;
 use App\Models\Vault;
 
-final class GetPathFromVault
+final readonly class GetPathFromVault
 {
     public function handle(Vault $vault): string
     {

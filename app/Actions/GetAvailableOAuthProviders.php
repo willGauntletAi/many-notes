@@ -6,7 +6,7 @@ namespace App\Actions;
 
 use App\Enums\OAuthProviders;
 
-final class GetAvailableOAuthProviders
+final readonly class GetAvailableOAuthProviders
 {
     /** @return array<int, OAuthProviders> */
     public function handle(): array

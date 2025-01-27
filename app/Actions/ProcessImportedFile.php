@@ -11,7 +11,7 @@ use App\Services\VaultFiles\Note;
 use Illuminate\Http\File;
 use Illuminate\Support\Facades\Storage;
 
-final class ProcessImportedFile
+final readonly class ProcessImportedFile
 {
     public function handle(Vault $vault, VaultNode $parent, string $fileName, string $filePath): void
     {

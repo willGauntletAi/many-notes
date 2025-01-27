@@ -10,7 +10,7 @@ use App\Services\VaultFiles\Note;
 use Illuminate\Support\Facades\Storage;
 use ZipArchive;
 
-final class ProcessImportedVault
+final readonly class ProcessImportedVault
 {
     public function handle(string $fileName, string $filePath): void
     {

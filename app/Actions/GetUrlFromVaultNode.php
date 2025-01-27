@@ -6,7 +6,7 @@ namespace App\Actions;
 
 use App\Models\VaultNode;
 
-final class GetUrlFromVaultNode
+final readonly class GetUrlFromVaultNode
 {
     public function handle(VaultNode $node): string
     {

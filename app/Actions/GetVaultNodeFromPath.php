@@ -7,7 +7,7 @@ namespace App\Actions;
 use App\Models\VaultNode;
 use Illuminate\Support\Str;
 
-final class GetVaultNodeFromPath
+final readonly class GetVaultNodeFromPath
 {
     public function handle(int $vaultId, string $path, ?int $parentId = null): ?VaultNode
     {

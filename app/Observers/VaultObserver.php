@@ -8,7 +8,7 @@ use App\Actions\GetPathFromUser;
 use App\Models\Vault;
 use Illuminate\Support\Facades\Storage;
 
-final class VaultObserver
+final readonly class VaultObserver
 {
     /**
      * Handle the Vault "creating" event.

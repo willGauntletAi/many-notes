@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
-final class FileController extends Controller
+final readonly class FileController
 {
     /**
      * Show the file for a given user.

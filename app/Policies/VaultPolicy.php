@@ -7,7 +7,7 @@ namespace App\Policies;
 use App\Models\User;
 use App\Models\Vault;
 
-final class VaultPolicy
+final readonly class VaultPolicy
 {
     /**
      * Determine whether the user can view the model.

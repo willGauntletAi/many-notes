@@ -7,7 +7,7 @@ namespace App\Actions;
 use GuzzleHttp\Psr7\UriResolver;
 use GuzzleHttp\Psr7\Utils;
 
-final class ResolveTwoPaths
+final readonly class ResolveTwoPaths
 {
     public function handle(string $currentPath, string $path): string
     {
