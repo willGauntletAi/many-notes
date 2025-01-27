@@ -10,6 +10,7 @@ use Override;
 use SocialiteProviders\Authentik\Provider as AuthentikProvider;
 use SocialiteProviders\Keycloak\Provider as KeycloakProvider;
 use SocialiteProviders\Manager\SocialiteWasCalled;
+use SocialiteProviders\Zitadel\Provider as ZitadelProvider;
 
 final class AppServiceProvider extends ServiceProvider
 {
@@ -32,6 +33,9 @@ final class AppServiceProvider extends ServiceProvider
         });
         Event::listen(function (SocialiteWasCalled $event): void {
             $event->extendSocialite('keycloak', KeycloakProvider::class);
+        });
+        Event::listen(function (SocialiteWasCalled $event) {
+            $event->extendSocialite('zitadel', ZitadelProvider::class);
         });
     }
 }

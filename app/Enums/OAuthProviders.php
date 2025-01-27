@@ -16,4 +16,5 @@ enum OAuthProviders: string
     case LinkedIn = 'linkedin';
     case Slack = 'slack';
     case Twitter = 'twitter';
+    case Zitadel = 'zitadel';
 }

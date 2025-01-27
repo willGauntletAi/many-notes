@@ -31,10 +31,10 @@ return [
     ],
 
     'authentik' => [
-        'base_url' => env('AUTHENTIK_BASE_URL'),
         'client_id' => env('AUTHENTIK_CLIENT_ID'),
         'client_secret' => env('AUTHENTIK_CLIENT_SECRET'),
         'redirect' => env('AUTHENTIK_REDIRECT_URI'),
+        'base_url' => env('AUTHENTIK_BASE_URL'),
     ],
 
     'bitbucket' => [
@@ -68,10 +68,10 @@ return [
     ],
 
     'keycloak' => [
-        'base_url' => env('KEYCLOAK_BASE_URL'),
         'client_id' => env('KEYCLOAK_CLIENT_ID'),
         'client_secret' => env('KEYCLOAK_CLIENT_SECRET'),
         'redirect' => env('KEYCLOAK_REDIRECT_URI'),
+        'base_url' => env('KEYCLOAK_BASE_URL'),
         'realms' => env('KEYCLOAK_REALM'),
     ],
 
@@ -95,6 +95,16 @@ return [
         'client_id' => env('TWITTER_CLIENT_ID'),
         'client_secret' => env('TWITTER_CLIENT_SECRET'),
         'redirect' => env('TWITTER_REDIRECT_URI'),
+    ],
+
+    'zitadel' => [
+        'client_id' => env('ZITADEL_CLIENT_ID'),
+        'client_secret' => env('ZITADEL_CLIENT_SECRET'),
+        'redirect' => env('ZITADEL_REDIRECT_URI'),
+        'base_url' => env('ZITADEL_BASE_URL'),
+        'organization_id' => env('ZITADEL_ORGANIZATION_ID'),
+        'project_id' => env('ZITADEL_PROJECT_ID'),
+        'post_logout_redirect_uri' => env('ZITADEL_POST_LOGOUT_REDIRECT_URI')
     ],
 
 ];
