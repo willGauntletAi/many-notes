@@ -34,7 +34,7 @@ final class AppServiceProvider extends ServiceProvider
         Event::listen(function (SocialiteWasCalled $event): void {
             $event->extendSocialite('keycloak', KeycloakProvider::class);
         });
-        Event::listen(function (SocialiteWasCalled $event) {
+        Event::listen(function (SocialiteWasCalled $event): void {
             $event->extendSocialite('zitadel', ZitadelProvider::class);
         });
     }
