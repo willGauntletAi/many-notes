@@ -40,12 +40,12 @@ First, create a new directory called `many-notes` with the following structure:
 
 ```
 many-notes/
+├── database/database.sqlite
 ├── storage-logs/
 ├── storage-private/
 ├── storage-public/
 ├── storage-sessions/
 ├── compose.yaml
-├── database.sqlite
 └── Dockerfile
 ```
 
@@ -73,7 +73,7 @@ services:
         GID: GROUP_ID # change id
     restart: unless-stopped
     volumes:
-      - ./database.sqlite:/var/www/html/database/database.sqlite
+      - ./database/database.sqlite:/var/www/html/database/database.sqlite
       - ./storage-logs:/var/www/html/storage/logs
       - ./storage-private:/var/www/html/storage/app/private
       - ./storage-public:/var/www/html/storage/app/public
@@ -123,7 +123,7 @@ environment:
 
 ### Enable OAuth providers
 
-Many Notes supports a convenient way to authenticate with OAuth providers. Typically, these credentials may be retrieved by creating a "developer application" within the dashboard of the service you wish to use. Many Notes currently supports authentication via Facebook, Twitter, LinkedIn, Google, GitHub, GitLab, Bitbucket, Slack, Authentik, and Keycloak. You can enable multiple providers simultaneously by adding the corresponding environment variables.
+Many Notes supports a convenient way to authenticate with OAuth providers. Typically, these credentials may be retrieved by creating a "developer application" within the dashboard of the service you wish to use. Many Notes currently supports authentication via Facebook, Twitter, LinkedIn, Google, GitHub, GitLab, Bitbucket, Slack, Authentik, Keycloak, and Zitadel. You can enable multiple providers simultaneously by adding the corresponding environment variables.
 
 For example, to enable GitHub OAuth, add:
 
@@ -131,31 +131,10 @@ For example, to enable GitHub OAuth, add:
 environment:
   - GITHUB_CLIENT_ID=CLIENT_ID # change id
   - GITHUB_CLIENT_SECRET=CLIENT_SECRET # change secret
-  - GITHUB_REDIRECT_URI=http://localhost/oauth/github/callback # change uri
+  - GITHUB_REDIRECT_URI=http://localhost/oauth/github/callback # change domain and provider
 ```
 
-**Authentik and Keycloak providers require additional configuration.**
-
-To enable GitHub OAuth, add:
-
-```yaml
-environment:
-  - AUTHENTIK_BASE_URL=http://your-authentik-domain # change url
-  - AUTHENTIK_CLIENT_ID=CLIENT_ID # change id
-  - AUTHENTIK_CLIENT_SECRET=CLIENT_SECRET # change secret
-  - AUTHENTIK_REDIRECT_URI=http://localhost/oauth/authentik/callback # change uri
-```
-
-To enable Keycloak OAuth, add:
-
-```yaml
-environment:
-  - KEYCLOAK_BASE_URL=http://your-keycloak-domain # change url
-  - KEYCLOAK_CLIENT_ID=CLIENT_ID # change id
-  - KEYCLOAK_CLIENT_SECRET=CLIENT_SECRET # change secret
-  - KEYCLOAK_REDIRECT_URI=http://localhost/oauth/keycloak/callback # change uri
-  - KEYCLOAK_REALM=YOUR_REALM # change realm
-```
+Authentik, Keycloak, and Zitadel providers require additional configuration. Read the [OAuth documentation](docs/customization/oauth.md) for more information.
 
 ### Custom email service
 
