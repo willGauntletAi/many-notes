@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Services\VaultFiles;
 
-class File
+final class File
 {
     /**
      * Get the extensions for the files.
      *
-     * @param list<string> $extensions
+     * @param  list<string>  $extensions
      * @return list<string>
      */
     public static function extensionsWithDots(array $extensions): array

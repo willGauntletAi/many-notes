@@ -60,7 +60,6 @@
         "not_operator_with_successor_space": false
     },
     "exclude": [
-        "app/Livewire/Modals",
-        "app/Services/VaultFiles"
+        "app/Livewire/Modals"
     ]
 }

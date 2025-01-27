@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\VaultFiles;
 
-final class Video extends File
+final class Video
 {
     /** @var list<string> */
     private static array $extensions = [
@@ -19,6 +19,6 @@ final class Video extends File
      */
     public static function extensions(bool $withDots = false): array
     {
-        return $withDots ? parent::extensionsWithDots(self::$extensions) : self::$extensions;
+        return $withDots ? File::extensionsWithDots(self::$extensions) : self::$extensions;
     }
 }
