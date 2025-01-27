@@ -104,7 +104,7 @@ return [
         'base_url' => env('ZITADEL_BASE_URL'),
         'organization_id' => env('ZITADEL_ORGANIZATION_ID'),
         'project_id' => env('ZITADEL_PROJECT_ID'),
-        'post_logout_redirect_uri' => env('ZITADEL_POST_LOGOUT_REDIRECT_URI')
+        'post_logout_redirect_uri' => env('ZITADEL_POST_LOGOUT_REDIRECT_URI'),
     ],
 
 ];
