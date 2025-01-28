@@ -67,6 +67,7 @@
         "test": [
             "@test:refactor",
             "@test:lint",
+            "@test:coding-standards",
             "@test:types",
             "@test:type-coverage",
             "@test:unit"
