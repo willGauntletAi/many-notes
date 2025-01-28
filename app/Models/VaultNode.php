@@ -16,7 +16,9 @@ use Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships;
 final class VaultNode extends Model
 {
     /** @use HasFactory<\Database\Factories\VaultNodeFactory> */
-    use HasFactory, HasRecursiveRelationships;
+    use HasFactory;
+
+    use HasRecursiveRelationships;
 
     /**
      * The attributes that are mass assignable.
