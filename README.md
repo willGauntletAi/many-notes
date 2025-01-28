@@ -23,15 +23,17 @@ Vaults are simply storage containers for your files, and Many Notes lets you cho
 
 ## Features
 
-- Multiple users
-- Multiple vaults per user
-- OAuth support
-- File search
-- Tree view explorer with context menu
-- Smart markdown editor
-- Import/export vaults
-- Light/dark theme (automatically selected by your OS setting)
-- Mobile friendly
+- **Multiple users**: Protect your files behind authentication
+- **Multiple vaults per user**: Choose how to organize your files
+- **OAuth support**: Authenticate with one of the supported providers
+- **File search**: Quickly find what you are looking for
+- **Tree view explorer**: Fast navigation with relevant actions in the context menu
+- **Smart Markdown editor**: Write your Markdown notes faster
+- **Automatic saving**: Focus on writing; saving is automatic
+- **Templates**: Maintain consistent formatting for your notes
+- **Import/export vaults**: Easily back up and restore your vaults
+- **Light/dark theme**: Automatically selected based on your OS setting
+- **Mobile friendly**: Provides a similar experience to the desktop
 
 ## Installation (Docker)
 
