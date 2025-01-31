@@ -64,7 +64,9 @@
 
             parseLine(indexStart, indexEnd) {
                 const lineStart = this.editor.value.substring(0, indexStart).lastIndexOf("\n") + 1;
-                const lineEnd = this.editor.value.substring(indexStart).indexOf("\n") + indexStart;
+                const lineEnd = this.editor.value.substring(indexStart).indexOf("\n") > -1
+                    ? this.editor.value.substring(indexStart).indexOf("\n") + indexStart
+                    : this.editor.value.length;
                 const lineText = this.editor.value.substring(lineStart, lineEnd);
                 const selectionStart = indexStart;
                 const selectionEnd = indexEnd < lineEnd ? indexEnd : lineEnd;
