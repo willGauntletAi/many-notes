@@ -43,13 +43,16 @@ final class Show extends Component
     public function mount(Vault $vault): void
     {
         $this->authorize('view', $vault);
+        new UpdateVault()->handle($vault, [
+            'opened_at' => now(),
+        ]);
         $this->vault = $vault;
         $this->vaultForm->setVault($this->vault);
         $this->nodeForm->setVault($this->vault);
         $this->getTemplates();
 
         if ((int) $this->selectedFile > 0) {
-            $selectedFile = $vault->nodes()
+            $selectedFile = $this->vault->nodes()
                 ->where('id', $this->selectedFile)
                 ->where('is_file', true)
                 ->first();

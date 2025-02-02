@@ -64,7 +64,7 @@ final class Index extends Component
         $currentUser = auth()->user();
 
         return view('livewire.vault.index', [
-            'vaults' => $currentUser->vaults()->orderBy('updated_at', 'DESC')->get(),
+            'vaults' => $currentUser->vaults()->orderBy('opened_at', 'DESC')->get(),
         ]);
     }
 }
