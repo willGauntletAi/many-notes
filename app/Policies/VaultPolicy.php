@@ -32,20 +32,4 @@ final readonly class VaultPolicy
     {
         return $user->id === $vault->created_by;
     }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Vault $vault): bool
-    {
-        return $user->id === $vault->created_by;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Vault $vault): bool
-    {
-        return $user->id === $vault->created_by;
-    }
 }
