@@ -5,17 +5,19 @@ declare(strict_types=1);
 namespace App\Livewire\Modals;
 
 use App\Models\Vault;
+use Livewire\Component;
 use App\Models\VaultNode;
 use Livewire\Attributes\On;
+use App\Livewire\Modals\Modal;
 use Illuminate\Contracts\View\View;
 use App\Livewire\Forms\VaultNodeForm;
 use Illuminate\Contracts\View\Factory;
 
-class AddNode extends Modal
+final class AddNode extends Component
 {
-    public VaultNodeForm $form;
+    use Modal;
 
-    public bool $show = false;
+    public VaultNodeForm $form;
 
     public function mount(Vault $vault): void
     {

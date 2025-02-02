@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire\Modals;
 
-use Livewire\Component;
-
-class Modal extends Component
+trait Modal
 {
     public bool $show = false;
 

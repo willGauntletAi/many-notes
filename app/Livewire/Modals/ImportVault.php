@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire\Modals;
 
+use Livewire\Component;
 use Livewire\Attributes\On;
 use Livewire\WithFileUploads;
 use Livewire\Attributes\Validate;
@@ -12,11 +13,11 @@ use App\Actions\ProcessImportedVault;
 use Illuminate\Contracts\View\Factory;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
-class ImportVault extends Modal
+final class ImportVault extends Component
 {
-    use WithFileUploads;
+    use Modal;
 
-    public bool $show = false;
+    use WithFileUploads;
 
     #[Validate('required|file|mimes:zip')]
     public ?TemporaryUploadedFile $file = null;
@@ -30,13 +31,10 @@ class ImportVault extends Modal
     public function updatedFile(): void
     {
         $this->validate();
-
-        if (is_null($this->file)) {
-            return;
-        }
-
-        $fileName = $this->file->getClientOriginalName();
-        $filePath = $this->file->getRealPath();
+        /** @var TemporaryUploadedFile $file */
+        $file = $this->file;
+        $fileName = $file->getClientOriginalName();
+        $filePath = $file->getRealPath();
         new ProcessImportedVault()->handle($fileName, $filePath);
         $this->dispatch('vault-imported');
         $this->closeModal();

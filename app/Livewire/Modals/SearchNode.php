@@ -5,23 +5,21 @@ declare(strict_types=1);
 namespace App\Livewire\Modals;
 
 use App\Models\Vault;
+use Livewire\Component;
 use App\Models\VaultNode;
 use Livewire\Attributes\On;
 use Illuminate\Contracts\View\View;
-use App\Livewire\Forms\VaultNodeForm;
 use Illuminate\Contracts\View\Factory;
 use Staudenmeir\LaravelAdjacencyList\Eloquent\Builder;
 
-class SearchNode extends Modal
+final class SearchNode extends Component
 {
-    public VaultNodeForm $form;
+    use Modal;
 
     public Vault $vault;
 
     /** @var list<array<string, mixed>> */
     public array $nodes;
-
-    public bool $show = false;
 
     public string $search = '';
 
@@ -29,7 +27,6 @@ class SearchNode extends Modal
     {
         $this->authorize('view', $vault);
         $this->vault = $vault;
-        $this->form->setVault($vault);
     }
 
     #[On('open-modal')]
