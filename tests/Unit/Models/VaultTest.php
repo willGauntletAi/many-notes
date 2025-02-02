@@ -18,7 +18,6 @@ test('to array', function (): void {
             'created_at',
             'updated_at',
             'templates_node_id',
-            'user',
         ]);
 });
 

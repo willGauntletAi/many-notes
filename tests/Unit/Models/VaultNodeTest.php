@@ -19,8 +19,6 @@ test('to array', function (): void {
             'content',
             'created_at',
             'updated_at',
-            'vault',
-            'parent',
         ]);
 });
 
