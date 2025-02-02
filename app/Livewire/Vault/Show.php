@@ -17,7 +17,6 @@ use App\Services\VaultFiles\Note;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -216,7 +215,6 @@ final class Show extends Component
         $this->authorize('delete', $node->vault);
 
         try {
-            DB::beginTransaction();
             $deletedNodes = new DeleteVaultNode()->handle($node);
             $this->dispatch('node-updated');
 
@@ -240,12 +238,9 @@ final class Show extends Component
                 $this->getTemplates();
             }
 
-            DB::commit();
             $message = $node->is_file ? __('File deleted') : __('Folder deleted');
             $this->dispatch('toast', message: $message, type: 'success');
         } catch (Throwable $e) {
-            DB::rollBack();
-
             $this->dispatch('toast', message: $e->getMessage(), type: 'error');
         }
     }
