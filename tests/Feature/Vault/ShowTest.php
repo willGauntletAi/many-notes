@@ -97,12 +97,18 @@ it('opens a file from the path with an open file', function (): void {
     $vault = new CreateVault()->handle($user, [
         'name' => fake()->words(3, true),
     ]);
+    $folderNode = new CreateVaultNode()->handle($vault, [
+        'is_file' => false,
+        'name' => fake()->words(3, true),
+    ]);
     $firstNode = new CreateVaultNode()->handle($vault, [
+        'parent_id' => $folderNode->id,
         'is_file' => true,
         'name' => fake()->words(3, true),
         'extension' => 'md',
     ]);
     $secondNode = new CreateVaultNode()->handle($vault, [
+        'parent_id' => $folderNode->id,
         'is_file' => true,
         'name' => fake()->words(3, true),
         'extension' => 'md',
