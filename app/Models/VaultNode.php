@@ -4,15 +4,12 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Observers\VaultNodeObserver;
-use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships;
 
-#[ObservedBy([VaultNodeObserver::class])]
 final class VaultNode extends Model
 {
     /** @use HasFactory<\Database\Factories\VaultNodeFactory> */

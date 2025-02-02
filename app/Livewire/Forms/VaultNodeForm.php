@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\Livewire\Forms;
 
+use App\Actions\CreateVaultNode;
+use App\Actions\UpdateVaultNode;
 use App\Models\Vault;
 use App\Models\VaultNode;
-use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Unique;
 use Livewire\Attributes\Validate;
@@ -65,9 +66,9 @@ final class VaultNodeForm extends Form
 
     public function create(): VaultNode
     {
+        $this->name = mb_trim($this->name);
         $this->validate();
-        $this->name = Str::trim($this->name);
-        $node = $this->vault->nodes()->create([
+        $node = new CreateVaultNode()->handle($this->vault, [
             'parent_id' => $this->parent_id,
             'is_file' => $this->is_file,
             'name' => $this->name,
@@ -81,16 +82,18 @@ final class VaultNodeForm extends Form
 
     public function update(): void
     {
-        $this->validate();
-
         if (is_null($this->node)) {
             return;
         }
 
-        $this->name = Str::trim($this->name);
-        $this->node->update([
+        $this->name = mb_trim($this->name);
+        $this->validate();
+
+        new UpdateVaultNode()->handle($this->node, [
             'parent_id' => $this->parent_id,
+            'is_file' => (bool) $this->node->is_file,
             'name' => $this->name,
+            'extension' => $this->node->extension,
             'content' => $this->content,
         ]);
     }

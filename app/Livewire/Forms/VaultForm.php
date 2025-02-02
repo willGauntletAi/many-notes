@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\Livewire\Forms;
 
+use App\Actions\CreateVault;
+use App\Actions\UpdateVault;
 use App\Models\User;
 use App\Models\Vault;
-use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Unique;
 use Livewire\Attributes\Validate;
@@ -47,11 +48,11 @@ final class VaultForm extends Form
 
     public function create(): void
     {
+        $this->name = mb_trim($this->name);
         $this->validate();
         /** @var User $currentUser */
         $currentUser = auth()->user();
-        $this->name = Str::trim($this->name);
-        $currentUser->vaults()->create([
+        new CreateVault()->handle($currentUser, [
             'name' => $this->name,
         ]);
         $this->reset(['name']);
@@ -59,14 +60,14 @@ final class VaultForm extends Form
 
     public function update(): void
     {
-        $this->validate();
-
         if (is_null($this->vault)) {
             return;
         }
 
-        $this->name = Str::trim($this->name);
-        $this->vault->update([
+        $this->name = mb_trim($this->name);
+        $this->validate();
+
+        new UpdateVault()->handle($this->vault, [
             'name' => $this->name,
         ]);
     }
