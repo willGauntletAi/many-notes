@@ -4,21 +4,16 @@ declare(strict_types=1);
 
 namespace App\Livewire\Vault;
 
-use App\Actions\GetPathFromVaultNode;
+use App\Actions\DeleteVault;
+use App\Actions\ExportVault;
 use App\Livewire\Forms\VaultForm;
 use App\Models\User;
 use App\Models\Vault;
-use App\Models\VaultNode;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Livewire\Component;
-use Staudenmeir\LaravelAdjacencyList\Eloquent\Collection;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Throwable;
-use ZipArchive;
 
 final class Index extends Component
 {
@@ -33,41 +28,34 @@ final class Index extends Component
         $this->dispatch('toast', message: __('Vault created'), type: 'success');
     }
 
-    public function export(Vault $vault): ?BinaryFileResponse
+    public function export(Vault $vault, ExportVault $exportVault): ?BinaryFileResponse
     {
         $this->authorize('view', $vault);
-        $zip = new ZipArchive();
-        $zipFileName = $vault->id . '.zip';
-        $nodes = $vault->nodes()->whereNull('parent_id')->get();
 
-        if ($zip->open(public_path($zipFileName), ZipArchive::CREATE) !== true) {
-            $this->dispatch('toast', message: __('Something went wrong'), type: 'error');
+        try {
+            $path = $exportVault->handle($vault);
+        } catch (Throwable $e) {
+            $this->dispatch('toast', message: $e->getMessage(), type: 'error');
 
             return null;
         }
 
-        $this->exportNodes($zip, $nodes);
-        $zip->close();
-
-        return response()->download(public_path($zipFileName), $vault->name . '.zip')->deleteFileAfterSend(true);
+        return response()->download($path, $vault->name . '.zip')->deleteFileAfterSend(true);
     }
 
     public function delete(Vault $vault): void
     {
         $this->authorize('delete', $vault);
-        DB::beginTransaction();
+
         try {
-            $rootNodes = $vault->nodes()->whereNull('parent_id')->get();
-            foreach ($rootNodes as $node) {
-                $this->deleteNode($node);
-            }
-            $vault->delete();
-            DB::commit();
-            $this->dispatch('toast', message: __('Vault deleted'), type: 'success');
-        } catch (Throwable) {
-            DB::rollBack();
-            $this->dispatch('toast', message: __('Something went wrong'), type: 'error');
+            new DeleteVault()->handle($vault);
+        } catch (Throwable $e) {
+            $this->dispatch('toast', message: $e->getMessage(), type: 'error');
+
+            return;
         }
+
+        $this->dispatch('toast', message: __('Vault deleted'), type: 'success');
     }
 
     public function render(): Factory|View
@@ -78,39 +66,5 @@ final class Index extends Component
         return view('livewire.vault.index', [
             'vaults' => $currentUser->vaults()->orderBy('updated_at', 'DESC')->get(),
         ]);
-    }
-
-    /**
-     * @param  Collection<int, VaultNode>  $nodes
-     */
-    private function exportNodes(ZipArchive &$zip, Collection $nodes, string $path = ''): void
-    {
-        foreach ($nodes as $node) {
-            $nodePath = Str::ltrim("$path/$node->name", '/');
-
-            if ($node->is_file) {
-                if ($node->extension === 'md') {
-                    $zip->addFromString("$nodePath.$node->extension", (string) $node->content);
-                } else {
-                    $relativePath = new GetPathFromVaultNode()->handle($node);
-                    $filePath = Storage::disk('local')->path($relativePath);
-                    $zip->addFile($filePath, "$nodePath.$node->extension");
-                }
-            } else {
-                $zip->addEmptyDir($nodePath);
-
-                if ($node->children->count()) {
-                    $this->exportNodes($zip, $node->children, $nodePath);
-                }
-            }
-        }
-    }
-
-    private function deleteNode(VaultNode $node): void
-    {
-        foreach ($node->childs as $child) {
-            $this->deleteNode($child);
-        }
-        $node->delete();
     }
 }

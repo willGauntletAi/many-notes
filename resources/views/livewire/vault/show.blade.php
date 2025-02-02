@@ -163,20 +163,20 @@
                             <x-markdownEditor />
                         @elseif (in_array($nodeForm->extension, App\Services\VaultFiles\Image::extensions()))
                             <div>
-                                <img src="{{ $selectedFilePath }}" />
+                                <img src="{{ $selectedFileUrl }}" />
                             </div>
                         @elseif (in_array($nodeForm->extension, App\Services\VaultFiles\Pdf::extensions()))
-                            <object type="application/pdf" data="{{ $selectedFilePath }}"
+                            <object type="application/pdf" data="{{ $selectedFileUrl }}"
                                 class="w-full h-full"></object>
                         @elseif (in_array($nodeForm->extension, App\Services\VaultFiles\Video::extensions()))
                             <video class="w-full" controls>
-                                <source src="{{ $selectedFilePath }}" />
+                                <source src="{{ $selectedFileUrl }}" />
                                 {{ __('Your browser does not support the video tag') }}
                             </video>
                         @elseif (in_array($nodeForm->extension, App\Services\VaultFiles\Audio::extensions()))
                             <div class="flex items-start justify-center w-full">
                                 <audio class="w-full" controls>
-                                    <source src="{{ $selectedFilePath }}">
+                                    <source src="{{ $selectedFileUrl }}">
                                     {{ __('Your browser does not support the audio tag') }}
                                 </audio>
                             </div>

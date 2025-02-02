@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\Livewire\Vault;
 
-use App\Actions\GetPathFromVaultNode;
+use App\Actions\DeleteVaultNode;
 use App\Actions\GetUrlFromVaultNode;
 use App\Actions\GetVaultNodeFromPath;
 use App\Actions\ResolveTwoPaths;
+use App\Actions\UpdateVault;
 use App\Livewire\Forms\VaultForm;
 use App\Livewire\Forms\VaultNodeForm;
 use App\Models\Vault;
@@ -36,12 +37,9 @@ final class Show extends Component
     #[Url(as: 'file')]
     public ?int $selectedFile = null;
 
-    public ?string $selectedFilePath = null;
+    public ?string $selectedFileUrl = null;
 
     public bool $isEditMode = true;
-
-    /** @var list<VaultNode> */
-    private array $deletedNodes = [];
 
     public function mount(Vault $vault): void
     {
@@ -52,7 +50,10 @@ final class Show extends Component
         $this->getTemplates();
 
         if ((int) $this->selectedFile > 0) {
-            $selectedFile = $vault->nodes()->where('id', $this->selectedFile)->first();
+            $selectedFile = $vault->nodes()
+                ->where('id', $this->selectedFile)
+                ->where('is_file', true)
+                ->first();
 
             if (!$selectedFile) {
                 $this->selectedFile = null;
@@ -69,11 +70,13 @@ final class Show extends Component
         $this->authorize('view', $node->vault);
 
         if (!$node->vault || !$node->vault->is($this->vault) || !$node->is_file) {
+            $this->selectedFile = null;
+
             return;
         }
 
         $this->selectedFile = $node->id;
-        $this->selectedFilePath = new GetUrlFromVaultNode()->handle($node);
+        $this->selectedFileUrl = new GetUrlFromVaultNode()->handle($node);
         $this->nodeForm->setNode($node);
 
         if ($node->extension === 'md') {
@@ -85,12 +88,11 @@ final class Show extends Component
 
     public function openFilePath(string $path): void
     {
-        /**
-         * @var string $currentPath
-         *
-         * @phpstan-ignore-next-line larastan.noUnnecessaryCollectionCall
-         */
-        $currentPath = $this->nodeForm->node->ancestorsAndSelf()->get()->last()->full_path;
+        /** @var string $currentPath */
+        $currentPath = is_null($this->nodeForm->node)
+            ? ''
+            /** @phpstan-ignore-next-line larastan.noUnnecessaryCollectionCall */
+            : $this->nodeForm->node->ancestorsAndSelf()->get()->last()->full_path;
         $resolvedPath = new ResolveTwoPaths()->handle($currentPath, $path);
         $node = new GetVaultNodeFromPath()->handle($this->vault->id, $resolvedPath);
 
@@ -110,14 +112,13 @@ final class Show extends Component
             return;
         }
 
-        $this->selectedFile = $node->id;
-        $this->selectedFilePath = new GetPathFromVaultNode()->handle($node);
+        $this->selectedFileUrl = new GetUrlFromVaultNode()->handle($node);
         $this->nodeForm->setNode($node);
     }
 
     public function closeFile(): void
     {
-        $this->reset(['selectedFile', 'selectedFilePath']);
+        $this->reset(['selectedFile', 'selectedFileUrl']);
         $this->nodeForm->reset('node');
     }
 
@@ -157,7 +158,9 @@ final class Show extends Component
             return;
         }
 
-        $this->vault->update(['templates_node_id' => $node->id]);
+        new UpdateVault()->handle($this->vault, [
+            'templates_node_id' => $node->id,
+        ]);
         $this->getTemplates();
         $this->dispatch('toast', message: __('Template folder updated'), type: 'success');
     }
@@ -212,59 +215,43 @@ final class Show extends Component
     {
         $this->authorize('delete', $node->vault);
 
-        DB::beginTransaction();
         try {
-            if ($node->is_file) {
-                $this->deleteFile($node);
-            } else {
-                $this->deleteFolder($node);
+            DB::beginTransaction();
+            $deletedNodes = new DeleteVaultNode()->handle($node);
+            $this->dispatch('node-updated');
+
+            $openFileDeleted = !is_null(
+                array_find(
+                    $deletedNodes,
+                    fn (VaultNode $node): bool => $node->id === $this->selectedFile,
+                )
+            );
+            if ($openFileDeleted) {
+                $this->closeFile();
             }
 
-            DB::commit();
-            $this->dispatch('node-updated');
             $templateDeleted = !is_null(
                 array_find(
-                    $this->deletedNodes,
+                    $deletedNodes,
                     fn (VaultNode $node): bool => $node->parent_id === $this->vault->templates_node_id,
                 )
             );
             if ($templateDeleted) {
                 $this->getTemplates();
             }
-            $this->deletedNodes = [];
+
+            DB::commit();
             $message = $node->is_file ? __('File deleted') : __('Folder deleted');
             $this->dispatch('toast', message: $message, type: 'success');
-        } catch (Throwable) {
+        } catch (Throwable $e) {
             DB::rollBack();
+
+            $this->dispatch('toast', message: $e->getMessage(), type: 'error');
         }
     }
 
     public function render(): Factory|View
     {
         return view('livewire.vault.show');
-    }
-
-    private function deleteFile(VaultNode $node): void
-    {
-        if ($this->selectedFile === $node->id) {
-            $this->closeFile();
-        }
-
-        $this->deletedNodes[] = $node;
-        $node->delete();
-    }
-
-    private function deleteFolder(VaultNode $node): void
-    {
-        foreach ($node->childs as $child) {
-            if ($child->is_file) {
-                $this->deleteFile($child);
-            } else {
-                $this->deleteFolder($child);
-            }
-        }
-
-        $this->deletedNodes[] = $node;
-        $node->delete();
     }
 }
