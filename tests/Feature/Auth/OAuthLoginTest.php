@@ -9,12 +9,13 @@ use Laravel\Socialite\Facades\Socialite;
 use Livewire\Livewire;
 
 it('redirects to the provider url', function (): void {
-    Socialite::shouldReceive('driver->redirect->getTargetUrl')->andReturn('https://github.com/login/oauth/authorize');
+    $targetUrl = 'https://github.com/login/oauth/authorize';
+    Socialite::shouldReceive('driver->redirect->getTargetUrl')->andReturn($targetUrl);
     $availableProviders = Mockery::mock(new GetAvailableOAuthProviders());
     $availableProviders->shouldReceive('handle')->andReturn([OAuthProviders::GitHub]);
 
     Livewire::test(OAuthLogin::class, ['provider' => 'github'])
-        ->assertRedirect('https://github.com/login/oauth/authorize');
+        ->assertRedirect($targetUrl);
 });
 
 it('fails redirecting to the provider url', function (): void {
