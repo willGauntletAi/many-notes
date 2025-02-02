@@ -7,7 +7,6 @@
         </li>
     </ul>
     <div class="relative flex">
-        <div x-show="!isEditMode" class="absolute inset-0 z-20 opacity-25 bg-light-base-200 dark:bg-base-950"></div>
         <ul class="flex gap-1">
             <x-markdownEditor.itemDropdown>
                 <x-markdownEditor.button>
@@ -53,5 +52,6 @@
                 </x-markdownEditor.items>
             </x-markdownEditor.itemDropdown>
         </ul>
+        <div x-show="!isEditMode" class="absolute inset-0 opacity-25 bg-light-base-200 dark:bg-base-950"></div>
     </div>
 </div>
