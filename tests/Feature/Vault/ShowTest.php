@@ -14,19 +14,15 @@ use Livewire\Livewire;
 
 it('opens a file', function (): void {
     $user = User::factory()->create()->first();
-    $vault = new CreateVault()->handle(
-        $user,
-        ['name' => fake()->words(3, true)],
-    );
-    $node = new CreateVaultNode()->handle(
-        $vault,
-        [
-            'is_file' => true,
-            'name' => fake()->words(3, true),
-            'extension' => 'md',
-            'content' => fake()->paragraph(),
-        ],
-    );
+    $vault = new CreateVault()->handle($user, [
+        'name' => fake()->words(3, true),
+    ]);
+    $node = new CreateVaultNode()->handle($vault, [
+        'is_file' => true,
+        'name' => fake()->words(3, true),
+        'extension' => 'md',
+        'content' => fake()->paragraph(),
+    ]);
 
     Livewire::actingAs($user)
         ->withQueryParams(['file' => $node->id])
@@ -36,10 +32,9 @@ it('opens a file', function (): void {
 
 it('does not open a non-existing file', function (): void {
     $user = User::factory()->create()->first();
-    $vault = new CreateVault()->handle(
-        $user,
-        ['name' => fake()->words(3, true)],
-    );
+    $vault = new CreateVault()->handle($user, [
+        'name' => fake()->words(3, true),
+    ]);
 
     Livewire::actingAs($user)
         ->withQueryParams(['file' => 500])
@@ -49,17 +44,13 @@ it('does not open a non-existing file', function (): void {
 
 it('does not open a folder', function (): void {
     $user = User::factory()->create()->first();
-    $vault = new CreateVault()->handle(
-        $user,
-        ['name' => fake()->words(3, true)],
-    );
-    $node = new CreateVaultNode()->handle(
-        $vault,
-        [
-            'is_file' => false,
-            'name' => fake()->words(3, true),
-        ],
-    );
+    $vault = new CreateVault()->handle($user, [
+        'name' => fake()->words(3, true),
+    ]);
+    $node = new CreateVaultNode()->handle($vault, [
+        'is_file' => false,
+        'name' => fake()->words(3, true),
+    ]);
 
     Livewire::actingAs($user)
         ->test(Show::class, ['vault' => $vault])
@@ -69,18 +60,14 @@ it('does not open a folder', function (): void {
 
 it('resets edit mode when opening a that is not a note', function (): void {
     $user = User::factory()->create()->first();
-    $vault = new CreateVault()->handle(
-        $user,
-        ['name' => fake()->words(3, true)],
-    );
-    $node = new CreateVaultNode()->handle(
-        $vault,
-        [
-            'is_file' => true,
-            'name' => fake()->words(3, true),
-            'extension' => 'jpg',
-        ],
-    );
+    $vault = new CreateVault()->handle($user, [
+        'name' => fake()->words(3, true),
+    ]);
+    $node = new CreateVaultNode()->handle($vault, [
+        'is_file' => true,
+        'name' => fake()->words(3, true),
+        'extension' => 'jpg',
+    ]);
 
     Livewire::actingAs($user)
         ->test(Show::class, ['vault' => $vault])
@@ -90,18 +77,14 @@ it('resets edit mode when opening a that is not a note', function (): void {
 
 it('opens a file from the path', function (): void {
     $user = User::factory()->create()->first();
-    $vault = new CreateVault()->handle(
-        $user,
-        ['name' => fake()->words(3, true)],
-    );
-    $node = new CreateVaultNode()->handle(
-        $vault,
-        [
-            'is_file' => true,
-            'name' => fake()->words(3, true),
-            'extension' => 'md',
-        ],
-    );
+    $vault = new CreateVault()->handle($user, [
+        'name' => fake()->words(3, true),
+    ]);
+    $node = new CreateVaultNode()->handle($vault, [
+        'is_file' => true,
+        'name' => fake()->words(3, true),
+        'extension' => 'md',
+    ]);
 
     Livewire::actingAs($user)
         ->test(Show::class, ['vault' => $vault])
@@ -111,26 +94,19 @@ it('opens a file from the path', function (): void {
 
 it('opens a file from the path with an open file', function (): void {
     $user = User::factory()->create()->first();
-    $vault = new CreateVault()->handle(
-        $user,
-        ['name' => fake()->words(3, true)],
-    );
-    $firstNode = new CreateVaultNode()->handle(
-        $vault,
-        [
-            'is_file' => true,
-            'name' => fake()->words(3, true),
-            'extension' => 'md',
-        ],
-    );
-    $secondNode = new CreateVaultNode()->handle(
-        $vault,
-        [
-            'is_file' => true,
-            'name' => fake()->words(3, true),
-            'extension' => 'md',
-        ],
-    );
+    $vault = new CreateVault()->handle($user, [
+        'name' => fake()->words(3, true),
+    ]);
+    $firstNode = new CreateVaultNode()->handle($vault, [
+        'is_file' => true,
+        'name' => fake()->words(3, true),
+        'extension' => 'md',
+    ]);
+    $secondNode = new CreateVaultNode()->handle($vault, [
+        'is_file' => true,
+        'name' => fake()->words(3, true),
+        'extension' => 'md',
+    ]);
 
     Livewire::actingAs($user)
         ->withQueryParams(['file' => $firstNode->id])
@@ -141,10 +117,9 @@ it('opens a file from the path with an open file', function (): void {
 
 it('does not open a file from a non-existent path', function (): void {
     $user = User::factory()->create()->first();
-    $vault = new CreateVault()->handle(
-        $user,
-        ['name' => fake()->words(3, true)],
-    );
+    $vault = new CreateVault()->handle($user, [
+        'name' => fake()->words(3, true),
+    ]);
 
     Livewire::actingAs($user)
         ->test(Show::class, ['vault' => $vault])
@@ -154,18 +129,14 @@ it('does not open a file from a non-existent path', function (): void {
 
 it('refreshes an open file', function (): void {
     $user = User::factory()->create()->first();
-    $vault = new CreateVault()->handle(
-        $user,
-        ['name' => fake()->words(3, true)],
-    );
-    $node = new CreateVaultNode()->handle(
-        $vault,
-        [
-            'is_file' => true,
-            'name' => fake()->words(3, true),
-            'extension' => 'md',
-        ],
-    );
+    $vault = new CreateVault()->handle($user, [
+        'name' => fake()->words(3, true),
+    ]);
+    $node = new CreateVaultNode()->handle($vault, [
+        'is_file' => true,
+        'name' => fake()->words(3, true),
+        'extension' => 'md',
+    ]);
     $relativeUrl = new GetUrlFromVaultNode()->handle($node);
     $name = $node->name;
     $newName = fake()->words(4, true);
@@ -181,26 +152,19 @@ it('refreshes an open file', function (): void {
 
 it('does not refresh a file that is not open', function (): void {
     $user = User::factory()->create()->first();
-    $vault = new CreateVault()->handle(
-        $user,
-        ['name' => fake()->words(3, true)],
-    );
-    $firstNode = new CreateVaultNode()->handle(
-        $vault,
-        [
-            'is_file' => true,
-            'name' => fake()->words(3, true),
-            'extension' => 'md',
-        ],
-    );
-    $secondNode = new CreateVaultNode()->handle(
-        $vault,
-        [
-            'is_file' => true,
-            'name' => fake()->words(3, true),
-            'extension' => 'md',
-        ],
-    );
+    $vault = new CreateVault()->handle($user, [
+        'name' => fake()->words(3, true),
+    ]);
+    $firstNode = new CreateVaultNode()->handle($vault, [
+        'is_file' => true,
+        'name' => fake()->words(3, true),
+        'extension' => 'md',
+    ]);
+    $secondNode = new CreateVaultNode()->handle($vault, [
+        'is_file' => true,
+        'name' => fake()->words(3, true),
+        'extension' => 'md',
+    ]);
 
     Livewire::actingAs($user)
         ->withQueryParams(['file' => $firstNode->id])
@@ -211,18 +175,14 @@ it('does not refresh a file that is not open', function (): void {
 
 it('closes an open file', function (): void {
     $user = User::factory()->create()->first();
-    $vault = new CreateVault()->handle(
-        $user,
-        ['name' => fake()->words(3, true)],
-    );
-    $node = new CreateVaultNode()->handle(
-        $vault,
-        [
-            'is_file' => true,
-            'name' => fake()->words(3, true),
-            'extension' => 'md',
-        ],
-    );
+    $vault = new CreateVault()->handle($user, [
+        'name' => fake()->words(3, true),
+    ]);
+    $node = new CreateVaultNode()->handle($vault, [
+        'is_file' => true,
+        'name' => fake()->words(3, true),
+        'extension' => 'md',
+    ]);
 
     Livewire::actingAs($user)
         ->withQueryParams(['file' => $node->id])
@@ -234,17 +194,13 @@ it('closes an open file', function (): void {
 
 it('sets the template folder', function (): void {
     $user = User::factory()->create()->first();
-    $vault = new CreateVault()->handle(
-        $user,
-        ['name' => fake()->words(3, true)],
-    );
-    $node = new CreateVaultNode()->handle(
-        $vault,
-        [
-            'is_file' => false,
-            'name' => fake()->words(3, true),
-        ],
-    );
+    $vault = new CreateVault()->handle($user, [
+        'name' => fake()->words(3, true),
+    ]);
+    $node = new CreateVaultNode()->handle($vault, [
+        'is_file' => false,
+        'name' => fake()->words(3, true),
+    ]);
 
     Livewire::actingAs($user)
         ->test(Show::class, ['vault' => $vault])
@@ -255,18 +211,14 @@ it('sets the template folder', function (): void {
 
 it('does not set the template folder if it is a file', function (): void {
     $user = User::factory()->create()->first();
-    $vault = new CreateVault()->handle(
-        $user,
-        ['name' => fake()->words(3, true)],
-    );
-    $node = new CreateVaultNode()->handle(
-        $vault,
-        [
-            'is_file' => true,
-            'name' => fake()->words(3, true),
-            'extension' => 'md',
-        ],
-    );
+    $vault = new CreateVault()->handle($user, [
+        'name' => fake()->words(3, true),
+    ]);
+    $node = new CreateVaultNode()->handle($vault, [
+        'is_file' => true,
+        'name' => fake()->words(3, true),
+        'extension' => 'md',
+    ]);
 
     Livewire::actingAs($user)
         ->test(Show::class, ['vault' => $vault])
@@ -277,36 +229,26 @@ it('does not set the template folder if it is a file', function (): void {
 
 it('inserts a template', function (): void {
     $user = User::factory()->create()->first();
-    $vault = new CreateVault()->handle(
-        $user,
-        ['name' => fake()->words(3, true)],
-    );
-    $templateFolderNode = new CreateVaultNode()->handle(
-        $vault,
-        [
-            'is_file' => false,
-            'name' => fake()->words(3, true),
-        ],
-    );
-    $templateNode = new CreateVaultNode()->handle(
-        $vault,
-        [
-            'is_file' => true,
-            'parent_id' => $templateFolderNode->id,
-            'name' => fake()->words(3, true),
-            'extension' => 'md',
-            'content' => 'content: {{content}}',
-        ],
-    );
-    $node = new CreateVaultNode()->handle(
-        $vault,
-        [
-            'is_file' => true,
-            'name' => fake()->words(3, true),
-            'extension' => 'md',
-            'content' => fake()->paragraph(),
-        ],
-    );
+    $vault = new CreateVault()->handle($user, [
+        'name' => fake()->words(3, true),
+    ]);
+    $templateFolderNode = new CreateVaultNode()->handle($vault, [
+        'is_file' => false,
+        'name' => fake()->words(3, true),
+    ]);
+    $templateNode = new CreateVaultNode()->handle($vault, [
+        'is_file' => true,
+        'parent_id' => $templateFolderNode->id,
+        'name' => fake()->words(3, true),
+        'extension' => 'md',
+        'content' => 'content: {{content}}',
+    ]);
+    $node = new CreateVaultNode()->handle($vault, [
+        'is_file' => true,
+        'name' => fake()->words(3, true),
+        'extension' => 'md',
+        'content' => fake()->paragraph(),
+    ]);
 
     Livewire::actingAs($user)
         ->withQueryParams(['file' => $node->id])
@@ -319,36 +261,26 @@ it('inserts a template', function (): void {
 
 it('does not insert a template from a non-template node', function (): void {
     $user = User::factory()->create()->first();
-    $vault = new CreateVault()->handle(
-        $user,
-        ['name' => fake()->words(3, true)],
-    );
-    $folderNode = new CreateVaultNode()->handle(
-        $vault,
-        [
-            'is_file' => false,
-            'name' => fake()->words(3, true),
-        ],
-    );
-    $firstNode = new CreateVaultNode()->handle(
-        $vault,
-        [
-            'is_file' => true,
-            'parent_id' => $folderNode->id,
-            'name' => fake()->words(3, true),
-            'extension' => 'md',
-            'content' => 'content: {{content}}',
-        ],
-    );
-    $secondNode = new CreateVaultNode()->handle(
-        $vault,
-        [
-            'is_file' => true,
-            'name' => fake()->words(3, true),
-            'extension' => 'md',
-            'content' => fake()->paragraph(),
-        ],
-    );
+    $vault = new CreateVault()->handle($user, [
+        'name' => fake()->words(3, true),
+    ]);
+    $folderNode = new CreateVaultNode()->handle($vault, [
+        'is_file' => false,
+        'name' => fake()->words(3, true),
+    ]);
+    $firstNode = new CreateVaultNode()->handle($vault, [
+        'is_file' => true,
+        'parent_id' => $folderNode->id,
+        'name' => fake()->words(3, true),
+        'extension' => 'md',
+        'content' => 'content: {{content}}',
+    ]);
+    $secondNode = new CreateVaultNode()->handle($vault, [
+        'is_file' => true,
+        'name' => fake()->words(3, true),
+        'extension' => 'md',
+        'content' => fake()->paragraph(),
+    ]);
 
     Livewire::actingAs($user)
         ->withQueryParams(['file' => $secondNode->id])
@@ -360,36 +292,26 @@ it('does not insert a template from a non-template node', function (): void {
 
 it('inserts a template without {{content}} variable', function (): void {
     $user = User::factory()->create()->first();
-    $vault = new CreateVault()->handle(
-        $user,
-        ['name' => fake()->words(3, true)],
-    );
-    $templateFolderNode = new CreateVaultNode()->handle(
-        $vault,
-        [
-            'is_file' => false,
-            'name' => fake()->words(3, true),
-        ],
-    );
-    $templateNode = new CreateVaultNode()->handle(
-        $vault,
-        [
-            'is_file' => true,
-            'parent_id' => $templateFolderNode->id,
-            'name' => fake()->words(3, true),
-            'extension' => 'md',
-            'content' => 'Daily note',
-        ],
-    );
-    $node = new CreateVaultNode()->handle(
-        $vault,
-        [
-            'is_file' => true,
-            'name' => fake()->words(3, true),
-            'extension' => 'md',
-            'content' => fake()->paragraph(),
-        ],
-    );
+    $vault = new CreateVault()->handle($user, [
+        'name' => fake()->words(3, true),
+    ]);
+    $templateFolderNode = new CreateVaultNode()->handle($vault, [
+        'is_file' => false,
+        'name' => fake()->words(3, true),
+    ]);
+    $templateNode = new CreateVaultNode()->handle($vault, [
+        'is_file' => true,
+        'parent_id' => $templateFolderNode->id,
+        'name' => fake()->words(3, true),
+        'extension' => 'md',
+        'content' => 'Daily note',
+    ]);
+    $node = new CreateVaultNode()->handle($vault, [
+        'is_file' => true,
+        'name' => fake()->words(3, true),
+        'extension' => 'md',
+        'content' => fake()->paragraph(),
+    ]);
 
     Livewire::actingAs($user)
         ->withQueryParams(['file' => $node->id])
@@ -402,19 +324,15 @@ it('inserts a template without {{content}} variable', function (): void {
 
 it('updates the node', function (): void {
     $user = User::factory()->create()->first();
-    $vault = new CreateVault()->handle(
-        $user,
-        ['name' => fake()->words(3, true)],
-    );
-    $node = new CreateVaultNode()->handle(
-        $vault,
-        [
-            'is_file' => true,
-            'name' => fake()->words(3, true),
-            'extension' => 'md',
-            'content' => fake()->paragraph(),
-        ],
-    );
+    $vault = new CreateVault()->handle($user, [
+        'name' => fake()->words(3, true),
+    ]);
+    $node = new CreateVaultNode()->handle($vault, [
+        'is_file' => true,
+        'name' => fake()->words(3, true),
+        'extension' => 'md',
+        'content' => fake()->paragraph(),
+    ]);
     $newContent = fake()->paragraph();
 
     Livewire::actingAs($user)
@@ -426,10 +344,9 @@ it('updates the node', function (): void {
 
 it('updates the vault', function (): void {
     $user = User::factory()->create()->first();
-    $vault = new CreateVault()->handle(
-        $user,
-        ['name' => fake()->words(3, true)],
-    );
+    $vault = new CreateVault()->handle($user, [
+        'name' => fake()->words(3, true),
+    ]);
     $newName = fake()->words(3, true);
 
     Livewire::actingAs($user)
@@ -445,27 +362,20 @@ it('updates the vault', function (): void {
 
 it('deletes a node', function (): void {
     $user = User::factory()->create()->first();
-    $vault = new CreateVault()->handle(
-        $user,
-        ['name' => fake()->words(3, true)],
-    );
-    $folderNode = new CreateVaultNode()->handle(
-        $vault,
-        [
-            'is_file' => false,
-            'name' => fake()->words(3, true),
-        ],
-    );
-    new CreateVaultNode()->handle(
-        $vault,
-        [
-            'is_file' => true,
-            'parent_id' => $folderNode->id,
-            'name' => fake()->words(3, true),
-            'extension' => 'md',
-            'content' => fake()->paragraph(),
-        ],
-    );
+    $vault = new CreateVault()->handle($user, [
+        'name' => fake()->words(3, true),
+    ]);
+    $folderNode = new CreateVaultNode()->handle($vault, [
+        'is_file' => false,
+        'name' => fake()->words(3, true),
+    ]);
+    new CreateVaultNode()->handle($vault, [
+        'is_file' => true,
+        'parent_id' => $folderNode->id,
+        'name' => fake()->words(3, true),
+        'extension' => 'md',
+        'content' => fake()->paragraph(),
+    ]);
     expect($vault->nodes()->count())->toBe(2);
 
     Livewire::actingAs($user)
@@ -481,19 +391,15 @@ it('deletes a node', function (): void {
 
 it('closes an open file when it is deleted', function (): void {
     $user = User::factory()->create()->first();
-    $vault = new CreateVault()->handle(
-        $user,
-        ['name' => fake()->words(3, true)],
-    );
-    $node = new CreateVaultNode()->handle(
-        $vault,
-        [
-            'is_file' => true,
-            'name' => fake()->words(3, true),
-            'extension' => 'md',
-            'content' => fake()->paragraph(),
-        ],
-    );
+    $vault = new CreateVault()->handle($user, [
+        'name' => fake()->words(3, true),
+    ]);
+    $node = new CreateVaultNode()->handle($vault, [
+        'is_file' => true,
+        'name' => fake()->words(3, true),
+        'extension' => 'md',
+        'content' => fake()->paragraph(),
+    ]);
 
     Livewire::actingAs($user)
         ->withQueryParams(['file' => $node->id])

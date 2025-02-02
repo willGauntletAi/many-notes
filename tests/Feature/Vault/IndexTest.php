@@ -37,35 +37,25 @@ it('creates a vault', function (): void {
 
 it('exports a vault', function (): void {
     $user = User::factory()->create();
-    $vault = new CreateVault()->handle(
-        $user,
-        ['name' => fake()->words(3, true)],
-    );
-    $folderNode = new CreateVaultNode()->handle(
-        $vault,
-        [
-            'is_file' => false,
-            'name' => fake()->words(3, true),
-        ],
-    );
-    new CreateVaultNode()->handle(
-        $vault,
-        [
-            'is_file' => true,
-            'parent_id' => $folderNode->id,
-            'name' => fake()->words(3, true),
-            'extension' => 'md',
-            'content' => fake()->paragraph(),
-        ],
-    );
-    new CreateVaultNode()->handle(
-        $vault,
-        [
-            'is_file' => true,
-            'name' => fake()->words(3, true),
-            'extension' => 'jpg',
-        ],
-    );
+    $vault = new CreateVault()->handle($user, [
+        'name' => fake()->words(3, true),
+    ]);
+    $folderNode = new CreateVaultNode()->handle($vault, [
+        'is_file' => false,
+        'name' => fake()->words(3, true),
+    ]);
+    new CreateVaultNode()->handle($vault, [
+        'is_file' => true,
+        'parent_id' => $folderNode->id,
+        'name' => fake()->words(3, true),
+        'extension' => 'md',
+        'content' => fake()->paragraph(),
+    ]);
+    new CreateVaultNode()->handle($vault, [
+        'is_file' => true,
+        'name' => fake()->words(3, true),
+        'extension' => 'jpg',
+    ]);
 
     Livewire::actingAs($user)
         ->test(Index::class)
@@ -100,27 +90,20 @@ it('fails exporting a vault with files missing on disk', function (): void {
 
 it('deletes a vault', function (): void {
     $user = User::factory()->create()->first();
-    $vault = new CreateVault()->handle(
-        $user,
-        ['name' => fake()->words(3, true)],
-    );
-    $folderNode = new CreateVaultNode()->handle(
-        $vault,
-        [
-            'is_file' => false,
-            'name' => fake()->words(3, true),
-        ],
-    );
-    new CreateVaultNode()->handle(
-        $vault,
-        [
-            'is_file' => true,
-            'parent_id' => $folderNode->id,
-            'name' => fake()->words(3, true),
-            'extension' => 'md',
-            'content' => fake()->paragraph(),
-        ],
-    );
+    $vault = new CreateVault()->handle($user, [
+        'name' => fake()->words(3, true),
+    ]);
+    $folderNode = new CreateVaultNode()->handle($vault, [
+        'is_file' => false,
+        'name' => fake()->words(3, true),
+    ]);
+    new CreateVaultNode()->handle($vault, [
+        'is_file' => true,
+        'parent_id' => $folderNode->id,
+        'name' => fake()->words(3, true),
+        'extension' => 'md',
+        'content' => fake()->paragraph(),
+    ]);
     expect($user->vaults()->count())->toBe(1);
 
     Livewire::actingAs($user)

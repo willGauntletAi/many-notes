@@ -9,10 +9,9 @@ use App\Models\User;
 
 it('opens the modal', function (): void {
     $user = User::factory()->create()->first();
-    $vault = new CreateVault()->handle(
-        $user,
-        ['name' => fake()->words(3, true)],
-    );
+    $vault = new CreateVault()->handle($user, [
+        'name' => fake()->words(3, true),
+    ]);
 
     Livewire::actingAs($user)
         ->test(MarkdownEditorSearch::class, ['vault' => $vault])
@@ -23,34 +22,24 @@ it('opens the modal', function (): void {
 
 it('searches for an image file', function (): void {
     $user = User::factory()->create()->first();
-    $vault = new CreateVault()->handle(
-        $user,
-        ['name' => fake()->words(3, true)],
-    );
-    $firstImageNode = new CreateVaultNode()->handle(
-        $vault,
-        [
-            'is_file' => true,
-            'name' => 'First image',
-            'extension' => 'jpg',
-        ],
-    );
-    $secondImageNode = new CreateVaultNode()->handle(
-        $vault,
-        [
-            'is_file' => true,
-            'name' => 'Second image',
-            'extension' => 'jpg',
-        ],
-    );
-    $node = new CreateVaultNode()->handle(
-        $vault,
-        [
-            'is_file' => true,
-            'name' => 'First note',
-            'extension' => 'md',
-        ],
-    );
+    $vault = new CreateVault()->handle($user, [
+        'name' => fake()->words(3, true),
+    ]);
+    $firstImageNode = new CreateVaultNode()->handle($vault, [
+        'is_file' => true,
+        'name' => 'First image',
+        'extension' => 'jpg',
+    ]);
+    $secondImageNode = new CreateVaultNode()->handle($vault, [
+        'is_file' => true,
+        'name' => 'Second image',
+        'extension' => 'jpg',
+    ]);
+    $node = new CreateVaultNode()->handle($vault, [
+        'is_file' => true,
+        'name' => 'First note',
+        'extension' => 'md',
+    ]);
 
     Livewire::actingAs($user)
         ->test(MarkdownEditorSearch::class, ['vault' => $vault])

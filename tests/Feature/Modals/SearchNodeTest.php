@@ -9,10 +9,9 @@ use App\Models\User;
 
 it('opens the modal', function (): void {
     $user = User::factory()->create()->first();
-    $vault = new CreateVault()->handle(
-        $user,
-        ['name' => fake()->words(3, true)],
-    );
+    $vault = new CreateVault()->handle($user, [
+        'name' => fake()->words(3, true),
+    ]);
 
     Livewire::actingAs($user)
         ->test(SearchNode::class, ['vault' => $vault])
@@ -23,7 +22,9 @@ it('opens the modal', function (): void {
 
 it('searches for a node', function (): void {
     $user = User::factory()->create()->first();
-    $vault = new CreateVault()->handle($user, ['name' => fake()->words(3, true)]);
+    $vault = new CreateVault()->handle($user, [
+        'name' => fake()->words(3, true),
+    ]);
     $firstNode = new CreateVaultNode()->handle($vault, [
         'is_file' => true,
         'name' => 'First note',

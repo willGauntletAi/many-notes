@@ -54,8 +54,12 @@ it('handles name collisions when importing a vault with an existing name', funct
 it('handles name collisions when importing a vault with a name existing in multiple vaults', function (): void {
     $user = User::factory()->create()->first();
     $vaultName = fake()->words(3, true);
-    new CreateVault()->handle($user, ['name' => $vaultName]);
-    new CreateVault()->handle($user, ['name' => $vaultName]);
+    new CreateVault()->handle($user, [
+        'name' => $vaultName,
+    ]);
+    new CreateVault()->handle($user, [
+        'name' => $vaultName,
+    ]);
     $file = UploadedFile::fake()->create($vaultName . '.zip');
 
     Livewire::actingAs($user)
