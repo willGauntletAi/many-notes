@@ -34,10 +34,6 @@ final readonly class FileController
             /** @var VaultNode $node */
             $node = $vault->nodes()->findOrFail($request->node);
 
-            if ($node->vault_id !== $vault->id) {
-                abort(404);
-            }
-
             /**
              * @var string $currentPath
              *
@@ -51,8 +47,6 @@ final readonly class FileController
         $node = new GetVaultNodeFromPath()->handle($vault->id, $path);
         $relativePath = new GetPathFromVaultNode()->handle($node);
         $absolutePath = Storage::disk('local')->path($relativePath);
-
-        ob_end_clean();
 
         return response()->file($absolutePath);
     }

@@ -23,7 +23,7 @@ final class VaultNodeFactory extends Factory
             'vault_id' => Vault::factory(),
             'parent_id' => null,
             'is_file' => true,
-            'name' => fake()->name(),
+            'name' => fake()->words(3, true),
             'extension' => 'md',
             'content' => fake()->paragraph(),
         ];

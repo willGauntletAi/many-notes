@@ -13,9 +13,9 @@ final readonly class GetPathFromVaultNode
     public function handle(VaultNode $node, bool $includeSelf = true): string
     {
         /** @var Vault $vault */
-        $vault = $node->vault;
+        $vault = $node->load(['vault', 'parent'])->vault;
         /** @var User $user */
-        $user = $vault->user;
+        $user = $vault->user()->first();
         $relativePath = '';
 
         if ($node->parent) {

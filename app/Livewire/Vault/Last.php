@@ -13,7 +13,7 @@ final class Last extends Component
     {
         /** @var User $currentUser */
         $currentUser = auth()->user();
-        $lastVault = $currentUser->vaults()->orderBy('opened_at', 'desc')->first();
+        $lastVault = $currentUser->vaults()->orderByDesc('opened_at')->first();
 
         if (!$lastVault) {
             $this->redirect(route('vaults.index'), navigate: true);

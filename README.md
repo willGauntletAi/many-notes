@@ -25,7 +25,7 @@ Vaults are simply storage containers for your files, and Many Notes lets you cho
 
 - **Multiple users**: Protect your files behind authentication
 - **Multiple vaults per user**: Choose how to organize your files
-- **OAuth support**: Authenticate with one of the supported providers
+- **OAuth support**: Authenticate using one of the supported providers
 - **File search**: Quickly find what you are looking for
 - **Tree view explorer**: Fast navigation with relevant actions in the context menu
 - **Smart Markdown editor**: Write your Markdown notes faster
