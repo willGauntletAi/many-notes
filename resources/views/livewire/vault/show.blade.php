@@ -87,8 +87,8 @@
 
             <div class="absolute top-0 bottom-0 right-0 flex flex-col w-full overflow-y-auto transition-all text-start md:pl-60"
                 :class="{ 'md:pl-60': isSidebarOpen, '': !isSidebarOpen }" id="nodeContainer">
-                <div class="flex flex-col h-full w-full max-w-[48rem] mx-auto p-4 gap-4">
-                    @if ($selectedFile)
+                <div class="flex flex-col h-full w-full max-w-[48rem] mx-auto p-4">
+                    <div class="flex flex-col w-full h-full gap-4" x-show="$wire.selectedFile">
                         <div class="z-[5] bg-light-base-50 dark:bg-base-900">
                             <div class="flex justify-between">
                                 <input type="text" wire:model.live.debounce.500ms="nodeForm.name"
@@ -176,19 +176,18 @@
                                 </audio>
                             </div>
                         @endif
-                    @else
-                        <div class="flex items-center justify-center w-full h-full gap-2">
-                            <x-form.button @click="$wire.dispatchTo('modals.search-node', 'open-modal')">
-                                <x-icons.magnifyingGlass class="w-4 h-4" />
-                                <span class="hidden text-sm font-medium md:block">{{ __('Open file') }}</span>
-                            </x-form.button>
+                    </div>
+                    <div class="flex items-center justify-center w-full h-full gap-2" x-show="!$wire.selectedFile">
+                        <x-form.button @click="$wire.dispatchTo('modals.search-node', 'open-modal')">
+                            <x-icons.magnifyingGlass class="w-4 h-4" />
+                            <span class="hidden text-sm font-medium md:block">{{ __('Open file') }}</span>
+                        </x-form.button>
 
-                            <x-form.button primary @click="$wire.dispatchTo('modals.add-node', 'open-modal')">
-                                <x-icons.plus class="w-4 h-4" />
-                                <span class="hidden text-sm font-medium md:block">{{ __('New note') }}</span>
-                            </x-form.button>
-                        </div>
-                    @endif
+                        <x-form.button primary @click="$wire.dispatchTo('modals.add-node', 'open-modal')">
+                            <x-icons.plus class="w-4 h-4" />
+                            <span class="hidden text-sm font-medium md:block">{{ __('New note') }}</span>
+                        </x-form.button>
+                    </div>
                 </div>
             </div>
         </div>
