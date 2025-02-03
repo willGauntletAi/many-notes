@@ -107,7 +107,7 @@
                                             </x-menu.button>
                                             <x-menu.items>
                                                 @if (in_array($nodeForm->extension, App\Services\VaultFiles\Note::extensions()))
-                                                    <x-modal>
+                                                    <x-modal x-show="isEditMode">
                                                         <x-modal.open>
                                                             <x-menu.close>
                                                                 <x-menu.item>
