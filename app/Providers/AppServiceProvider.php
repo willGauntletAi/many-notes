@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 use Override;
+use SocialiteProviders\Authelia\Provider as AutheliaProvider;
 use SocialiteProviders\Authentik\Provider as AuthentikProvider;
 use SocialiteProviders\Keycloak\Provider as KeycloakProvider;
 use SocialiteProviders\Manager\SocialiteWasCalled;
@@ -37,6 +38,9 @@ final class AppServiceProvider extends ServiceProvider
         $this->configureVite();
 
         Event::listen(function (SocialiteWasCalled $event): void {
+            $event->extendSocialite('authelia', AutheliaProvider::class);
+        });
+        Event::listen(function (SocialiteWasCalled $event): void {
             $event->extendSocialite('authentik', AuthentikProvider::class);
         });
         Event::listen(function (SocialiteWasCalled $event): void {
@@ -61,7 +65,6 @@ final class AppServiceProvider extends ServiceProvider
     private function configureModels(): void
     {
         Model::unguard();
-
         Model::shouldBeStrict();
     }
 

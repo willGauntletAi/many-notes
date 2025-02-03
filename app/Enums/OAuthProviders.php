@@ -6,6 +6,7 @@ namespace App\Enums;
 
 enum OAuthProviders: string
 {
+    case Authelia = 'authelia';
     case Authentik = 'authentik';
     case Bitbucket = 'bitbucket';
     case Facebook = 'facebook';
