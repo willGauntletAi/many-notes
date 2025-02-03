@@ -1,8 +1,8 @@
 # Upgrade guide
 
-## Upgrading to v0.4
+## Upgrading from any version below 0.4
 
-This version introduces **breaking changes** in how the vaults are saved. Stop the containers and back up your data before proceeding.
+Version 0.4 introduces **breaking changes** in how the vaults are saved. Stop the containers and back up your data before proceeding.
 
 Notes were only saved in the database, but starting from v0.4, they are also saved in the filesystem. In case of database corruption, the `storage-private` directory will now contain a complete copy of all vaults.
 
