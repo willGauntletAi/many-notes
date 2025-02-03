@@ -225,6 +225,7 @@
                     this.html = this.markdownToHtml();
                 });
 
+                this.isSidebarOpen = !this.isSmallDevice();
                 let markedRender = new marked.Renderer;
                 markedRender.parser = new marked.Parser;
                 this.renderListitem = markedRender.listitem.bind(markedRender);
