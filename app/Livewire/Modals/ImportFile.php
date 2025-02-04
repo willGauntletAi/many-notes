@@ -4,23 +4,21 @@ declare(strict_types=1);
 
 namespace App\Livewire\Modals;
 
+use App\Actions\ProcessImportedFile;
 use App\Models\Vault;
-use Livewire\Component;
 use App\Models\VaultNode;
 use App\Services\VaultFile;
-use Livewire\Attributes\On;
-use Livewire\WithFileUploads;
-use App\Livewire\Modals\Modal;
-use Livewire\Attributes\Validate;
-use Illuminate\Contracts\View\View;
-use App\Actions\ProcessImportedFile;
 use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Livewire\Attributes\On;
+use Livewire\Attributes\Validate;
+use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use Livewire\WithFileUploads;
 
 final class ImportFile extends Component
 {
     use Modal;
-
     use WithFileUploads;
 
     public Vault $vault;

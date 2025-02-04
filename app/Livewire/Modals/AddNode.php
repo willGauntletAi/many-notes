@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace App\Livewire\Modals;
 
-use App\Models\Vault;
-use Livewire\Component;
-use App\Models\VaultNode;
-use Livewire\Attributes\On;
-use App\Livewire\Modals\Modal;
-use Illuminate\Contracts\View\View;
 use App\Livewire\Forms\VaultNodeForm;
+use App\Models\Vault;
+use App\Models\VaultNode;
 use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Livewire\Attributes\On;
+use Livewire\Component;
 
 final class AddNode extends Component
 {
@@ -28,7 +27,7 @@ final class AddNode extends Component
     #[On('open-modal')]
     public function open(VaultNode $parent, bool $isFile = true): void
     {
-        if (! is_null($parent->vault)) {
+        if (!is_null($parent->vault)) {
             $this->authorize('update', $parent->vault);
         }
 

@@ -58,8 +58,5 @@
             "spacing": "one"
         },
         "not_operator_with_successor_space": false
-    },
-    "exclude": [
-        "app/Livewire/Modals"
-    ]
+    }
 }

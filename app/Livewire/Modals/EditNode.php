@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Livewire\Modals;
 
-use App\Models\Vault;
-use Livewire\Component;
-use App\Models\VaultNode;
-use Livewire\Attributes\On;
-use Illuminate\Contracts\View\View;
 use App\Livewire\Forms\VaultNodeForm;
+use App\Models\Vault;
+use App\Models\VaultNode;
 use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Livewire\Attributes\On;
+use Livewire\Component;
 
 final class EditNode extends Component
 {

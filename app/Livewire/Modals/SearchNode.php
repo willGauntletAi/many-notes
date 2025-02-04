@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Livewire\Modals;
 
 use App\Models\Vault;
-use Livewire\Component;
 use App\Models\VaultNode;
-use Livewire\Attributes\On;
-use Illuminate\Contracts\View\View;
 use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Livewire\Attributes\On;
+use Livewire\Component;
 use Staudenmeir\LaravelAdjacencyList\Eloquent\Builder;
 
 final class SearchNode extends Component
@@ -52,6 +52,7 @@ final class SearchNode extends Component
         foreach ($nodes as $node) {
             /**
              * @var string $fullPath
+             *
              * @phpstan-ignore-next-line larastan.noUnnecessaryCollectionCall
              */
             $fullPath = $node->ancestorsAndSelf()->get()->last()->full_path;
@@ -64,7 +65,7 @@ final class SearchNode extends Component
                 'full_path' => $fullPath,
                 'dir_name' => $dirName,
             ];
-        };
+        }
     }
 
     public function render(): Factory|View

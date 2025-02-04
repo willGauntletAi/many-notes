@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Livewire\Modals;
 
 use App\Models\Vault;
-use Livewire\Component;
 use App\Models\VaultNode;
-use Livewire\Attributes\On;
 use App\Services\VaultFiles\Image;
-use Illuminate\Contracts\View\View;
 use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Livewire\Attributes\On;
+use Livewire\Component;
 use Staudenmeir\LaravelAdjacencyList\Eloquent\Builder;
 
 final class MarkdownEditorSearch extends Component
@@ -60,6 +60,7 @@ final class MarkdownEditorSearch extends Component
         foreach ($nodes as $node) {
             /**
              * @var string $fullPath
+             *
              * @phpstan-ignore-next-line larastan.noUnnecessaryCollectionCall
              */
             $fullPath = $node->ancestorsAndSelf()->get()->last()->full_path;
@@ -74,7 +75,7 @@ final class MarkdownEditorSearch extends Component
                 'full_path_encoded' => $fullPathEncoded,
                 'dir_name' => $dirName,
             ];
-        };
+        }
     }
 
     public function render(): Factory|View
