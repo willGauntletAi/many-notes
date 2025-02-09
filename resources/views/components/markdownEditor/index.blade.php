@@ -1,6 +1,6 @@
 <div class="flex flex-col h-full gap-3 overflow-hidden" x-data="toolbar"
-    @mde-link.window="link($event.detail.path); $nextTick(() => { editor.focus() });"
-    @mde-image.window="image($event.detail.path); $nextTick(() => { editor.focus() });" {{ $attributes }}>
+    @mde-link.window="link($event.detail.name, $event.detail.path); $nextTick(() => { editor.focus() });"
+    @mde-image.window="image($event.detail.name, $event.detail.path); $nextTick(() => { editor.focus() });" {{ $attributes }}>
     <x-markdownEditor.toolbar x-show="!isSmallDevice()" x-cloak />
     <textarea wire:model.live.debounce.500ms="nodeForm.content" x-show="isEditMode" id="noteEdit"
         class="w-full h-full p-0 px-1 bg-transparent border-0 focus:ring-0 focus:outline-0"
@@ -42,8 +42,7 @@
             },
 
             changeSelection(text, moveSelectionStart, moveSelectionEnd = null) {
-                const selectionStart = this.editor.selectionStart;
-                const selectionEnd = this.editor.selectionEnd;
+                const { selectionStart, selectionEnd } = this.editor;
                 moveSelectionEnd = moveSelectionEnd === null ? selectionEnd + moveSelectionStart :
                     selectionStart + moveSelectionEnd;
                 this.editor.setRangeText(text);
@@ -199,8 +198,7 @@
                 let selectionStart, selectionEnd, addedTextLength = 0;
 
                 for (i in parsed) {
-                    selectionStart = this.editor.selectionStart;
-                    selectionEnd = this.editor.selectionEnd;
+                    ({ selectionStart, selectionEnd } = this.editor);
 
                     if (everyLineUnorderedList) {
                         this.setRangeText("", parsed[i].lineStart + addedTextLength, parsed[i].lineStart +
@@ -227,8 +225,7 @@
             },
 
             addUnorderedList(index) {
-                const selectionStart = this.editor.selectionStart;
-                const selectionEnd = this.editor.selectionEnd;
+                const { selectionStart, selectionEnd } = this.editor;
                 const text = "- ";
                 this.setRangeText(text, index, index);
                 this.setSelectionRange(selectionStart + text.length, selectionEnd + text.length);
@@ -250,8 +247,7 @@
                 }
 
                 for (i in parsed) {
-                    selectionStart = this.editor.selectionStart;
-                    selectionEnd = this.editor.selectionEnd;
+                    ({ selectionStart, selectionEnd } = this.editor);
 
                     if (everyLineOrderedList) {
                         numberLength = (this.getOrderedList(parsed[i].lineText)).toString().length;
@@ -293,8 +289,7 @@
             },
 
             addOrderedList(index, number) {
-                const selectionStart = this.editor.selectionStart;
-                const selectionEnd = this.editor.selectionEnd;
+                const { selectionStart, selectionEnd } = this.editor;
                 const text = `${number}. `;
                 this.setRangeText(text, index, index);
                 this.setSelectionRange(selectionStart + text.length, selectionEnd + text.length);
@@ -306,8 +301,7 @@
                 let selectionStart, selectionEnd, addedTextLength = 0;
 
                 for (i in parsed) {
-                    selectionStart = this.editor.selectionStart;
-                    selectionEnd = this.editor.selectionEnd;
+                    ({ selectionStart, selectionEnd } = this.editor);
 
                     if (everyLineTaskList) {
                         this.setRangeText("", parsed[i].lineStart + addedTextLength, parsed[i].lineStart +
@@ -334,8 +328,7 @@
             },
 
             addTaskList(index) {
-                const selectionStart = this.editor.selectionStart;
-                const selectionEnd = this.editor.selectionEnd;
+                const { selectionStart, selectionEnd } = this.editor;
                 const text = "- [ ] ";
                 this.setRangeText(text, index, index);
                 this.setSelectionRange(selectionStart + text.length, selectionEnd + text.length);
@@ -362,8 +355,7 @@
                 }
 
                 this.deleteStyles();
-                const selectionStart = this.editor.selectionStart;
-                const selectionEnd = this.editor.selectionEnd;
+                const { selectionStart, selectionEnd } = this.editor;
                 this.setRangeText(text, parsed.lineStart, parsed.lineStart);
                 this.setSelectionRange(selectionStart + text.length, selectionEnd + text.length);
             },
@@ -377,8 +369,7 @@
             },
 
             addHeading(index, level) {
-                const selectionStart = this.editor.selectionStart;
-                const selectionEnd = this.editor.selectionEnd;
+                const { selectionStart, selectionEnd } = this.editor;
                 const text = "#".repeat(level) + " ";
                 this.setRangeText(text, index, index);
                 this.setSelectionRange(selectionStart + text.length, selectionEnd + text.length);
@@ -482,10 +473,12 @@
                 }
             },
 
-            link(url = '') {
-                const selectionStart = this.editor.selectionStart;
-                const selectionEnd = this.editor.selectionEnd;
-                const alt = this.editor.value.substring(selectionStart, selectionEnd);
+            link(name = '', url = '') {
+                const { selectionStart, selectionEnd } = this.editor;
+                let alt = this.editor.value.substring(selectionStart, selectionEnd);
+                if (alt.length === 0) {
+                    alt = name;
+                }
                 const text = `[${alt}](${url})`;
                 let moveSelection = !alt.length ? 1 : alt.length + 3;
                 if (alt.length && url.length) {
@@ -495,10 +488,12 @@
                 this.setSelectionRange(selectionStart + moveSelection, selectionStart + moveSelection);
             },
 
-            image(url = '') {
-                const selectionStart = this.editor.selectionStart;
-                const selectionEnd = this.editor.selectionEnd;
-                const alt = this.editor.value.substring(selectionStart, selectionEnd);
+            image(name = '', url = '') {
+                const { selectionStart, selectionEnd } = this.editor;
+                let alt = this.editor.value.substring(selectionStart, selectionEnd);
+                if (alt.length === 0) {
+                    alt = name;
+                }
                 const text = `![${alt}](${url})`;
                 let moveSelection = !alt.length ? 2 : alt.length + 4;
                 if (alt.length && url.length) {
