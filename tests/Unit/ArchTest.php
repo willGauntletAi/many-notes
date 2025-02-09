@@ -17,6 +17,7 @@ arch('avoid mutation')
     ->classes()
     ->toBeReadonly()
     ->ignoring([
+        'App\Console\Commands',
         'App\Exceptions',
         'App\Jobs',
         'App\Livewire',
@@ -30,6 +31,7 @@ arch('avoid inheritance')
     ->classes()
     ->toExtendNothing()
     ->ignoring([
+        'App\Console\Commands',
         'App\Exceptions',
         'App\Jobs',
         'App\Livewire',
@@ -63,6 +65,7 @@ arch('models')
     ->toHaveMethod('casts')
     ->toOnlyBeUsedIn([
         'App\Actions',
+        'App\Console\Commands',
         'App\Http',
         'App\Jobs',
         'App\Livewire',
