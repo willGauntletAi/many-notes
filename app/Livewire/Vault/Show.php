@@ -38,6 +38,12 @@ final class Show extends Component
 
     public ?string $selectedFileUrl = null;
 
+    /** @var Collection<int, VaultNode> */
+    public ?Collection $selectedFileLinks = null;
+
+    /** @var Collection<int, VaultNode> */
+    public ?Collection $selectedFileBacklinks = null;
+
     public bool $isEditMode = true;
 
     public function mount(Vault $vault): void
@@ -77,9 +83,7 @@ final class Show extends Component
             return;
         }
 
-        $this->selectedFile = $node->id;
-        $this->selectedFileUrl = new GetUrlFromVaultNode()->handle($node);
-        $this->nodeForm->setNode($node);
+        $this->setNode($node);
 
         if ($node->extension === 'md') {
             $this->dispatch('file-render-markup');
@@ -114,13 +118,12 @@ final class Show extends Component
             return;
         }
 
-        $this->selectedFileUrl = new GetUrlFromVaultNode()->handle($node);
-        $this->nodeForm->setNode($node);
+        $this->setNode($node);
     }
 
     public function closeFile(): void
     {
-        $this->reset(['selectedFile', 'selectedFileUrl']);
+        $this->reset(['selectedFile', 'selectedFileUrl', 'selectedFileLinks', 'selectedFileBacklinks']);
         $this->nodeForm->reset('node');
     }
 
@@ -135,16 +138,19 @@ final class Show extends Component
 
     public function updated(string $name): void
     {
-        if (!str_starts_with($name, 'nodeForm')) {
+        $node = $this->nodeForm->node;
+
+        if (!str_starts_with($name, 'nodeForm') || is_null($node)) {
             return;
         }
 
         $this->nodeForm->update();
+        $this->setNode($node);
 
-        if ($this->nodeForm->node && $this->nodeForm->node->wasChanged(['parent_id', 'name'])) {
+        if ($node->wasChanged(['parent_id', 'name'])) {
             $this->dispatch('node-updated');
 
-            if ($this->nodeForm->node->parent_id === $this->vault->templates_node_id) {
+            if ($node->parent_id === $this->vault->templates_node_id) {
                 $this->getTemplates();
             }
         }
@@ -251,5 +257,14 @@ final class Show extends Component
     public function render(): Factory|View
     {
         return view('livewire.vault.show');
+    }
+
+    private function setNode(VaultNode $node): void
+    {
+        $this->selectedFile = $node->id;
+        $this->selectedFileUrl = new GetUrlFromVaultNode()->handle($node);
+        $this->selectedFileLinks = $node->links()->get();
+        $this->selectedFileBacklinks = $node->backlinks()->get();
+        $this->nodeForm->setNode($node);
     }
 }

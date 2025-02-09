@@ -1,36 +1,44 @@
 <div class="flex flex-col h-dvh">
     <x-layouts.appHeader>
         <div class="flex items-center gap-4">
-            <button type="button" @click="$dispatch('sidebar-left-toggle')" class="hover:text-light-base-950 dark:hover:text-base-50">
-                <x-icons.folder class="w-5 h-5" />
-            </button>
-
-            <button type="button" @click="$wire.dispatchTo('modals.search-node', 'open-modal')" class="hover:text-light-base-950 dark:hover:text-base-50">
-                <x-icons.magnifyingGlass class="w-5 h-5" />
+            <button type="button" class="hover:text-light-base-950 dark:hover:text-base-50"
+                @click="$dispatch('left-panel-toggle')">
+                <x-icons.bars3BottomLeft class="w-5 h-5" />
             </button>
         </div>
 
         <div class="flex items-center gap-4">
-            <livewire:layout.user-menu />
+            <button type="button" class="hover:text-light-base-950 dark:hover:text-base-50"
+                @click="$wire.dispatchTo('modals.search-node', 'open-modal')">
+                <x-icons.magnifyingGlass class="w-5 h-5" />
+            </button>
+            <div class="flex items-center gap-4">
+                <livewire:layout.user-menu />
+            </div>
+            <button type="button" class="hover:text-light-base-950 dark:hover:text-base-50"
+                @click="$dispatch('right-panel-toggle')">
+                <x-icons.bars3BottomRight class="w-5 h-5" />
+            </button>
         </div>
     </x-layouts.appHeader>
 
     <x-layouts.appMain>
-        <div x-data="vault" x-cloak @sidebar-left-toggle.window="isSidebarOpen = !isSidebarOpen"
-            class="relative flex w-full">
+        <div x-data="vault" x-cloak class="relative flex w-full"
+            @left-panel-toggle.window="isLeftPanelOpen = !isLeftPanelOpen"
+            @right-panel-toggle.window="isRightPanelOpen = !isRightPanelOpen">
             <div wire:loading wire:target.except="nodeForm.name, nodeForm.content"
                 class="fixed inset-0 z-40 opacity-50 bg-light-base-200 dark:bg-base-950">
                 <div class="flex items-center justify-center h-full">
                     <x-icons.spinner class="w-5 h-5 animate-spin" />
                 </div>
             </div>
-            <div x-show="isSidebarOpen && isSmallDevice" @click="closeSideBar"
+            <div x-show="(isLeftPanelOpen || isRightPanelOpen) && isSmallDevice" @click="closePanels"
                 class="fixed inset-0 z-20 opacity-50 bg-light-base-200 dark:bg-base-950"
                 x-transition:enter="ease-out duration-300" x-transition:leave="ease-in duration-200">
             </div>
-            <div class="absolute top-0 left-0 z-30 flex flex-col h-full overflow-hidden overflow-y-auto transition-all w-60 bg-light-base-200 dark:bg-base-950"
-                :class="{ 'translate-x-0': isSidebarOpen, '-translate-x-full hidden': !isSidebarOpen }">
-                <div class="sticky top-0 z-[5] flex justify-between p-4 bg-light-base-200 dark:bg-base-950">
+            <div class="absolute top-0 left-0 z-30 flex flex-col h-full overflow-hidden overflow-y-auto transition-all w-60 bg-light-base-50 dark:bg-base-900"
+                :class="{ 'translate-x-0': isLeftPanelOpen, '-translate-x-full hidden': !isLeftPanelOpen }">
+                <div class="sticky top-0 z-[5] flex justify-between p-4 bg-light-base-50 dark:bg-base-900">
                     <h3>{{ $vault->name }}</h3>
 
                     <div class="flex items-center">
@@ -85,11 +93,11 @@
                 <livewire:vault.tree-view lazy="on-load" :$vault />
             </div>
 
-            <div class="absolute top-0 bottom-0 right-0 flex flex-col w-full overflow-y-auto transition-all text-start md:pl-60"
-                :class="{ 'md:pl-60': isSidebarOpen, '': !isSidebarOpen }" id="nodeContainer">
+            <div class="absolute top-0 bottom-0 right-0 flex flex-col w-full overflow-y-auto transition-all text-start bg-light-base-200 dark:bg-base-950"
+                :class="{ 'md:pl-60': isLeftPanelOpen, 'md:pr-60': isRightPanelOpen }" id="nodeContainer">
                 <div class="flex flex-col h-full w-full max-w-[48rem] mx-auto p-4">
                     <div class="flex flex-col w-full h-full gap-4" x-show="$wire.selectedFile">
-                        <div class="z-[5] bg-light-base-50 dark:bg-base-900">
+                        <div class="z-[5]">
                             <div class="flex justify-between">
                                 <input type="text" wire:model.live.debounce.500ms="nodeForm.name"
                                     class="flex flex-grow p-0 px-1 text-lg bg-transparent border-0 focus:ring-0 focus:outline-0" />
@@ -116,15 +124,19 @@
                                                                 </x-menu.item>
                                                             </x-menu.close>
                                                         </x-modal.open>
-                
+
                                                         <x-modal.panel title="{{ __('Choose a template') }}">
                                                             @if ($templates && count($templates))
-                                                                <ul class="flex flex-col gap-2" wire:loading.class="opacity-50">
+                                                                <ul class="flex flex-col gap-2"
+                                                                    wire:loading.class="opacity-50">
                                                                     @foreach ($templates as $template)
                                                                         <li>
-                                                                            <button type="button" wire:click="insertTemplate({{ $template->id }}); modalOpen = false"
+                                                                            <button type="button"
+                                                                                wire:click="insertTemplate({{ $template->id }}); modalOpen = false"
                                                                                 class="flex w-full gap-2 py-1 hover:text-light-base-950 dark:hover:text-base-50">
-                                                                                <span class="overflow-hidden whitespace-nowrap text-ellipsis" title="{{ $template->name }}">
+                                                                                <span
+                                                                                    class="overflow-hidden whitespace-nowrap text-ellipsis"
+                                                                                    title="{{ $template->name }}">
                                                                                     {{ $template->name }}
                                                                                 </span>
                                                                             </button>
@@ -190,6 +202,40 @@
                     </div>
                 </div>
             </div>
+
+            <div class="absolute top-0 right-0 z-30 flex flex-col h-full overflow-hidden overflow-y-auto transition-all w-60 bg-light-base-50 dark:bg-base-900"
+                :class="{ 'translate-x-0': isRightPanelOpen, '-translate-x-full hidden': !isRightPanelOpen }">
+                <div class="flex flex-col gap-4 p-4">
+                    <div class="flex flex-col w-full gap-2">
+                        <h3>Links</h3>
+                        <div class="flex flex-col gap-2 text-sm">
+                            @if ($selectedFileLinks && $selectedFileLinks->count())
+                                @foreach ($selectedFileLinks as $link)
+                                    <a class="text-primary-400 dark:text-primary-500 hover:text-primary-300 dark:hover:text-primary-600"
+                                        href="" @click.prevent="openFile({{ $link->id }})"
+                                    >{{ $link->name }}</a>
+                                @endforeach
+                            @else
+                                <p>{{ __('No links found') }}</p>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="flex flex-col w-full gap-2">
+                        <h3>Backlinks</h3>
+                        <div class="flex flex-col gap-2 text-sm">
+                            @if ($selectedFileBacklinks && $selectedFileBacklinks->count())
+                                @foreach ($selectedFileBacklinks as $link)
+                                    <a class="text-primary-400 dark:text-primary-500 hover:text-primary-300 dark:hover:text-primary-600"
+                                        href="" @click.prevent="openFile({{ $link->id }})"
+                                    >{{ $link->name }}</a>
+                                @endforeach
+                            @else
+                                <p>{{ __('No backlinks found') }}</p>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </x-layouts.appMain>
 
@@ -203,7 +249,8 @@
 @script
     <script>
         Alpine.data('vault', () => ({
-            isSidebarOpen: false,
+            isLeftPanelOpen: false,
+            isRightPanelOpen: false,
             isEditMode: $wire.entangle('isEditMode'),
             selectedFile: $wire.entangle('selectedFile'),
             html: '',
@@ -225,7 +272,7 @@
                     this.html = this.markdownToHtml();
                 });
 
-                this.isSidebarOpen = !this.isSmallDevice();
+                this.isLeftPanelOpen = !this.isSmallDevice();
                 let markedRender = new marked.Renderer;
                 markedRender.parser = new marked.Parser;
                 this.renderListitem = markedRender.listitem.bind(markedRender);
@@ -235,8 +282,9 @@
                 return window.innerWidth < 768;
             },
 
-            closeSideBar() {
-                this.isSidebarOpen = false;
+            closePanels() {
+                this.isLeftPanelOpen = false;
+                this.isRightPanelOpen = false;
             },
 
             toggleEditMode() {
@@ -247,7 +295,7 @@
                 $wire.openFile(node);
 
                 if (this.isSmallDevice()) {
-                    this.closeSideBar();
+                    this.closePanels();
                 }
 
                 this.resetScrollPosition();

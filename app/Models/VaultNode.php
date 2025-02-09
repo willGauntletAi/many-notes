@@ -7,6 +7,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships;
 
@@ -41,13 +42,33 @@ final class VaultNode extends Model
     }
 
     /**
-     * Get the nodes for the vault.
+     * Get the childs for the node.
      *
      * @return HasMany<VaultNode, $this>
      */
     public function childs(): HasMany
     {
         return $this->hasMany(self::class, 'parent_id');
+    }
+
+    /**
+     * The nodes that are linked to the node.
+     *
+     * @return BelongsToMany<VaultNode, $this>
+     */
+    public function links(): BelongsToMany
+    {
+        return $this->belongsToMany(self::class, null, 'source_id', 'destination_id');
+    }
+
+    /**
+     * The nodes that are backlinked to the node.
+     *
+     * @return BelongsToMany<VaultNode, $this>
+     */
+    public function backlinks(): BelongsToMany
+    {
+        return $this->belongsToMany(self::class, null, 'destination_id', 'source_id');
     }
 
     /**

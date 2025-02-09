@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Livewire\Forms;
 
 use App\Actions\CreateVaultNode;
+use App\Actions\ProcessVaultNodeLinks;
 use App\Actions\UpdateVaultNode;
 use App\Models\Vault;
 use App\Models\VaultNode;
@@ -75,6 +76,11 @@ final class VaultNodeForm extends Form
             'extension' => $this->is_file ? 'md' : null,
             'content' => $this->content,
         ]);
+
+        if ($node->is_file && $node->extension === 'md') {
+            new ProcessVaultNodeLinks()->handle($node);
+        }
+
         $this->reset(['name']);
 
         return $node;
@@ -96,5 +102,9 @@ final class VaultNodeForm extends Form
             'extension' => $this->node->extension,
             'content' => $this->content,
         ]);
+
+        if ($this->node->is_file && $this->node->extension === 'md') {
+            new ProcessVaultNodeLinks()->handle($this->node);
+        }
     }
 }

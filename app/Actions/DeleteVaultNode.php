@@ -53,6 +53,8 @@ final readonly class DeleteVaultNode
             }
         }
 
+        $node->links()->detach();
+        $node->backlinks()->detach();
         $node->delete();
 
         return $deletedNodes;

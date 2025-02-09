@@ -70,5 +70,7 @@ final readonly class ProcessImportedVault
         }
 
         $zip->close();
+
+        new ProcessVaultLinks()->handle($vault);
     }
 }

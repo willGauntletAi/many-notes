@@ -28,6 +28,10 @@ final readonly class ProcessImportedFile
         }
         $node = new CreateVaultNode()->handle($vault, $attributes);
 
+        if ($node->extension === 'md') {
+            new ProcessVaultNodeLinks()->handle($node);
+        }
+
         $relativePath = new GetPathFromVaultNode()->handle($node);
         $pathInfo = pathinfo($relativePath);
         $savePath = $pathInfo['dirname'] ?? '';
