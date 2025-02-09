@@ -1,6 +1,7 @@
 <div class="flex flex-col h-full gap-3 overflow-hidden" x-data="toolbar"
     @mde-link.window="link($event.detail.name, $event.detail.path); $nextTick(() => { editor.focus() });"
-    @mde-image.window="image($event.detail.name, $event.detail.path); $nextTick(() => { editor.focus() });" {{ $attributes }}>
+    @mde-image.window="image($event.detail.name, $event.detail.path); $nextTick(() => { editor.focus() });"
+    {{ $attributes }}>
     <x-markdownEditor.toolbar x-show="!isSmallDevice()" x-cloak />
     <textarea wire:model.live.debounce.500ms="nodeForm.content" x-show="isEditMode" id="noteEdit"
         class="w-full h-full p-0 px-1 bg-transparent border-0 focus:ring-0 focus:outline-0"
@@ -43,8 +44,9 @@
 
             changeSelection(text, moveSelectionStart, moveSelectionEnd = null) {
                 const { selectionStart, selectionEnd } = this.editor;
-                moveSelectionEnd = moveSelectionEnd === null ? selectionEnd + moveSelectionStart :
-                    selectionStart + moveSelectionEnd;
+                moveSelectionEnd = moveSelectionEnd === null
+                    ? selectionEnd + moveSelectionStart
+                    : selectionStart + moveSelectionEnd;
                 this.editor.setRangeText(text);
                 this.editor.focus();
                 this.editor.setSelectionRange(selectionStart + moveSelectionStart, moveSelectionEnd);
@@ -72,8 +74,8 @@
                 const selectionText = this.editor.value.substring(selectionStart, selectionEnd);
                 let fullSelectionStart = selectionStart;
                 if (selectionText.slice(0, 1) != " ") {
-                    fullSelectionStart = this.editor.value.substring(lineStart, selectionStart).lastIndexOf(
-                        " ") + lineStart + 1;
+                    fullSelectionStart = this.editor.value.substring(lineStart, selectionStart)
+                        .lastIndexOf(" ") + lineStart + 1;
                 }
                 let fullSelectionEnd = selectionEnd;
                 if (selectionText.slice(-1) != " ") {
@@ -89,10 +91,12 @@
                     'selectionStart': selectionStart,
                     'selectionEnd': selectionEnd,
                     'selectionText': selectionText,
-                    'selectionPrefixText': selectionStart - fullSelectionStart > 0 ? fullSelectionText.slice(0,
-                        selectionStart - fullSelectionStart) : '',
-                    'selectionSuffixText': selectionEnd - fullSelectionEnd < 0 ? fullSelectionText.slice(
-                        selectionEnd - fullSelectionEnd) : '',
+                    'selectionPrefixText': selectionStart - fullSelectionStart > 0
+                        ? fullSelectionText.slice(0, selectionStart - fullSelectionStart)
+                        : '',
+                    'selectionSuffixText': selectionEnd - fullSelectionEnd < 0
+                        ? fullSelectionText.slice(selectionEnd - fullSelectionEnd)
+                        : '',
                     'fullSelectionStart': fullSelectionStart,
                     'fullSelectionEnd': fullSelectionEnd,
                     'fullSelectionText': fullSelectionText,
@@ -110,21 +114,23 @@
                 for (i in pieces) {
                     lines.push({
                         'lineStart': indexInc,
-                        'lineText': pieces[i]
+                        'lineText': pieces[i],
                     });
                     indexInc += pieces[i].length + 1;
                 }
 
                 // Parse rest of last selected line
                 pieces = this.editor.value.substring(indexEnd).split(/\r?\n/);
-                lines[lines.length - 1].lineText += pieces.length ? pieces[0] : this.editor.value.substring(
-                    indexEnd);
+                lines[lines.length - 1].lineText += pieces.length
+                    ? pieces[0]
+                    : this.editor.value.substring(indexEnd);
 
                 // Parse rest of first selected line
                 pieces = this.editor.value.substring(0, indexStart).split(/\r?\n/);
                 lines[0].lineStart = pieces.length ? indexStart - pieces[pieces.length - 1].length : 0;
-                lines[0].lineText = pieces.length ? pieces[pieces.length - 1] + lines[0].lineText : this.editor
-                    .value.substring(0, indexEnd) + lines[0].lineText;
+                lines[0].lineText = pieces.length
+                    ? pieces[pieces.length - 1] + lines[0].lineText
+                    : this.editor.value.substring(0, indexEnd) + lines[0].lineText;
 
                 return lines;
             },
@@ -149,8 +155,10 @@
                 if (this.hasOrderedList(parsed.lineText)) {
                     const numberLength = (this.getOrderedList(parsed.lineText)).toString().length;
                     this.setRangeText("", parsed.lineStart, parsed.lineStart + numberLength + 2);
-                    this.setSelectionRange(parsed.originalSelectionStart - numberLength - 2, parsed
-                        .originalSelectionEnd - numberLength - 2);
+                    this.setSelectionRange(
+                        parsed.originalSelectionStart - numberLength - 2,
+                        parsed.originalSelectionEnd - numberLength - 2,
+                    );
                     this.deleteStyles();
                     return;
                 }
@@ -158,8 +166,10 @@
                 if (this.hasHeading(parsed.lineText)) {
                     const headingLength = this.getHeading(parsed.lineText).length;
                     this.setRangeText("", parsed.lineStart, parsed.lineStart + headingLength);
-                    this.setSelectionRange(parsed.originalSelectionStart - headingLength, parsed
-                        .originalSelectionEnd - headingLength);
+                    this.setSelectionRange(
+                        parsed.originalSelectionStart - headingLength,
+                        parsed.originalSelectionEnd - headingLength,
+                    );
                     this.deleteStyles();
                     return;
                 }
@@ -201,20 +211,31 @@
                     ({ selectionStart, selectionEnd } = this.editor);
 
                     if (everyLineUnorderedList) {
-                        this.setRangeText("", parsed[i].lineStart + addedTextLength, parsed[i].lineStart +
-                            addedTextLength + 2);
-                        this.setSelectionRange(parsed[i].lineStart < selectionStart ? selectionStart - 2 :
-                            selectionStart, selectionEnd - 2);
+                        this.setRangeText(
+                            "",
+                            parsed[i].lineStart + addedTextLength, parsed[i].lineStart + addedTextLength + 2
+                        );
+                        this.setSelectionRange(
+                            parsed[i].lineStart < selectionStart
+                                ? selectionStart - 2
+                                : selectionStart, selectionEnd - 2,
+                            );
                         addedTextLength -= 2;
                         continue;
                     }
 
                     if (!this.hasUnorderedList(parsed[i].lineText)) {
                         const text = "- ";
-                        this.setRangeText(text, parsed[i].lineStart + addedTextLength, parsed[i].lineStart +
-                            addedTextLength);
-                        this.setSelectionRange(parsed[i].lineStart < selectionStart ? selectionStart + text
-                            .length : selectionStart, selectionEnd + text.length);
+                        this.setRangeText(
+                            text,
+                            parsed[i].lineStart + addedTextLength,
+                            parsed[i].lineStart + addedTextLength,
+                        );
+                        this.setSelectionRange(
+                            parsed[i].lineStart < selectionStart
+                                ? selectionStart + text.length
+                                : selectionStart, selectionEnd + text.length,
+                            );
                         addedTextLength += text.length;
                     }
                 }
@@ -251,28 +272,48 @@
 
                     if (everyLineOrderedList) {
                         numberLength = (this.getOrderedList(parsed[i].lineText)).toString().length;
-                        this.setRangeText("", parsed[i].lineStart + addedTextLength, parsed[i].lineStart +
-                            addedTextLength + numberLength + 2);
-                        this.setSelectionRange(parsed[i].lineStart < selectionStart ? selectionStart -
-                            numberLength - 2 : selectionStart, selectionEnd - numberLength - 2);
+                        this.setRangeText(
+                            "",
+                            parsed[i].lineStart + addedTextLength,
+                            parsed[i].lineStart + addedTextLength + numberLength + 2,
+                        );
+                        this.setSelectionRange(
+                            parsed[i].lineStart < selectionStart
+                                ? selectionStart - numberLength - 2
+                                : selectionStart,
+                            selectionEnd - numberLength - 2,
+                        );
                         addedTextLength -= numberLength + 2;
                         continue;
                     }
 
                     if (!this.hasOrderedList(parsed[i].lineText)) {
                         const text = `${number}. `;
-                        this.setRangeText(text, parsed[i].lineStart + addedTextLength, parsed[i].lineStart +
-                            addedTextLength);
-                        this.setSelectionRange(parsed[i].lineStart < selectionStart ? selectionStart + text
-                            .length : selectionStart, selectionEnd + text.length);
+                        this.setRangeText(
+                            text,
+                            parsed[i].lineStart + addedTextLength,
+                            parsed[i].lineStart + addedTextLength,
+                        );
+                        this.setSelectionRange(
+                            parsed[i].lineStart < selectionStart
+                                ? selectionStart + text.length
+                                : selectionStart,
+                            selectionEnd + text.length,
+                        );
                         addedTextLength += text.length;
                     } else if (this.getOrderedList(parsed[i].lineText) != number) {
                         numberLength = (this.getOrderedList(parsed[i].lineText)).toString().length;
-                        this.setRangeText(number, parsed[i].lineStart + addedTextLength, parsed[i].lineStart +
-                            addedTextLength + numberLength);
-                        this.setSelectionRange(parsed[i].lineStart < selectionStart ? selectionStart - (
-                                numberLength - (number).toString().length) : selectionStart, selectionEnd -
-                            (numberLength - (number).toString().length));
+                        this.setRangeText(
+                            number,
+                            parsed[i].lineStart + addedTextLength,
+                            parsed[i].lineStart + addedTextLength + numberLength,
+                        );
+                        this.setSelectionRange(
+                            parsed[i].lineStart < selectionStart
+                                ? selectionStart - (numberLength - (number).toString().length)
+                                : selectionStart,
+                            selectionEnd - (numberLength - (number).toString().length),
+                        );
                         addedTextLength -= (numberLength - (number).toString().length);
                     }
 
@@ -304,20 +345,34 @@
                     ({ selectionStart, selectionEnd } = this.editor);
 
                     if (everyLineTaskList) {
-                        this.setRangeText("", parsed[i].lineStart + addedTextLength, parsed[i].lineStart +
-                            addedTextLength + 6);
-                        this.setSelectionRange(parsed[i].lineStart < selectionStart ? selectionStart - 6 :
-                            selectionStart, selectionEnd - 6);
+                        this.setRangeText(
+                            "",
+                            parsed[i].lineStart + addedTextLength,
+                            parsed[i].lineStart + addedTextLength + 6,
+                        );
+                        this.setSelectionRange(
+                            parsed[i].lineStart < selectionStart
+                                ? selectionStart - 6
+                                : selectionStart,
+                            selectionEnd - 6,
+                        );
                         addedTextLength -= 6;
                         continue;
                     }
 
                     if (!this.hasTaskList(parsed[i].lineText)) {
                         const text = "- [ ] ";
-                        this.setRangeText(text, parsed[i].lineStart + addedTextLength, parsed[i].lineStart +
-                            addedTextLength);
-                        this.setSelectionRange(parsed[i].lineStart < selectionStart ? selectionStart + text
-                            .length : selectionStart, selectionEnd + text.length);
+                        this.setRangeText(
+                            text,
+                            parsed[i].lineStart + addedTextLength,
+                            parsed[i].lineStart + addedTextLength,
+                        );
+                        this.setSelectionRange(
+                            parsed[i].lineStart < selectionStart
+                                ? selectionStart + text.length
+                                : selectionStart,
+                            selectionEnd + text.length,
+                        );
                         addedTextLength += text.length;
                     }
                 }
@@ -385,20 +440,34 @@
                     selectionEnd = this.editor.selectionEnd;
 
                     if (everyLineBlockquot) {
-                        this.setRangeText("", parsed[i].lineStart + addedTextLength, parsed[i].lineStart +
-                            addedTextLength + 2);
-                        this.setSelectionRange(parsed[i].lineStart < selectionStart ? selectionStart - 2 :
-                            selectionStart, selectionEnd - 2);
+                        this.setRangeText(
+                            "",
+                            parsed[i].lineStart + addedTextLength,
+                            parsed[i].lineStart + addedTextLength + 2,
+                        );
+                        this.setSelectionRange(
+                            parsed[i].lineStart < selectionStart
+                                ? selectionStart - 2
+                                : selectionStart,
+                            selectionEnd - 2,
+                        );
                         addedTextLength -= 2;
                         continue;
                     }
 
                     if (!this.hasBlockquote(parsed[i].lineText)) {
                         const text = "> ";
-                        this.setRangeText(text, parsed[i].lineStart + addedTextLength, parsed[i].lineStart +
-                            addedTextLength);
-                        this.setSelectionRange(parsed[i].lineStart < selectionStart ? selectionStart + text
-                            .length : selectionStart, selectionEnd + text.length);
+                        this.setRangeText(
+                            text,
+                            parsed[i].lineStart + addedTextLength,
+                            parsed[i].lineStart + addedTextLength,
+                        );
+                        this.setSelectionRange(
+                            parsed[i].lineStart < selectionStart
+                                ? selectionStart + text.length
+                                : selectionStart,
+                            selectionEnd + text.length,
+                        );
                         addedTextLength += 2;
                     }
                 }
@@ -416,10 +485,16 @@
                 const suffixFound = parsed.selectionSuffixText.search(/[\*]{2}/);
 
                 if (prefixFound != -1 && suffixFound != -1) {
-                    this.setRangeText("", parsed.fullSelectionStart + prefixFound, parsed.fullSelectionStart +
-                        prefixFound + 2);
-                    this.setRangeText("", parsed.selectionEnd + suffixFound - 2, parsed.selectionEnd +
-                        suffixFound);
+                    this.setRangeText(
+                        "",
+                        parsed.fullSelectionStart + prefixFound,
+                        parsed.fullSelectionStart + prefixFound + 2,
+                    );
+                    this.setRangeText(
+                        "",
+                        parsed.selectionEnd + suffixFound - 2,
+                        parsed.selectionEnd + suffixFound,
+                    );
                 } else {
                     this.setRangeText("**", parsed.selectionStart, parsed.selectionStart);
                     this.setRangeText("**", parsed.selectionEnd + 2, parsed.selectionEnd + 2);
@@ -438,15 +513,27 @@
                 const suffixTripleFound = parsed.selectionSuffixText.search(/[\*]{3}/);
 
                 if (prefixSingleFound != -1 && suffixSingleFound != -1) {
-                    this.setRangeText("", parsed.fullSelectionStart + prefixSingleFound, parsed
-                        .fullSelectionStart + prefixSingleFound + 1);
-                    this.setRangeText("", parsed.selectionEnd + suffixSingleFound - 1, parsed.selectionEnd +
-                        suffixSingleFound);
+                    this.setRangeText(
+                        "",
+                        parsed.fullSelectionStart + prefixSingleFound,
+                        parsed.fullSelectionStart + prefixSingleFound + 1,
+                    );
+                    this.setRangeText(
+                        "",
+                        parsed.selectionEnd + suffixSingleFound - 1,
+                        parsed.selectionEnd + suffixSingleFound,
+                    );
                 } else if (prefixTripleFound != -1 && suffixTripleFound != -1) {
-                    this.setRangeText("", parsed.fullSelectionStart + prefixTripleFound, parsed
-                        .fullSelectionStart + prefixTripleFound + 1);
-                    this.setRangeText("", parsed.selectionEnd + suffixTripleFound - 1, parsed.selectionEnd +
-                        suffixTripleFound);
+                    this.setRangeText(
+                        "",
+                        parsed.fullSelectionStart + prefixTripleFound,
+                        parsed.fullSelectionStart + prefixTripleFound + 1,
+                    );
+                    this.setRangeText(
+                        "",
+                        parsed.selectionEnd + suffixTripleFound - 1,
+                        parsed.selectionEnd + suffixTripleFound,
+                    );
                 } else {
                     this.setRangeText("*", parsed.selectionStart, parsed.selectionStart);
                     this.setRangeText("*", parsed.selectionEnd + 1, parsed.selectionEnd + 1);
@@ -462,10 +549,16 @@
                 const suffixFound = parsed.selectionSuffixText.search(/[~]{2}/);
 
                 if (prefixFound != -1 && suffixFound != -1) {
-                    this.setRangeText("", parsed.fullSelectionStart + prefixFound, parsed.fullSelectionStart +
-                        prefixFound + 2);
-                    this.setRangeText("", parsed.selectionEnd + suffixFound - 2, parsed.selectionEnd +
-                        suffixFound);
+                    this.setRangeText(
+                        "",
+                        parsed.fullSelectionStart + prefixFound,
+                        parsed.fullSelectionStart + prefixFound + 2,
+                    );
+                    this.setRangeText(
+                        "",
+                        parsed.selectionEnd + suffixFound - 2,
+                        parsed.selectionEnd + suffixFound,
+                    );
                 } else {
                     this.setRangeText("~~", parsed.selectionStart, parsed.selectionStart);
                     this.setRangeText("~~", parsed.selectionEnd + 2, parsed.selectionEnd + 2);
