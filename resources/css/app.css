@@ -36,11 +36,12 @@
         --focus-outlineColor: #1f6feb;
         --fgColor-default: #f0f6fc;
         --fgColor-muted: #9198a1;
-        --fgColor-accent: #4493f8;
+        --fgColor-accent: #4d8ce6;
         --fgColor-success: #3fb950;
         --fgColor-attention: #d29922;
         --fgColor-danger: #f85149;
         --fgColor-done: #ab7df8;
+        --fgColor-accent-hover: #3c81e3;
         --bgColor-default: #0d1117;
         --bgColor-muted: #151b23;
         --bgColor-neutral-muted: #656c7633;
@@ -95,11 +96,12 @@
         --focus-outlineColor: #0969da;
         --fgColor-default: #1f2328;
         --fgColor-muted: #59636e;
-        --fgColor-accent: #0969da;
+        --fgColor-accent: #5893e7;
         --fgColor-success: #1a7f37;
         --fgColor-attention: #9a6700;
         --fgColor-danger: #d1242f;
         --fgColor-done: #8250df;
+        --fgColor-accent-hover: #639be9;
         --bgColor-default: #ffffff;
         --bgColor-muted: #f6f8fa;
         --bgColor-neutral-muted: #818b981f;
@@ -319,7 +321,7 @@
 }
 
 .markdown-body a:hover {
-    text-decoration: underline;
+    color: var(--fgColor-accent-hover);
 }
 
 .markdown-body ::placeholder {
