@@ -42,8 +42,8 @@
         --fgColor-danger: #f85149;
         --fgColor-done: #ab7df8;
         --fgColor-accent-hover: #3c81e3;
-        --bgColor-default: #0d1117;
-        --bgColor-muted: #151b23;
+        --bgColor-default: #181c20;
+        --bgColor-muted: #1c2127;
         --bgColor-neutral-muted: #656c7633;
         --bgColor-attention-muted: #bb800926;
         --borderColor-default: #3d444d;
@@ -103,7 +103,7 @@
         --fgColor-done: #8250df;
         --fgColor-accent-hover: #639be9;
         --bgColor-default: #ffffff;
-        --bgColor-muted: #f6f8fa;
+        --bgColor-muted: #ffffff;
         --bgColor-neutral-muted: #818b981f;
         --bgColor-attention-muted: #fff8c5;
         --borderColor-default: #d1d9e0;
@@ -269,7 +269,7 @@
     overflow: hidden;
     background: transparent;
     border-bottom: 1px solid var(--borderColor-muted);
-    height: .25em;
+    height: .1em;
     padding: 0;
     margin: var(--base-size-24) 0;
     background-color: var(--borderColor-default);
