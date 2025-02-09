@@ -5,7 +5,7 @@
     <x-markdownEditor.toolbar x-show="!isSmallDevice()" x-cloak />
     <textarea wire:model.live.debounce.500ms="nodeForm.content" x-show="isEditMode" id="noteEdit"
         class="w-full h-full p-0 px-1 bg-transparent border-0 focus:ring-0 focus:outline-0"
-        @keyup.enter="newLine" @select="parseSelection"></textarea>
+        @keyup.enter="newLine"></textarea>
     <div x-show="!isEditMode" x-html="html" id="noteView" class="overflow-y-auto markdown-body"></div>
     <x-markdownEditor.toolbar x-show="isSmallDevice()" x-cloak />
 </div>
@@ -478,6 +478,7 @@
             },
 
             bold() {
+                this.parseSelection();
                 const parsed = this.parseLine(this.editor.selectionStart, this.editor.selectionEnd);
 
                 // Find the positions of two consecutive '*' characters
@@ -503,6 +504,7 @@
             },
 
             italic() {
+                this.parseSelection();
                 const parsed = this.parseLine(this.editor.selectionStart, this.editor.selectionEnd);
 
                 // Find the positions of non-consecutive '*' characters (ignore ** because it's for bold)
@@ -542,6 +544,7 @@
             },
 
             strikethrough() {
+                this.parseSelection();
                 const parsed = this.parseLine(this.editor.selectionStart, this.editor.selectionEnd);
 
                 // Find the positions of two consecutive '~' characters
@@ -567,31 +570,41 @@
             },
 
             link(name = '', url = '') {
+                this.parseSelection();
                 const { selectionStart, selectionEnd } = this.editor;
                 let alt = this.editor.value.substring(selectionStart, selectionEnd);
+
                 if (alt.length === 0) {
                     alt = name;
                 }
+
                 const text = `[${alt}](${url})`;
                 let moveSelection = !alt.length ? 1 : alt.length + 3;
+
                 if (alt.length && url.length) {
                     moveSelection += url.length + 1;
                 }
+
                 this.setRangeText(text, selectionStart, selectionEnd);
                 this.setSelectionRange(selectionStart + moveSelection, selectionStart + moveSelection);
             },
 
             image(name = '', url = '') {
+                this.parseSelection();
                 const { selectionStart, selectionEnd } = this.editor;
                 let alt = this.editor.value.substring(selectionStart, selectionEnd);
+
                 if (alt.length === 0) {
                     alt = name;
                 }
+
                 const text = `![${alt}](${url})`;
                 let moveSelection = !alt.length ? 2 : alt.length + 4;
+
                 if (alt.length && url.length) {
                     moveSelection += url.length + 1;
                 }
+
                 this.setRangeText(text, selectionStart, selectionEnd);
                 this.setSelectionRange(selectionStart + moveSelection, selectionStart + moveSelection);
             },
