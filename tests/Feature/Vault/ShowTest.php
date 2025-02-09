@@ -7,6 +7,7 @@ use App\Actions\CreateVaultNode;
 use App\Actions\GetPathFromUser;
 use App\Actions\GetPathFromVaultNode;
 use App\Actions\GetUrlFromVaultNode;
+use App\Actions\ProcessVaultNodeLinks;
 use App\Livewire\Vault\Show;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
@@ -348,6 +349,35 @@ it('updates the node', function (): void {
     expect($vault->nodes()->first()->content)->toBe($newContent);
 });
 
+it('process the links when updating a node', function (): void {
+    $user = User::factory()->create()->first();
+    $vault = new CreateVault()->handle($user, [
+        'name' => fake()->words(3, true),
+    ]);
+    $firstNodeName = fake()->words(3, true);
+    $firstNode = new CreateVaultNode()->handle($vault, [
+        'is_file' => true,
+        'name' => $firstNodeName,
+        'extension' => 'md',
+    ]);
+    $secondNodeName = fake()->words(3, true);
+    $secondNode = new CreateVaultNode()->handle($vault, [
+        'is_file' => true,
+        'name' => $secondNodeName,
+        'extension' => 'md',
+    ]);
+    $content = '[link](/' . $secondNodeName . '.md)';
+    expect($firstNode->links()->count())->toBe(0);
+
+    Livewire::actingAs($user)
+        ->withQueryParams(['file' => $firstNode->id])
+        ->test(Show::class, ['vault' => $vault])
+        ->set('nodeForm.content', $content);
+
+    expect($firstNode->links()->count())->toBe(1);
+    expect($firstNode->links()->first()->is($secondNode))->toBeTrue();
+});
+
 it('updates the vault', function (): void {
     $user = User::factory()->create()->first();
     $vault = new CreateVault()->handle($user, [
@@ -413,4 +443,36 @@ it('closes an open file when it is deleted', function (): void {
         ->assertSet('selectedFile', $node->id)
         ->call('deleteNode', $node)
         ->assertSet('selectedFile', null);
+});
+
+it('deletes the links and backlinks when deleting a node', function (): void {
+    $user = User::factory()->create()->first();
+    $vault = new CreateVault()->handle($user, [
+        'name' => fake()->words(3, true),
+    ]);
+    $firstNodeName = fake()->words(3, true);
+    $secondNodeName = fake()->words(3, true);
+    $firstNode = new CreateVaultNode()->handle($vault, [
+        'is_file' => true,
+        'name' => $firstNodeName,
+        'extension' => 'md',
+        'content' => '[link](/' . $secondNodeName . '.md)',
+    ]);
+    $secondNode = new CreateVaultNode()->handle($vault, [
+        'is_file' => true,
+        'name' => $secondNodeName,
+        'extension' => 'md',
+        'content' => '[link](/' . $firstNodeName . '.md)',
+    ]);
+    new ProcessVaultNodeLinks()->handle($firstNode);
+    new ProcessVaultNodeLinks()->handle($secondNode);
+    expect($firstNode->links()->count())->toBe(1);
+    expect($secondNode->links()->count())->toBe(1);
+
+    Livewire::actingAs($user)
+        ->test(Show::class, ['vault' => $vault])
+        ->call('deleteNode', $firstNode)
+        ->assertDispatched('toast');
+    expect($firstNode->links()->count())->toBe(0);
+    expect($secondNode->links()->count())->toBe(0);
 });

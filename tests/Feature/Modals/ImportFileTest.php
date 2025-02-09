@@ -133,3 +133,25 @@ it('does not import a file with a non-allowed extension', function (): void {
         ->set('file', $file)
         ->assertHasErrors('file');
 });
+
+it('creates links when importing a file', function (): void {
+    $user = User::factory()->create()->first();
+    $vault = new CreateVault()->handle($user, [
+        'name' => fake()->words(3, true),
+    ]);
+    $nodeName = fake()->words(3, true);
+    $node = new CreateVaultNode()->handle($vault, [
+        'is_file' => true,
+        'name' => $nodeName,
+        'extension' => 'md',
+        'content' => fake()->paragraph(),
+    ]);
+    $file = UploadedFile::fake()->createWithContent('note.md', '[link](/' . $nodeName . '.md)');
+
+    Livewire::actingAs($user)
+        ->test(ImportFile::class, ['vault' => $vault])
+        ->call('open')
+        ->set('file', $file);
+
+    expect($vault->nodes()->get()->get(1)->links()->count())->toBe(1);
+});

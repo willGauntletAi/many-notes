@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+use App\Actions\CreateVault;
+use App\Actions\CreateVaultNode;
+use App\Actions\ProcessVaultNodeLinks;
+use App\Models\User;
 use App\Models\Vault;
 use App\Models\VaultNode;
 
@@ -32,5 +36,45 @@ it('may have childs', function (): void {
     $node = VaultNode::factory()->hasChilds(3)->create();
 
     expect($node->childs)->toHaveCount(3)
+        ->each->toBeInstanceOf(VaultNode::class);
+});
+
+it('may have links', function (): void {
+    $user = User::factory()->create()->first();
+    $vault = new CreateVault()->handle($user, [
+        'name' => fake()->words(3, true),
+    ]);
+    $folderName = fake()->words(3, true);
+    $firstNodeName = fake()->words(3, true);
+    $secondNodeName = fake()->words(3, true);
+    $folderNode = new CreateVaultNode()->handle($vault, [
+        'name' => $folderName,
+        'is_file' => false,
+    ]);
+    $firstNode = new CreateVaultNode()->handle($vault, [
+        'is_file' => true,
+        'name' => $firstNodeName,
+        'extension' => 'md',
+        'content' => '[link](/' . $folderName . '/' . $secondNodeName . '.md)'
+            . ' [link](' . $folderName . '/' . $secondNodeName . '.md)',
+    ]);
+    $secondNode = new CreateVaultNode()->handle($vault, [
+        'is_file' => true,
+        'parent_id' => $folderNode->id,
+        'name' => $secondNodeName,
+        'extension' => 'md',
+        'content' => fake()->paragraph(),
+    ]);
+
+    // Parse links in content
+    new ProcessVaultNodeLinks()->handle($firstNode);
+
+    expect($firstNode->links()->get())->toHaveCount(2)
+        ->each->toBeInstanceOf(VaultNode::class);
+    expect($firstNode->backlinks()->get())->toHaveCount(0)
+        ->each->toBeInstanceOf(VaultNode::class);
+    expect($secondNode->backlinks()->get())->toHaveCount(2)
+        ->each->toBeInstanceOf(VaultNode::class);
+    expect($secondNode->links()->get())->toHaveCount(0)
         ->each->toBeInstanceOf(VaultNode::class);
 });

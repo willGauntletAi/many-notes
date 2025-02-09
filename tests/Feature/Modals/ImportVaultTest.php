@@ -92,3 +92,28 @@ it('imports a zip file with files and folders', function (): void {
 
     expect($user->vaults()->count())->toBe(1);
 });
+
+it('creates links when importing a vault', function (): void {
+    $user = User::factory()->create()->first();
+    $zip = new ZipArchive();
+    $relativePath = 'public/' . Str::random(16) . '.zip';
+    Storage::disk('local')->put($relativePath, '');
+    $path = Storage::disk('local')->path($relativePath);
+    $zip->open($path, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+    $firstNodeName = fake()->words(3, true);
+    $secondNodeName = fake()->words(3, true);
+    $zip->addFromString($firstNodeName . '.md', '[link](/' . $secondNodeName . '.md)');
+    $zip->addFromString($secondNodeName . '.md', '[link](/' . $firstNodeName . '.md)');
+    $zip->close();
+    $file = UploadedFile::fake()->createWithContent('vault.zip', file_get_contents($path));
+
+    Livewire::actingAs($user)
+        ->test(ImportVault::class)
+        ->call('open')
+        ->set('file', $file);
+
+    expect($user->vaults()->count())->toBe(1)
+        ->and($user->vaults()->first()->nodes()->count())->toBe(2)
+        ->and($user->vaults()->first()->nodes()->get()->get(0)->links()->count())->toBe(1)
+        ->and($user->vaults()->first()->nodes()->get()->get(1)->links()->count())->toBe(1);
+});
