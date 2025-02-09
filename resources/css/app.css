@@ -292,10 +292,20 @@
     appearance: button;
 }
 
+.markdown-body [type=checkbox] {
+    border-radius: 3px;
+}
+
 .markdown-body [type=checkbox],
 .markdown-body [type=radio] {
+    background-color: transparent;
     box-sizing: border-box;
     padding: 0;
+}
+
+.markdown-body [type=checkbox]:checked,
+.markdown-body [type=radio]:checked {
+    background-color: currentColor;
 }
 
 .markdown-body [type=number]::-webkit-inner-spin-button,
@@ -681,7 +691,7 @@
 }
 
 .markdown-body li>p {
-    margin-top: var(--base-size-16);
+    margin: 0;
 }
 
 .markdown-body li+li {
