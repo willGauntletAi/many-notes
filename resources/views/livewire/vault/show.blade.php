@@ -234,6 +234,20 @@
                             @endif
                         </div>
                     </div>
+                    <div class="flex flex-col w-full gap-2">
+                        <h3>Tags</h3>
+                        <div class="flex flex-col gap-2 text-sm">
+                            @if ($selectedFileTags && $selectedFileTags->count())
+                                @foreach ($selectedFileTags as $tag)
+                                    <a class="text-primary-400 dark:text-primary-500 hover:text-primary-300 dark:hover:text-primary-600"
+                                        href="" @click.prevent="$wire.dispatchTo('modals.search-node', 'open-modal', { search: 'tag:{{ $tag->name }}' })"
+                                    >{{ $tag->name }}</a>
+                                @endforeach
+                            @else
+                                <p>{{ __('No tags found') }}</p>
+                            @endif
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

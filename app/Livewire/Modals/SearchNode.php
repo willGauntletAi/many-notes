@@ -8,9 +8,11 @@ use App\Models\Vault;
 use App\Models\VaultNode;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Builder as IlluminateBuilder;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Staudenmeir\LaravelAdjacencyList\Eloquent\Builder;
+use Staudenmeir\LaravelAdjacencyList\Eloquent\Collection;
 
 final class SearchNode extends Component
 {
@@ -30,25 +32,18 @@ final class SearchNode extends Component
     }
 
     #[On('open-modal')]
-    public function open(): void
+    public function open(string $search = ''): void
     {
         $this->openModal();
+        $this->search = $search;
     }
 
     public function search(): void
     {
-        $nodes = VaultNode::query()
-            ->select('id', 'name', 'extension')
-            ->where('vault_id', $this->vault->id)
-            ->where('is_file', true)
-            ->when(mb_strlen($this->search), function (Builder $query): void {
-                $query->where('name', 'like', '%' . $this->search . '%');
-            })
-            ->orderByDesc('updated_at')
-            ->limit(5)
-            ->get();
-
         $this->nodes = [];
+        preg_match('/tag:(#[\w:-]+)/', $this->search, $matches);
+        $nodes = $matches === [] ? $this->searchText() : $this->searchTag($matches[1]);
+
         foreach ($nodes as $node) {
             /**
              * @var string $fullPath
@@ -73,5 +68,41 @@ final class SearchNode extends Component
         $this->search();
 
         return view('livewire.modals.searchNode');
+    }
+
+    /**
+     * Searches for nodes with a given name.
+     *
+     * @return Collection<int, VaultNode>
+     */
+    private function searchText(): Collection
+    {
+        return VaultNode::query()
+            ->select('id', 'name', 'extension')
+            ->where('vault_id', $this->vault->id)
+            ->where('is_file', true)
+            ->when(mb_strlen($this->search), function (Builder $query): void {
+                $query->where('name', 'like', '%' . $this->search . '%');
+            })
+            ->orderByDesc('updated_at')
+            ->limit(5)
+            ->get();
+    }
+
+    /**
+     * Searches for nodes with a given tag.
+     *
+     * @return Collection<int, VaultNode>
+     */
+    private function searchTag(string $tag): Collection
+    {
+        return VaultNode::query()
+            ->select('id', 'name', 'extension')
+            ->where('vault_id', $this->vault->id)
+            ->where('is_file', true)
+            ->whereHas('tags', fn (IlluminateBuilder $query): IlluminateBuilder => $query->where('name', $tag))
+            ->orderByDesc('updated_at')
+            ->limit(5)
+            ->get();
     }
 }

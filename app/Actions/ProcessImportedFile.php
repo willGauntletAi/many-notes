@@ -30,6 +30,7 @@ final readonly class ProcessImportedFile
 
         if ($node->extension === 'md') {
             new ProcessVaultNodeLinks()->handle($node);
+            new ProcessVaultNodeTags()->handle($node);
         }
 
         $relativePath = new GetPathFromVaultNode()->handle($node);

@@ -72,6 +72,16 @@ final class VaultNode extends Model
     }
 
     /**
+     * The tags that are linked to the node.
+     *
+     * @return BelongsToMany<Tag, $this>
+     */
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany(Tag::class, null, 'vault_node_id', 'tag_id');
+    }
+
+    /**
      * Get the custom paths for the model.
      *
      * @return list<array{name: string, column: string, separator: string, reverse: bool}>
