@@ -12,5 +12,5 @@ it('redirects guests to login page', function (): void {
 
 it('redirects users to vaults page', function (): void {
     Livewire::test(Index::class)
-        ->assertRedirect(route('vaults.index'));
+        ->assertRedirect(route('vaults.last'));
 });
