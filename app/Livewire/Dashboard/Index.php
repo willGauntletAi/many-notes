@@ -10,6 +10,6 @@ final class Index extends Component
 {
     public function boot(): void
     {
-        $this->redirect(route('vaults.index'), true);
+        $this->redirect(route('vaults.last'), true);
     }
 }
