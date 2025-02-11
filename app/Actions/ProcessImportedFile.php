@@ -22,10 +22,12 @@ final readonly class ProcessImportedFile
         $attributes['name'] = $pathInfo['filename'];
         $attributes['extension'] = $pathInfo['extension'] ?? '';
         $attributes['content'] = null;
+
         if (in_array($attributes['extension'], Note::extensions())) {
             $attributes['extension'] = 'md';
             $attributes['content'] = (string) file_get_contents($filePath);
         }
+
         $node = new CreateVaultNode()->handle($vault, $attributes);
 
         if ($node->extension === 'md') {

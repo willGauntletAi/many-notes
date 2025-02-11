@@ -55,23 +55,21 @@ final readonly class ExportVault
                 );
             }
 
-            if ($node->is_file) {
-                if ($node->extension === 'md') {
-                    $zip->addFromString($nodePath, (string) $node->content);
-                } else {
-                    $relativePath = new GetPathFromVaultNode()->handle($node);
-
-                    $zip->addFile(
-                        Storage::disk('local')->path($relativePath),
-                        $nodePath,
-                    );
-                }
-            } else {
+            if (!$node->is_file) {
                 $zip->addEmptyDir($nodePath);
 
                 if ($node->children()->count()) {
                     $this->exportNodes($zip, $node->children()->get(), $nodePath);
                 }
+            } elseif ($node->extension === 'md') {
+                $zip->addFromString($nodePath, (string) $node->content);
+            } else {
+                $relativePath = new GetPathFromVaultNode()->handle($node);
+
+                $zip->addFile(
+                    Storage::disk('local')->path($relativePath),
+                    $nodePath,
+                );
             }
         }
     }

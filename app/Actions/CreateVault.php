@@ -22,18 +22,15 @@ final readonly class CreateVault
 
         if ($vaultExists) {
             /** @var list<string> $vaults */
-            $vaults = array_column(
-                $user->vaults()
-                    ->select('name')
-                    ->where('name', 'like', $attributes['name'] . '-%')
-                    ->get()
-                    ->toArray(),
-                'name',
-            );
+            $vaults = $user->vaults()
+                ->select('name')
+                ->where('name', 'like', $attributes['name'] . '-%')
+                ->pluck('name')
+                ->toArray();
             natcasesort($vaults);
-            $attributes['name'] .= count($vaults) && preg_match('/-(\d+)$/', end($vaults), $matches) === 1 ?
-                '-' . ((int) $matches[1] + 1) :
-                '-1';
+            $attributes['name'] .= count($vaults) && preg_match('/-(\d+)$/', end($vaults), $matches) === 1
+                ? '-' . ((int) $matches[1] + 1)
+                : '-1';
         }
 
         // Save vault to database

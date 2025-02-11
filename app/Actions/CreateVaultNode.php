@@ -35,17 +35,14 @@ final readonly class CreateVaultNode
 
         if ($nodeExists) {
             /** @var list<string> $nodes */
-            $nodes = array_column(
-                $vault->nodes()
-                    ->select('name')
-                    ->where('parent_id', $attributes['parent_id'])
-                    ->where('is_file', $attributes['is_file'])
-                    ->where('name', 'like', $attributes['name'] . '-%')
-                    ->where('extension', $attributes['extension'])
-                    ->get()
-                    ->toArray(),
-                'name',
-            );
+            $nodes = $vault->nodes()
+                ->select('name')
+                ->where('parent_id', $attributes['parent_id'])
+                ->where('is_file', $attributes['is_file'])
+                ->where('name', 'like', $attributes['name'] . '-%')
+                ->where('extension', $attributes['extension'])
+                ->pluck('name')
+                ->toArray();
             natcasesort($nodes);
             $attributes['name'] .= count($nodes) && preg_match('/-(\d+)$/', end($nodes), $matches) === 1
                 ? '-' . ((int) $matches[1] + 1)
