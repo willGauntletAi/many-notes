@@ -117,3 +117,22 @@ it('creates links when importing a vault', function (): void {
         ->and($user->vaults()->first()->nodes()->get()->get(0)->links()->count())->toBe(1)
         ->and($user->vaults()->first()->nodes()->get()->get(1)->links()->count())->toBe(1);
 });
+
+it('creates tags when importing a vault', function (): void {
+    $user = User::factory()->create()->first();
+    $zip = new ZipArchive();
+    $relativePath = 'public/' . Str::random(16) . '.zip';
+    Storage::disk('local')->put($relativePath, '');
+    $path = Storage::disk('local')->path($relativePath);
+    $zip->open($path, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+    $zip->addFromString('note.md', '#tag1 ' . fake()->paragraph() . ' #tag2');
+    $zip->close();
+    $file = UploadedFile::fake()->createWithContent('vault.zip', file_get_contents($path));
+
+    Livewire::actingAs($user)
+        ->test(ImportVault::class)
+        ->call('open')
+        ->set('file', $file);
+
+    expect($user->vaults()->first()->nodes()->first()->tags()->count())->toBe(2);
+});

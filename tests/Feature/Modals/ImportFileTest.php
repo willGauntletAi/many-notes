@@ -155,3 +155,19 @@ it('creates links when importing a file', function (): void {
 
     expect($vault->nodes()->get()->get(1)->links()->count())->toBe(1);
 });
+
+it('creates tags when importing a file', function (): void {
+    $user = User::factory()->create()->first();
+    $vault = new CreateVault()->handle($user, [
+        'name' => fake()->words(3, true),
+    ]);
+    $content = '#tag1 ' . fake()->paragraph() . ' #tag2';
+    $file = UploadedFile::fake()->createWithContent('note.md', $content);
+
+    Livewire::actingAs($user)
+        ->test(ImportFile::class, ['vault' => $vault])
+        ->call('open')
+        ->set('file', $file);
+
+    expect($vault->nodes()->first()->tags()->count())->toBe(2);
+});

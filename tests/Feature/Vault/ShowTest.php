@@ -8,6 +8,7 @@ use App\Actions\GetPathFromUser;
 use App\Actions\GetPathFromVaultNode;
 use App\Actions\GetUrlFromVaultNode;
 use App\Actions\ProcessVaultNodeLinks;
+use App\Actions\ProcessVaultNodeTags;
 use App\Livewire\Vault\Show;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
@@ -378,6 +379,29 @@ it('process the links when updating a node', function (): void {
     expect($firstNode->links()->first()->is($secondNode))->toBeTrue();
 });
 
+it('process the tags when updating a node', function (): void {
+    $user = User::factory()->create()->first();
+    $vault = new CreateVault()->handle($user, [
+        'name' => fake()->words(3, true),
+    ]);
+    $node = new CreateVaultNode()->handle($vault, [
+        'is_file' => true,
+        'name' => fake()->words(3, true),
+        'extension' => 'md',
+    ]);
+    $content = '#tag1 ' . fake()->paragraph() . ' #tag2';
+    expect($node->tags()->count())->toBe(0);
+
+    Livewire::actingAs($user)
+        ->withQueryParams(['file' => $node->id])
+        ->test(Show::class, ['vault' => $vault])
+        ->set('nodeForm.content', $content);
+
+    expect($node->tags->count())->toBe(2);
+    expect($node->tags->get(0)->name)->toBe('#tag1');
+    expect($node->tags->get(1)->name)->toBe('#tag2');
+});
+
 it('updates the vault', function (): void {
     $user = User::factory()->create()->first();
     $vault = new CreateVault()->handle($user, [
@@ -475,4 +499,26 @@ it('deletes the links and backlinks when deleting a node', function (): void {
         ->assertDispatched('toast');
     expect($firstNode->links()->count())->toBe(0);
     expect($secondNode->links()->count())->toBe(0);
+});
+
+it('deletes the tags when deleting a node', function (): void {
+    $user = User::factory()->create()->first();
+    $vault = new CreateVault()->handle($user, [
+        'name' => fake()->words(3, true),
+    ]);
+    $node = new CreateVaultNode()->handle($vault, [
+        'is_file' => true,
+        'name' => fake()->words(3, true),
+        'extension' => 'md',
+        'content' => '#tag1 ' . fake()->paragraph() . ' #tag2',
+    ]);
+    new ProcessVaultNodeTags()->handle($node);
+    expect($node->tags->count())->toBe(2);
+
+    Livewire::actingAs($user)
+        ->test(Show::class, ['vault' => $vault])
+        ->call('deleteNode', $node)
+        ->assertDispatched('toast');
+
+    expect($node->refresh()->tags()->count())->toBe(0);
 });
