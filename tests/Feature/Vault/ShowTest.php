@@ -398,8 +398,8 @@ it('process the tags when updating a node', function (): void {
         ->set('nodeForm.content', $content);
 
     expect($node->tags->count())->toBe(2);
-    expect($node->tags->get(0)->name)->toBe('#tag1');
-    expect($node->tags->get(1)->name)->toBe('#tag2');
+    expect($node->tags->get(0)->name)->toBe('tag1');
+    expect($node->tags->get(1)->name)->toBe('tag2');
 });
 
 it('updates the vault', function (): void {

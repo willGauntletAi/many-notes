@@ -41,7 +41,7 @@ final class SearchNode extends Component
     public function search(): void
     {
         $this->nodes = [];
-        preg_match('/tag:(#[\w:-]+)/', $this->search, $matches);
+        preg_match('/tag:([\w:-]+)/', $this->search, $matches);
         $nodes = $matches === [] ? $this->searchText() : $this->searchTag($matches[1]);
 
         foreach ($nodes as $node) {

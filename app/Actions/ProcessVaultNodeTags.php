@@ -27,7 +27,7 @@ final readonly class ProcessVaultNodeTags
 
         foreach ($matches[0] as $match) {
             $tag = Tag::firstOrCreate([
-                'name' => $match[0],
+                'name' => mb_substr($match[0], 1),
             ]);
 
             $node->tags()->attach($tag->id, ['position' => $match[1]]);
