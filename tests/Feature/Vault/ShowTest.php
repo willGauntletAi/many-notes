@@ -348,6 +348,9 @@ it('updates the node', function (): void {
         ->test(Show::class, ['vault' => $vault])
         ->set('nodeForm.content', $newContent);
     expect($vault->nodes()->first()->content)->toBe($newContent);
+
+    $relativePath = new GetPathFromVaultNode()->handle($node);
+    expect(Storage::disk('local')->get($relativePath))->toBe($newContent);
 });
 
 it('process the links when updating a node', function (): void {
