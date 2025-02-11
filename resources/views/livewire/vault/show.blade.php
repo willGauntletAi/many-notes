@@ -209,8 +209,8 @@
                     <div class="flex flex-col w-full gap-2">
                         <h3>Links</h3>
                         <div class="flex flex-col gap-2 text-sm">
-                            @if ($selectedFileLinks && $selectedFileLinks->count())
-                                @foreach ($selectedFileLinks as $link)
+                            @if ($nodeForm->node && $nodeForm->node->links->count())
+                                @foreach ($nodeForm->node->links as $link)
                                     <a class="text-primary-400 dark:text-primary-500 hover:text-primary-300 dark:hover:text-primary-600"
                                         href="" @click.prevent="openFile({{ $link->id }})"
                                     >{{ $link->name }}</a>
@@ -223,8 +223,8 @@
                     <div class="flex flex-col w-full gap-2">
                         <h3>Backlinks</h3>
                         <div class="flex flex-col gap-2 text-sm">
-                            @if ($selectedFileBacklinks && $selectedFileBacklinks->count())
-                                @foreach ($selectedFileBacklinks as $link)
+                            @if ($nodeForm->node && $nodeForm->node->backlinks->count())
+                                @foreach ($nodeForm->node->backlinks as $link)
                                     <a class="text-primary-400 dark:text-primary-500 hover:text-primary-300 dark:hover:text-primary-600"
                                         href="" @click.prevent="openFile({{ $link->id }})"
                                     >{{ $link->name }}</a>
@@ -237,8 +237,8 @@
                     <div class="flex flex-col w-full gap-2">
                         <h3>Tags</h3>
                         <div class="flex flex-col gap-2 text-sm">
-                            @if ($selectedFileTags && $selectedFileTags->count())
-                                @foreach ($selectedFileTags as $tag)
+                            @if ($nodeForm->node && $nodeForm->node->tags->count())
+                                @foreach ($nodeForm->node->tags as $tag)
                                     <a class="text-primary-400 dark:text-primary-500 hover:text-primary-300 dark:hover:text-primary-600"
                                         href="" @click.prevent="$wire.dispatchTo('modals.search-node', 'open-modal', { search: 'tag:{{ $tag->name }}' })"
                                     >{{ $tag->name }}</a>

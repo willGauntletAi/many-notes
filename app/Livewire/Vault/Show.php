@@ -11,7 +11,6 @@ use App\Actions\ResolveTwoPaths;
 use App\Actions\UpdateVault;
 use App\Livewire\Forms\VaultForm;
 use App\Livewire\Forms\VaultNodeForm;
-use App\Models\Tag;
 use App\Models\Vault;
 use App\Models\VaultNode;
 use App\Services\VaultFiles\Note;
@@ -38,15 +37,6 @@ final class Show extends Component
     public ?int $selectedFile = null;
 
     public ?string $selectedFileUrl = null;
-
-    /** @var Collection<int, VaultNode> */
-    public ?Collection $selectedFileLinks = null;
-
-    /** @var Collection<int, VaultNode> */
-    public ?Collection $selectedFileBacklinks = null;
-
-    /** @var Collection<int, Tag> */
-    public ?Collection $selectedFileTags = null;
 
     public bool $isEditMode = true;
 
@@ -127,13 +117,7 @@ final class Show extends Component
 
     public function closeFile(): void
     {
-        $this->reset([
-            'selectedFile',
-            'selectedFileUrl',
-            'selectedFileLinks',
-            'selectedFileBacklinks',
-            'selectedFileTags',
-        ]);
+        $this->reset(['selectedFile', 'selectedFileUrl']);
         $this->nodeForm->reset('node');
     }
 
@@ -273,9 +257,6 @@ final class Show extends Component
     {
         $this->selectedFile = $node->id;
         $this->selectedFileUrl = new GetUrlFromVaultNode()->handle($node);
-        $this->selectedFileLinks = $node->links()->get();
-        $this->selectedFileBacklinks = $node->backlinks()->get();
-        $this->selectedFileTags = $node->tags;
         $this->nodeForm->setNode($node);
     }
 }
