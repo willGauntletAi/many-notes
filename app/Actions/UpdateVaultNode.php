@@ -21,12 +21,20 @@ final readonly class UpdateVaultNode
     public function handle(VaultNode $node, array $attributes): void
     {
         $relativeOriginalPath = new GetPathFromVaultNode()->handle($node);
+
+        // Save node to database
         $node->update($attributes);
+
+        // Save node to disk
+        if ($node->is_file) {
+            Storage::disk('local')->put($relativeOriginalPath, $attributes['content'] ?? '');
+        }
 
         if (!$node->wasChanged('name')) {
             return;
         }
 
+        // Rename node on disk
         $relativePath = new GetPathFromVaultNode()->handle($node);
         Storage::disk('local')->move(
             $relativeOriginalPath,
