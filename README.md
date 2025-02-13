@@ -31,6 +31,7 @@ Vaults are simply storage containers for your files, and Many Notes lets you cho
 - **Smart Markdown editor**: Write your Markdown notes faster
 - **Automatic saving**: Focus on writing; saving is automatic
 - **Templates**: Maintain consistent formatting for your notes
+- **Links/backlinks/tags**: Improve note organization by connecting related notes
 - **Import/export vaults**: Easily back up and restore your vaults
 - **Light/dark theme**: Automatically selected based on your OS setting
 - **Mobile friendly**: Provides a similar experience to the desktop
