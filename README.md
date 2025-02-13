@@ -91,6 +91,12 @@ Many Notes must have the necessary permissions to access the shared paths. Since
 docker compose up -d
 ```
 
+## Installation (non-Docker)
+
+**Read the [upgrading guide](UPGRADING.md) if you are upgrading from a previous version.**
+
+Read the [non-Docker guide](docs/installation/non-docker.md) for the full instructions.
+
 ## Customization
 
 You can customize Many Notes by adding environment variables to the `compose.yaml` file.
