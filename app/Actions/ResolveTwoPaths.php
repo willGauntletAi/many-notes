@@ -12,8 +12,7 @@ final readonly class ResolveTwoPaths
     public function handle(string $currentPath, string $path): string
     {
         $uri = Utils::uriFor(mb_trim($path));
-        $resolvedUri = (string) UriResolver::resolve(Utils::uriFor(mb_trim($currentPath)), $uri);
 
-        return mb_ltrim($resolvedUri, '/');
+        return (string) UriResolver::resolve(Utils::uriFor(mb_trim($currentPath)), $uri);
     }
 }
