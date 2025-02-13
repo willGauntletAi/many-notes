@@ -15,10 +15,10 @@ Vaults are simply storage containers for your files, and Many Notes lets you cho
 
 ## Screenshots
 
-![Screenshot](.github/images/theme-light.png?raw=true)
+![Screenshot](art/theme-light.png?raw=true)
 *Light theme*
 
-![Screenshot](.github/images/theme-dark.png?raw=true)
+![Screenshot](art/theme-dark.png?raw=true)
 *Dark theme*
 
 ## Features
