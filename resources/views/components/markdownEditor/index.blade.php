@@ -1,12 +1,14 @@
 <div class="flex flex-col h-full gap-3 overflow-hidden" x-data="toolbar"
     @mde-link.window="link($event.detail.name, $event.detail.path); $nextTick(() => { editor.focus() });"
     @mde-image.window="image($event.detail.name, $event.detail.path); $nextTick(() => { editor.focus() });"
-    {{ $attributes }}>
+    {{ $attributes }}
+>
     <x-markdownEditor.toolbar x-show="!isSmallDevice()" x-cloak />
-    <textarea wire:model.live.debounce.500ms="nodeForm.content" x-show="isEditMode" id="noteEdit"
-        class="w-full h-full p-0 px-1 bg-transparent border-0 focus:ring-0 focus:outline-0"
-        @keyup.enter="newLine"></textarea>
-    <div x-show="!isEditMode" x-html="html" id="noteView" class="overflow-y-auto markdown-body"></div>
+    <textarea class="w-full h-full p-0 px-1 bg-transparent border-0 focus:ring-0 focus:outline-0"
+        id="noteEdit" x-show="isEditMode" wire:model.live.debounce.500ms="nodeForm.content"
+        @keyup.enter="newLine"
+    ></textarea>
+    <div class="pr-1 overflow-y-auto markdown-body" id="noteView" x-show="!isEditMode" x-html="html"></div>
     <x-markdownEditor.toolbar x-show="isSmallDevice()" x-cloak />
 </div>
 
@@ -27,19 +29,10 @@
                 }
 
                 // Remove leading whitespaces
-                for (let i = 0; i < selection.length; i++) {
-                    if (selection[i].match(/\s/) === null) {
-                        break;
-                    }
-                    this.editor.selectionStart++;
-                }
+                this.editor.selectionStart += selection.length - selection.trimStart().length;
+
                 // Remove trailing whitespaces
-                for (let i = selection.length - 1; i >= 0; i--) {
-                    if (selection[i].match(/\s/) === null) {
-                        break;
-                    }
-                    this.editor.selectionEnd--;
-                }
+                this.editor.selectionEnd -= selection.length - selection.trimEnd().length;
             },
 
             changeSelection(text, moveSelectionStart, moveSelectionEnd = null) {
@@ -510,6 +503,7 @@
                 // Find the positions of non-consecutive '*' characters (ignore ** because it's for bold)
                 const prefixSingleFound = parsed.selectionPrefixText.search(/(?<!\*)\*(?!\*)/);
                 const suffixSingleFound = parsed.selectionSuffixText.search(/(?<!\*)\*(?!\*)/);
+
                 // Find the positions of three consecutive '*' characters
                 const prefixTripleFound = parsed.selectionPrefixText.search(/[\*]{3}/);
                 const suffixTripleFound = parsed.selectionSuffixText.search(/[\*]{3}/);
