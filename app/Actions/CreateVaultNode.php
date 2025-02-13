@@ -12,11 +12,11 @@ final readonly class CreateVaultNode
 {
     /**
      * @param array{
-     *  parent_id?: int|null,
-     *  is_file: bool,
-     *  name: string,
-     *  extension?: string|null,
-     *  content?: string|null
+     *   parent_id?: int|null,
+     *   is_file: bool,
+     *   name: string,
+     *   extension?: string|null,
+     *   content?: string|null
      * } $attributes
      */
     public function handle(Vault $vault, array $attributes): VaultNode

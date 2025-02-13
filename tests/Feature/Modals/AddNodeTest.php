@@ -50,5 +50,6 @@ it('adds a node', function (): void {
         ->set('form.name', fake()->words(3, true))
         ->call('add')
         ->assertSet('show', false);
+
     expect($vault->nodes()->count())->toBe(1);
 });

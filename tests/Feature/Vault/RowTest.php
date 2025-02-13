@@ -21,7 +21,6 @@ it('updates the vault', function (): void {
         ->call('update');
     expect($user->vaults()->first()->name)->toBe($newName);
 
-    $relativePath = new GetPathFromUser()->handle($user);
-    $absolutePath = Storage::disk('local')->path($relativePath . $newName);
-    expect($absolutePath)->toBeDirectory();
+    $path = new GetPathFromUser()->handle($user) . $newName;
+    expect(Storage::disk('local')->path($path))->toBeDirectory();
 });

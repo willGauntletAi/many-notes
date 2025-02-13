@@ -60,7 +60,7 @@ it('does not open a folder', function (): void {
         ->assertSet('selectedFile', null);
 });
 
-it('resets edit mode when opening a that is not a note', function (): void {
+it('resets edit mode when opening a file that is not a note', function (): void {
     $user = User::factory()->create()->first();
     $vault = new CreateVault()->handle($user, [
         'name' => fake()->words(3, true),
@@ -145,17 +145,17 @@ it('refreshes an open file', function (): void {
         'name' => fake()->words(3, true),
         'extension' => 'md',
     ]);
-    $relativeUrl = new GetUrlFromVaultNode()->handle($node);
+    $url = new GetUrlFromVaultNode()->handle($node);
     $name = $node->name;
     $newName = fake()->words(4, true);
 
     Livewire::actingAs($user)
         ->withQueryParams(['file' => $node->id])
         ->test(Show::class, ['vault' => $vault])
-        ->assertSet('selectedFileUrl', $relativeUrl)
+        ->assertSet('selectedFileUrl', $url)
         ->set('nodeForm.name', $newName)
         ->call('refreshFile', $node->refresh())
-        ->assertSet('selectedFileUrl', str_replace($name, $newName, $relativeUrl));
+        ->assertSet('selectedFileUrl', str_replace($name, $newName, $url));
 });
 
 it('does not refresh a file that is not open', function (): void {
@@ -349,8 +349,8 @@ it('updates the node', function (): void {
         ->set('nodeForm.content', $newContent);
     expect($vault->nodes()->first()->content)->toBe($newContent);
 
-    $relativePath = new GetPathFromVaultNode()->handle($node);
-    expect(Storage::disk('local')->get($relativePath))->toBe($newContent);
+    $path = new GetPathFromVaultNode()->handle($node);
+    expect(Storage::disk('local')->get($path))->toBe($newContent);
 });
 
 it('process the links when updating a node', function (): void {
@@ -418,9 +418,8 @@ it('updates the vault', function (): void {
         ->call('editVault');
     expect($user->vaults()->first()->name)->toBe($newName);
 
-    $relativePath = new GetPathFromUser()->handle($user);
-    $absolutePath = Storage::disk('local')->path($relativePath . $newName);
-    expect($absolutePath)->toBeDirectory();
+    $path = new GetPathFromUser()->handle($user) . $newName;
+    expect(Storage::disk('local')->path($path))->toBeDirectory();
 });
 
 it('deletes a node', function (): void {
@@ -447,9 +446,8 @@ it('deletes a node', function (): void {
         ->assertDispatched('toast');
     expect($vault->nodes()->count())->toBe(0);
 
-    $relativePath = new GetPathFromVaultNode()->handle($folderNode);
-    $absolutePath = Storage::disk('local')->path($relativePath);
-    expect($absolutePath)->not->toBeDirectory();
+    $path = new GetPathFromVaultNode()->handle($folderNode);
+    expect(Storage::disk('local')->path($path))->not->toBeDirectory();
 });
 
 it('closes an open file when it is deleted', function (): void {
@@ -500,6 +498,7 @@ it('deletes the links and backlinks when deleting a node', function (): void {
         ->test(Show::class, ['vault' => $vault])
         ->call('deleteNode', $firstNode)
         ->assertDispatched('toast');
+
     expect($firstNode->links()->count())->toBe(0);
     expect($secondNode->links()->count())->toBe(0);
 });

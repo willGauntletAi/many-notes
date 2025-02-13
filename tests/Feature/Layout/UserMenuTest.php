@@ -64,7 +64,5 @@ it('logouts the user', function (): void {
         ->test(UserMenu::class)
         ->call('logout');
 
-    /** @var User $currentUser */
-    $currentUser = auth()->user();
-    expect($currentUser)->toBeNull();
+    expect(auth()->user())->toBeNull();
 });

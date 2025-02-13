@@ -11,23 +11,23 @@ final readonly class UpdateVaultNode
 {
     /**
      * @param array{
-     *  parent_id?: int|null,
-     *  is_file: bool,
-     *  name: string,
-     *  extension?: string|null,
-     *  content?: string|null
+     *   parent_id: int|null,
+     *   is_file: bool,
+     *   name: string,
+     *   extension: string|null,
+     *   content: string|null
      * } $attributes
      */
     public function handle(VaultNode $node, array $attributes): void
     {
-        $relativeOriginalPath = new GetPathFromVaultNode()->handle($node);
+        $originalPath = new GetPathFromVaultNode()->handle($node);
 
         // Save node to database
         $node->update($attributes);
 
         // Save node to disk
         if ($node->is_file) {
-            Storage::disk('local')->put($relativeOriginalPath, $attributes['content'] ?? '');
+            Storage::disk('local')->put($originalPath, $attributes['content'] ?? '');
         }
 
         if (!$node->wasChanged('name')) {
@@ -35,10 +35,7 @@ final readonly class UpdateVaultNode
         }
 
         // Rename node on disk
-        $relativePath = new GetPathFromVaultNode()->handle($node);
-        Storage::disk('local')->move(
-            $relativeOriginalPath,
-            $relativePath,
-        );
+        $path = new GetPathFromVaultNode()->handle($node);
+        Storage::disk('local')->move($originalPath, $path);
     }
 }

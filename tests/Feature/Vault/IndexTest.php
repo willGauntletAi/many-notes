@@ -30,9 +30,8 @@ it('creates a vault', function (): void {
         ->call('create');
     expect($user->vaults()->count())->toBe(1);
 
-    $relativePath = new GetPathFromUser()->handle($user);
-    $absolutePath = Storage::disk('local')->path($relativePath . $vaultName);
-    expect($absolutePath)->toBeDirectory();
+    $path = new GetPathFromUser()->handle($user) . $vaultName;
+    expect(Storage::disk('local')->path($path))->toBeDirectory();
 });
 
 it('exports a vault', function (): void {
@@ -112,7 +111,6 @@ it('deletes a vault', function (): void {
         ->assertDispatched('toast');
     expect($user->vaults()->count())->toBe(0);
 
-    $relativePath = new GetPathFromVault()->handle($vault);
-    $absolutePath = Storage::disk('local')->path($relativePath);
-    expect($absolutePath)->not->toBeDirectory();
+    $path = new GetPathFromVault()->handle($vault);
+    expect(Storage::disk('local')->path($path))->not->toBeDirectory();
 });
