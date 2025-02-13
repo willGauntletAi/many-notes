@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Actions\CreateVault;
 use App\Actions\CreateVaultNode;
+use App\Actions\GetPathFromVaultNode;
 use App\Livewire\Modals\ImportFile;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
@@ -21,7 +22,7 @@ it('opens the modal', function (): void {
         ->assertSet('show', true);
 });
 
-it('opens the modal passing a file as parent node', function (): void {
+it('does not accept passing a file as parent node', function (): void {
     $user = User::factory()->create()->first();
     $vault = new CreateVault()->handle($user, [
         'name' => fake()->words(3, true),
@@ -39,7 +40,7 @@ it('opens the modal passing a file as parent node', function (): void {
         ->assertStatus(400);
 });
 
-it('imports a file', function (): void {
+it('saves an imported file to both the database and the disk', function (): void {
     $user = User::factory()->create()->first();
     $vault = new CreateVault()->handle($user, [
         'name' => fake()->words(3, true),
@@ -48,7 +49,8 @@ it('imports a file', function (): void {
         'is_file' => false,
         'name' => fake()->words(3, true),
     ]);
-    $file = UploadedFile::fake()->create('note.md');
+    $content = fake()->paragraph();
+    $file = UploadedFile::fake()->createWithContent('note.md', $content);
 
     Livewire::actingAs($user)
         ->test(ImportFile::class, ['vault' => $vault])
@@ -56,6 +58,10 @@ it('imports a file', function (): void {
         ->call('open', $node)
         ->set('file', $file)
         ->assertSet('show', false);
+
+    $path = new GetPathFromVaultNode()->handle($node) . '/' . $file->name;
+    expect(Storage::disk('local')->exists($path))->toBeTrue();
+    expect(Storage::disk('local')->get($path))->toBe($content);
 });
 
 it('handles name collisions when importing a file with an existing name', function (): void {
@@ -85,6 +91,10 @@ it('handles name collisions when importing a file with an existing name', functi
     expect($nodes->count())->toBe(3);
     expect($nodes->get(1)->name)->toBe($node->name);
     expect($nodes->get(2)->name)->toBe($node->name . '-1');
+    $path = new GetPathFromVaultNode()->handle($nodes->get(1));
+    expect(Storage::disk('local')->exists($path))->toBeTrue();
+    $path = new GetPathFromVaultNode()->handle($nodes->get(2));
+    expect(Storage::disk('local')->exists($path))->toBeTrue();
 });
 
 it('handles name collisions when importing a file with a name existing in multiple files', function (): void {
@@ -117,6 +127,12 @@ it('handles name collisions when importing a file with a name existing in multip
     expect($nodes->get(0)->name)->toBe($nodeName);
     expect($nodes->get(1)->name)->toBe($nodeName . '-1');
     expect($nodes->get(2)->name)->toBe($nodeName . '-2');
+    $path = new GetPathFromVaultNode()->handle($nodes->get(0));
+    expect(Storage::disk('local')->exists($path))->toBeTrue();
+    $path = new GetPathFromVaultNode()->handle($nodes->get(1));
+    expect(Storage::disk('local')->exists($path))->toBeTrue();
+    $path = new GetPathFromVaultNode()->handle($nodes->get(2));
+    expect(Storage::disk('local')->exists($path))->toBeTrue();
 });
 
 it('does not import a file with a non-allowed extension', function (): void {

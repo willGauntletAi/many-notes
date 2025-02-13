@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use App\Actions\CreateVault;
+use App\Actions\GetPathFromVault;
+use App\Actions\GetPathFromVaultNode;
 use App\Livewire\Modals\ImportVault;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
@@ -28,6 +30,12 @@ it('imports a zip file', function (): void {
         ->test(ImportVault::class)
         ->set('file', $file)
         ->assertSet('show', false);
+
+    $vaults = $user->vaults()->get();
+    expect($vaults->count())->toBe(1);
+    expect($vaults->first()->name)->toBe('test');
+    $path = new GetPathFromVault()->handle($vaults->first());
+    expect(Storage::disk('local')->exists($path))->toBeTrue();
 });
 
 it('handles name collisions when importing a vault with an existing name', function (): void {
@@ -47,6 +55,10 @@ it('handles name collisions when importing a vault with an existing name', funct
     expect($vaults->count())->toBe(2);
     expect($vaults->get(0)->name)->toBe($vaultName);
     expect($vaults->get(1)->name)->toBe($vaultName . '-1');
+    $path = new GetPathFromVault()->handle($vaults->get(0));
+    expect(Storage::disk('local')->exists($path))->toBeTrue();
+    $path = new GetPathFromVault()->handle($vaults->get(1));
+    expect(Storage::disk('local')->exists($path))->toBeTrue();
 });
 
 it('handles name collisions when importing a vault with a name existing in multiple vaults', function (): void {
@@ -90,7 +102,14 @@ it('imports a zip file with files and folders', function (): void {
         ->call('open')
         ->set('file', $file);
 
-    expect($user->vaults()->count())->toBe(1);
+    $vaults = $user->vaults()->get();
+    expect($vaults->count())->toBe(1);
+    $nodes = $vaults->first()->nodes()->get();
+    expect($nodes->count())->toBe(2);
+    $path = new GetPathFromVaultNode()->handle($nodes->get(0));
+    expect(Storage::disk('local')->exists($path))->toBeTrue();
+    $path = new GetPathFromVaultNode()->handle($nodes->get(1));
+    expect(Storage::disk('local')->exists($path))->toBeTrue();
 });
 
 it('creates links when importing a vault', function (): void {
@@ -112,10 +131,12 @@ it('creates links when importing a vault', function (): void {
         ->call('open')
         ->set('file', $file);
 
-    expect($user->vaults()->count())->toBe(1)
-        ->and($user->vaults()->first()->nodes()->count())->toBe(2)
-        ->and($user->vaults()->first()->nodes()->get()->get(0)->links()->count())->toBe(1)
-        ->and($user->vaults()->first()->nodes()->get()->get(1)->links()->count())->toBe(1);
+    $vaults = $user->vaults()->get();
+    expect($vaults->count())->toBe(1);
+    $nodes = $vaults->first()->nodes()->get();
+    expect($nodes->count())->toBe(2);
+    expect($nodes->get(0)->links()->count())->toBe(1);
+    expect($nodes->get(1)->links()->count())->toBe(1);
 });
 
 it('creates tags when importing a vault', function (): void {
@@ -134,5 +155,9 @@ it('creates tags when importing a vault', function (): void {
         ->call('open')
         ->set('file', $file);
 
-    expect($user->vaults()->first()->nodes()->first()->tags()->count())->toBe(2);
+    $vaults = $user->vaults()->get();
+    expect($vaults->count())->toBe(1);
+    $nodes = $vaults->first()->nodes()->get();
+    expect($nodes->count())->toBe(1);
+    expect($nodes->first()->tags()->count())->toBe(2);
 });
