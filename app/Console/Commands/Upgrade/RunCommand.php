@@ -30,6 +30,7 @@ final class RunCommand extends Command
     {
         $this->init();
         $this->processLinks();
+        $this->syncDatabaseNotes();
     }
 
     private function init(): void
@@ -56,6 +57,22 @@ final class RunCommand extends Command
 
         DB::table('upgrades')->update([
             'executed' => 1,
+        ]);
+    }
+
+    private function syncDatabaseNotes(): void
+    {
+        /** @var object{executed: int} $upgrades */
+        $upgrades = DB::table('upgrades')->first();
+
+        if ($upgrades->executed !== 1) {
+            return;
+        }
+
+        $this->call('upgrade:sync-database-notes');
+
+        DB::table('upgrades')->update([
+            'executed' => 2,
         ]);
     }
 }
