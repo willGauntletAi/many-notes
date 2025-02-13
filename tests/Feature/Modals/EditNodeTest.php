@@ -41,5 +41,6 @@ it('updates a node', function (): void {
         ->set('form.name', $newName)
         ->call('edit')
         ->assertSet('show', false);
+
     expect($vault->nodes()->first()->name)->toBe($newName);
 });
