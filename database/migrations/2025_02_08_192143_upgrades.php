@@ -14,7 +14,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('upgrades', function (Blueprint $table): void {
-            $table->unsignedTinyInteger('total');
+            $table->unsignedTinyInteger('executed');
         });
     }
 };
