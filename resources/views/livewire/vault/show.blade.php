@@ -25,7 +25,8 @@
     <x-layouts.appMain>
         <div x-data="vault" x-cloak class="relative flex w-full"
             @left-panel-toggle.window="isLeftPanelOpen = !isLeftPanelOpen"
-            @right-panel-toggle.window="isRightPanelOpen = !isRightPanelOpen">
+            @right-panel-toggle.window="isRightPanelOpen = !isRightPanelOpen"
+            @file-render-markup.window="$nextTick(() => { markdownToHtml() })">
             <div wire:loading wire:target.except="nodeForm.name, nodeForm.content"
                 class="fixed inset-0 z-40 opacity-50 bg-light-base-200 dark:bg-base-950">
                 <div class="flex items-center justify-center h-full">
@@ -275,7 +276,7 @@
                     if (value) {
                         return;
                     }
-                    this.html = this.markdownToHtml();
+                    this.markdownToHtml();
                 });
 
                 this.$watch('selectedFile', value => {
@@ -283,7 +284,7 @@
                         this.html = '';
                         return;
                     }
-                    this.html = this.markdownToHtml();
+                    this.markdownToHtml();
                 });
 
                 this.isLeftPanelOpen = !this.isSmallDevice();
@@ -335,7 +336,9 @@
                 let node = this.selectedFile;
 
                 if (!el) {
-                    return markdown;
+                    this.html = markdown;
+
+                    return;
                 }
 
                 renderer = {
@@ -379,7 +382,7 @@
                     renderer
                 });
 
-                return DOMPurify.sanitize(marked.parse(el.value), {
+                this.html = DOMPurify.sanitize(marked.parse(el.value), {
                     ADD_ATTR: ['wire:click.prevent'],
                 });
             },

@@ -81,8 +81,6 @@ final class Show extends Component
 
         if ($node->extension === 'md') {
             $this->dispatch('file-render-markup');
-        } else {
-            $this->reset('isEditMode');
         }
     }
 
