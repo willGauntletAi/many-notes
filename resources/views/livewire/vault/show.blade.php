@@ -2,21 +2,24 @@
     <x-layouts.appHeader>
         <div class="flex items-center gap-4">
             <button type="button" class="hover:text-light-base-950 dark:hover:text-base-50"
-                @click="$dispatch('left-panel-toggle')">
+                @click="$dispatch('left-panel-toggle')"
+            >
                 <x-icons.bars3BottomLeft class="w-5 h-5" />
             </button>
         </div>
 
         <div class="flex items-center gap-4">
             <button type="button" class="hover:text-light-base-950 dark:hover:text-base-50"
-                @click="$wire.dispatchTo('modals.search-node', 'open-modal')">
+                @click="$wire.dispatchTo('modals.search-node', 'open-modal')"
+            >
                 <x-icons.magnifyingGlass class="w-5 h-5" />
             </button>
             <div class="flex items-center gap-4">
                 <livewire:layout.user-menu />
             </div>
             <button type="button" class="hover:text-light-base-950 dark:hover:text-base-50"
-                @click="$dispatch('right-panel-toggle')">
+                @click="$dispatch('right-panel-toggle')"
+            >
                 <x-icons.bars3BottomRight class="w-5 h-5" />
             </button>
         </div>
@@ -26,19 +29,22 @@
         <div x-data="vault" x-cloak class="relative flex w-full"
             @left-panel-toggle.window="isLeftPanelOpen = !isLeftPanelOpen"
             @right-panel-toggle.window="isRightPanelOpen = !isRightPanelOpen"
-            @file-render-markup.window="$nextTick(() => { markdownToHtml() })">
-            <div wire:loading wire:target.except="nodeForm.name, nodeForm.content"
-                class="fixed inset-0 z-40 opacity-50 bg-light-base-200 dark:bg-base-950">
+            @file-render-markup.window="$nextTick(() => { markdownToHtml() })"
+        >
+            <div class="fixed inset-0 z-40 opacity-50 bg-light-base-200 dark:bg-base-950"
+                wire:loading wire:target.except="nodeForm.name, nodeForm.content"
+            >
                 <div class="flex items-center justify-center h-full">
                     <x-icons.spinner class="w-5 h-5 animate-spin" />
                 </div>
             </div>
-            <div x-show="(isLeftPanelOpen || isRightPanelOpen) && isSmallDevice" @click="closePanels"
-                class="fixed inset-0 z-20 opacity-50 bg-light-base-200 dark:bg-base-950"
-                x-transition:enter="ease-out duration-300" x-transition:leave="ease-in duration-200">
-            </div>
+            <div class="fixed inset-0 z-20 opacity-50 bg-light-base-200 dark:bg-base-950"
+                x-show="(isLeftPanelOpen || isRightPanelOpen) && isSmallDevice" @click="closePanels"
+                x-transition:enter="ease-out duration-300" x-transition:leave="ease-in duration-200"
+            ></div>
             <div class="absolute top-0 left-0 z-30 flex flex-col h-full overflow-hidden overflow-y-auto transition-all w-60 bg-light-base-50 dark:bg-base-900"
-                :class="{ 'translate-x-0': isLeftPanelOpen, '-translate-x-full hidden': !isLeftPanelOpen }">
+                :class="{ 'translate-x-0': isLeftPanelOpen, '-translate-x-full hidden': !isLeftPanelOpen }"
+            >
                 <div class="sticky top-0 z-[5] flex justify-between p-4 bg-light-base-50 dark:bg-base-900">
                     <h3>{{ $vault->name }}</h3>
 
@@ -54,18 +60,14 @@
                                         <x-icons.documentPlus class="w-4 h-4" />
                                         {{ __('New note') }}
                                     </x-menu.item>
-
-                                    <x-menu.item
-                                        @click="$wire.dispatchTo('modals.add-node', 'open-modal', { isFile: false })">
+                                    <x-menu.item @click="$wire.dispatchTo('modals.add-node', 'open-modal', { isFile: false })">
                                         <x-icons.folderPlus class="w-4 h-4" />
                                         {{ __('New folder') }}
                                     </x-menu.item>
-
                                     <x-menu.item @click="$wire.dispatchTo('modals.import-file', 'open-modal')">
                                         <x-icons.arrowUpTray class="w-4 h-4" />
                                         {{ __('Import file') }}
                                     </x-menu.item>
-
                                     <x-modal>
                                         <x-modal.open>
                                             <x-menu.item>
@@ -95,7 +97,8 @@
             </div>
 
             <div class="absolute top-0 bottom-0 right-0 flex flex-col w-full overflow-y-auto transition-all text-start bg-light-base-200 dark:bg-base-950"
-                :class="{ 'md:pl-60': isLeftPanelOpen, 'md:pr-60': isRightPanelOpen }" id="nodeContainer">
+                :class="{ 'md:pl-60': isLeftPanelOpen, 'md:pr-60': isRightPanelOpen }" id="nodeContainer"
+            >
                 <div class="flex flex-col h-full w-full max-w-[48rem] mx-auto p-4">
                     <div class="flex flex-col w-full h-full gap-4" x-show="$wire.selectedFile">
                         <div class="z-[5]">
@@ -104,11 +107,9 @@
                                     class="flex flex-grow p-0 px-1 text-lg bg-transparent border-0 focus:ring-0 focus:outline-0" />
 
                                 <div class="flex items-center gap-2">
-                                    <span wire:loading.flex wire:target="nodeForm.name, nodeForm.content"
-                                        class="flex items-center">
+                                    <span class="flex items-center" wire:loading.flex wire:target="nodeForm.name, nodeForm.content">
                                         <x-icons.spinner class="w-4 h-4 animate-spin" />
                                     </span>
-
                                     <div class="flex gap-2">
                                         <x-menu>
                                             <x-menu.button>
@@ -125,19 +126,18 @@
                                                                 </x-menu.item>
                                                             </x-menu.close>
                                                         </x-modal.open>
-
                                                         <x-modal.panel title="{{ __('Choose a template') }}">
                                                             @if ($templates && count($templates))
-                                                                <ul class="flex flex-col gap-2"
-                                                                    wire:loading.class="opacity-50">
+                                                                <ul class="flex flex-col gap-2" wire:loading.class="opacity-50">
                                                                     @foreach ($templates as $template)
                                                                         <li>
                                                                             <button type="button"
+                                                                                class="flex w-full gap-2 py-1 hover:text-light-base-950 dark:hover:text-base-50"
                                                                                 wire:click="insertTemplate({{ $template->id }}); modalOpen = false"
-                                                                                class="flex w-full gap-2 py-1 hover:text-light-base-950 dark:hover:text-base-50">
-                                                                                <span
-                                                                                    class="overflow-hidden whitespace-nowrap text-ellipsis"
-                                                                                    title="{{ $template->name }}">
+                                                                            >
+                                                                                <span class="overflow-hidden whitespace-nowrap text-ellipsis"
+                                                                                    title="{{ $template->name }}"
+                                                                                >
                                                                                     {{ $template->name }}
                                                                                 </span>
                                                                             </button>
@@ -205,7 +205,8 @@
             </div>
 
             <div class="absolute top-0 right-0 z-30 flex flex-col h-full overflow-hidden overflow-y-auto transition-all w-60 bg-light-base-50 dark:bg-base-900"
-                :class="{ 'translate-x-0': isRightPanelOpen, '-translate-x-full hidden': !isRightPanelOpen }">
+                :class="{ 'translate-x-0': isRightPanelOpen, '-translate-x-full hidden': !isRightPanelOpen }"
+            >
                 <div class="flex flex-col gap-4 p-4">
                     <div class="flex flex-col w-full gap-2">
                         <h3>Links</h3>
@@ -240,8 +241,8 @@
                         <div class="flex flex-col gap-2 text-sm">
                             @if ($nodeForm->node && $nodeForm->node->tags->count())
                                 @foreach ($nodeForm->node->tags as $tag)
-                                    <a class="text-primary-400 dark:text-primary-500 hover:text-primary-300 dark:hover:text-primary-600"
-                                        href="" @click.prevent="$wire.dispatchTo('modals.search-node', 'open-modal', { search: 'tag:{{ $tag->name }}' })"
+                                    <a href="" class="text-primary-400 dark:text-primary-500 hover:text-primary-300 dark:hover:text-primary-600"
+                                        @click.prevent="$wire.dispatchTo('modals.search-node', 'open-modal', { search: 'tag:{{ $tag->name }}' })"
                                     >{{ $tag->name }}</a>
                                 @endforeach
                             @else
@@ -371,8 +372,8 @@
                         let html = renderListitem(token);
 
                         if (token.task) {
-                            html = html.replace('<li>', '<li class="task-list-item">');
-                            html = html.replace('<input ', '<input class="task-list-item-checkbox" ');
+                            html = html.replace('<li>', '<li class="task-list-item">')
+                                .replace('<input ', '<input class="task-list-item-checkbox" ');
                         }
 
                         return html;
