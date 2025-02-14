@@ -7,7 +7,7 @@
             @if (count($nodes))
                 <ul class="flex flex-col gap-2" wire:loading.class="opacity-50">
                     @foreach ($nodes as $node)
-                        <li>
+                        <li wire:key="{{ $node['id'] }}">
                             <button type="button" wire:click="$parent.openFile({{ $node['id'] }}); modalOpen = false"
                                 class="flex flex-col w-full gap-2 py-1 text-left hover:text-light-base-950 dark:hover:text-base-50">
                                 <span class="flex gap-2">

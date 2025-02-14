@@ -130,7 +130,7 @@
                                                             @if ($templates && count($templates))
                                                                 <ul class="flex flex-col gap-2" wire:loading.class="opacity-50">
                                                                     @foreach ($templates as $template)
-                                                                        <li>
+                                                                        <li wire:key="{{ $template->id }}">
                                                                             <button type="button"
                                                                                 class="flex w-full gap-2 py-1 hover:text-light-base-950 dark:hover:text-base-50"
                                                                                 wire:click="insertTemplate({{ $template->id }}); modalOpen = false"
@@ -214,7 +214,7 @@
                             @if ($nodeForm->node && $nodeForm->node->links->count())
                                 @foreach ($nodeForm->node->links as $link)
                                     <a class="text-primary-400 dark:text-primary-500 hover:text-primary-300 dark:hover:text-primary-600"
-                                        href="" @click.prevent="openFile({{ $link->id }})"
+                                        href="" @click.prevent="openFile({{ $link->id }})" wire:key="{{ $link->id }}"
                                     >{{ $link->name }}</a>
                                 @endforeach
                             @else
@@ -228,7 +228,7 @@
                             @if ($nodeForm->node && $nodeForm->node->backlinks->count())
                                 @foreach ($nodeForm->node->backlinks as $link)
                                     <a class="text-primary-400 dark:text-primary-500 hover:text-primary-300 dark:hover:text-primary-600"
-                                        href="" @click.prevent="openFile({{ $link->id }})"
+                                        href="" @click.prevent="openFile({{ $link->id }})" wire:key="{{ $link->id }}"
                                     >{{ $link->name }}</a>
                                 @endforeach
                             @else
@@ -243,6 +243,7 @@
                                 @foreach ($nodeForm->node->tags as $tag)
                                     <a href="" class="text-primary-400 dark:text-primary-500 hover:text-primary-300 dark:hover:text-primary-600"
                                         @click.prevent="$wire.dispatchTo('modals.search-node', 'open-modal', { search: 'tag:{{ $tag->name }}' })"
+                                        wire:key="{{ $tag->id }}"
                                     >{{ $tag->name }}</a>
                                 @endforeach
                             @else

@@ -10,7 +10,7 @@
         @if (count($providers))
             <div class="flex justify-center gap-2 text-sm font-semibold">
                 @foreach ($providers as $provider)
-                    <div class="w-1/2">
+                    <div class="w-1/2" wire:key="{{ $provider->name }}">
                         <x-form.linkButton href="/oauth/{{ $provider->value }}" full>
                             <x-icons.arrowRightEndOnRectangle class="w-5 h-5" />
                             {{ $provider->name }}
