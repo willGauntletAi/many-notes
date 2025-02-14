@@ -96,11 +96,11 @@ docker compose up -d
 
 **Read the [upgrading guide](UPGRADING.md) if you are upgrading from a previous version.**
 
-Read the [non-Docker guide](docs/installation/non-docker.md) for the full instructions.
+The Docker method is recommended because it is faster and simpler to set up. However, if you prefer a non-Docker installation, please refer to this [guide](docs/installation/non-docker.md) for step-by-step instructions.
 
 ## Customization
 
-You can customize Many Notes by adding environment variables to the `compose.yaml` file.
+To customize Many Notes, add environment variables to the `compose.yaml` file if using the Docker installation. If you chose the non-Docker installation, you should add the environment variables to a `.env` file instead.
 
 ### Custom URL (default: http://localhost)
 

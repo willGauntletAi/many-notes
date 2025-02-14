@@ -26,6 +26,12 @@ Install npm dependencies
 npm install
 ```
 
+Create caches to optimize the application
+
+```shell
+php artisan optimize
+```
+
 Run the npm build
 
 ```shell
@@ -42,12 +48,6 @@ Generate application key
 
 ```shell
 php artisan key:generate
-```
-
-Create caches to optimize the application
-
-```shell
-php artisan optimize
 ```
 
 Create the symbolic link for Many Notes public storage
