@@ -62,6 +62,15 @@
                             <span>Record System Audio</span>
                         </div>
                     </x-markdownEditor.subButton>
+                    <x-markdownEditor.subButton @click="startCombinedRecording">
+                        <div class="flex items-center gap-2">
+                            <div class="relative">
+                                <x-icons.microphone class="w-4 h-4" />
+                                <x-icons.desktop class="w-3 h-3 absolute -bottom-1 -right-1" />
+                            </div>
+                            <span>Record Mic + System</span>
+                        </div>
+                    </x-markdownEditor.subButton>
                 </x-markdownEditor.items>
             </x-markdownEditor.itemDropdown>
             

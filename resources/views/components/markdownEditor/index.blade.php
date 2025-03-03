@@ -74,6 +74,52 @@
                 });
             },
             
+            startCombinedRecording() {
+                if (this.isRecording) {
+                    this.stopRecording();
+                    return;
+                }
+                
+                this.recordingSource = 'Mic + System';
+                
+                // First get system audio
+                navigator.mediaDevices.getDisplayMedia({ 
+                    audio: true, 
+                    video: true
+                })
+                .then(systemStream => {
+                    // Keep only the system audio tracks
+                    const systemAudioTracks = systemStream.getAudioTracks();
+                    if (systemAudioTracks.length === 0) {
+                        alert('No system audio track available. Please ensure you selected "Share audio" in the dialog.');
+                        systemStream.getTracks().forEach(track => track.stop());
+                        return;
+                    }
+                    
+                    // Stop video tracks
+                    systemStream.getVideoTracks().forEach(track => track.stop());
+                    
+                    // Then get microphone audio
+                    navigator.mediaDevices.getUserMedia({ audio: true })
+                    .then(micStream => {
+                        const micAudioTracks = micStream.getAudioTracks();
+                        
+                        // Create a new MediaStream with both audio tracks
+                        const combinedStream = new MediaStream([...systemAudioTracks, ...micAudioTracks]);
+                        this.setupMediaRecorder(combinedStream);
+                    })
+                    .catch(error => {
+                        console.error('Error accessing microphone:', error);
+                        alert('Could not access microphone: ' + error.message);
+                        systemStream.getTracks().forEach(track => track.stop());
+                    });
+                })
+                .catch(error => {
+                    console.error('Error accessing system audio:', error);
+                    alert('Could not access system audio: ' + error.message);
+                });
+            },
+            
             startRecording(constraints) {
                 if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
                     alert('Audio recording is not supported in this browser');
