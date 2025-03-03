@@ -26,6 +26,14 @@ Route::middleware('auth')->group(function (): void {
     });
 
     Route::get('files/{vault}', [FileController::class, 'show'])->name('files.show');
+
+    // Chat routes
+    Route::get('/vaults/{vault}/chats', [App\Http\Controllers\ChatController::class, 'index'])->name('chat.index');
+    Route::post('/vaults/{vault}/chats', [App\Http\Controllers\ChatController::class, 'store'])->name('chat.store');
+    Route::get('/vaults/{vault}/chats/{chat}', [App\Http\Controllers\ChatController::class, 'show'])->name('chat.show');
+    Route::put('/vaults/{vault}/chats/{chat}', [App\Http\Controllers\ChatController::class, 'update'])->name('chat.update');
+    Route::delete('/vaults/{vault}/chats/{chat}', [App\Http\Controllers\ChatController::class, 'destroy'])->name('chat.destroy');
+    Route::post('/vaults/{vault}/chats/{chat}/messages', [App\Http\Controllers\ChatController::class, 'sendMessage'])->name('chat.send-message');
 });
 
 Route::middleware(['guest', 'throttle'])->group(function (): void {

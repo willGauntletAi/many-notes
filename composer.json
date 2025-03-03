@@ -3,15 +3,32 @@
     "description": "A markdown note-taking app designed for simplicity.",
     "version": "0.6.0",
     "type": "project",
-    "keywords": ["notes", "Markdown", "note management", "Markdown support", "Markdown editor", "filesystem storage", "database storage", "authentication", "responsive design", "SPA", "self-hosting", "privacy-focused", "open source", "PHP", "lightweight"],
+    "keywords": [
+        "notes",
+        "Markdown",
+        "note management",
+        "Markdown support",
+        "Markdown editor",
+        "filesystem storage",
+        "database storage",
+        "authentication",
+        "responsive design",
+        "SPA",
+        "self-hosting",
+        "privacy-focused",
+        "open source",
+        "PHP",
+        "lightweight"
+    ],
     "homepage": "https://github.com/brufdev/many-notes",
     "license": "MIT",
     "require": {
         "php": "^8.4",
-        "laravel/framework": "^11.9",
+        "laravel/framework": "^11.0",
         "laravel/socialite": "^5.16",
-        "laravel/tinker": "^2.9",
-        "livewire/livewire": "^3.5",
+        "laravel/tinker": "^2.8",
+        "livewire/livewire": "^3.0",
+        "openai-php/client": "^0.8.0",
         "socialiteproviders/authelia": "^4.0",
         "socialiteproviders/authentik": "^5.2",
         "socialiteproviders/keycloak": "^5.3",
@@ -55,9 +72,7 @@
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ],
         "post-create-project-cmd": [
-            "@php artisan key:generate --ansi",
-            "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
-            "@php artisan migrate --graceful --ansi"
+            "@php artisan key:generate --ansi"
         ],
         "test:refactor": "rector --dry-run",
         "test:lint": "pint --test",

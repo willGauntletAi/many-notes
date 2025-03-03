@@ -54,4 +54,14 @@ final class Vault extends Model
     {
         return $this->hasOne(VaultNode::class, 'id', 'templates_node_id');
     }
+
+    /**
+     * Get the chats for the vault.
+     *
+     * @return HasMany<VaultChat, $this>
+     */
+    public function chats(): HasMany
+    {
+        return $this->hasMany(VaultChat::class);
+    }
 }
