@@ -1,6 +1,9 @@
-<div class="flex flex-col h-full gap-3 overflow-hidden" x-data="toolbar"
+<div class="flex flex-col h-full gap-3 overflow-hidden" 
+    x-data="toolbar"
+    x-init="initEditor()"
     @mde-link.window="link($event.detail.name, $event.detail.path); $nextTick(() => { editor.focus() });"
     @mde-image.window="image($event.detail.name, $event.detail.path); $nextTick(() => { editor.focus() });"
+    @insert-transcription.window="insertTranscription($event.detail.transcription); $nextTick(() => { editor.focus() });"
     {{ $attributes }}
 >
     <x-markdownEditor.toolbar x-show="!isSmallDevice()" x-cloak />
@@ -15,10 +18,197 @@
 @script
     <script>
         Alpine.data('toolbar', () => ({
-            editor: document.getElementById('noteEdit'),
-
+            editor: null,
+            mediaRecorder: null,
+            isRecording: false,
+            recordingSource: '',
+            audioChunks: [],
+            
             getSelection() {
                 return this.editor.value.substring(this.editor.selectionStart, this.editor.selectionEnd);
+            },
+            
+            // Audio recording functions
+            startMicRecording() {
+                if (this.isRecording) {
+                    this.stopRecording();
+                    return;
+                }
+                
+                this.recordingSource = 'Microphone';
+                this.startRecording({ audio: true });
+            },
+            
+            startSystemRecording() {
+                if (this.isRecording) {
+                    this.stopRecording();
+                    return;
+                }
+                
+                this.recordingSource = 'System Audio';
+                
+                // Request system audio with getDisplayMedia
+                navigator.mediaDevices.getDisplayMedia({ 
+                    audio: true, 
+                    video: true // Video is required for Chrome, we'll discard it later
+                })
+                .then(stream => {
+                    // Keep only the audio tracks
+                    const audioTracks = stream.getAudioTracks();
+                    if (audioTracks.length === 0) {
+                        alert('No audio track available. Please ensure you selected "Share audio" in the dialog.');
+                        stream.getTracks().forEach(track => track.stop());
+                        return;
+                    }
+                    
+                    // Stop video tracks if any
+                    stream.getVideoTracks().forEach(track => track.stop());
+                    
+                    // Create a new MediaStream with only audio
+                    const audioStream = new MediaStream(audioTracks);
+                    this.setupMediaRecorder(audioStream);
+                })
+                .catch(error => {
+                    console.error('Error accessing system audio:', error);
+                    alert('Could not access system audio: ' + error.message);
+                });
+            },
+            
+            startRecording(constraints) {
+                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                    alert('Audio recording is not supported in this browser');
+                    return;
+                }
+                
+                navigator.mediaDevices.getUserMedia(constraints)
+                    .then(stream => {
+                        this.setupMediaRecorder(stream);
+                    })
+                    .catch(error => {
+                        console.error('Error accessing media devices:', error);
+                        alert('Could not access microphone: ' + error.message);
+                    });
+            },
+            
+            setupMediaRecorder(stream) {
+                this.audioChunks = [];
+                this.mediaRecorder = new MediaRecorder(stream);
+                
+                this.mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        this.audioChunks.push(event.data);
+                    }
+                };
+                
+                this.mediaRecorder.onstop = () => {
+                    // Stop all tracks in the stream
+                    stream.getTracks().forEach(track => track.stop());
+                    
+                    // Process the recording
+                    this.processRecording();
+                };
+                
+                // Start recording
+                this.mediaRecorder.start();
+                this.isRecording = true;
+            },
+            
+            stopRecording() {
+                if (this.mediaRecorder && this.isRecording) {
+                    this.mediaRecorder.stop();
+                    this.isRecording = false;
+                }
+            },
+            
+            processRecording() {
+                // Create a blob from the audio chunks
+                const audioBlob = new Blob(this.audioChunks, { type: 'audio/webm' });
+                
+                // Convert to base64
+                const reader = new FileReader();
+                reader.readAsDataURL(audioBlob);
+                reader.onloadend = () => {
+                    const base64Audio = reader.result;
+                    this.transcribeAudio(base64Audio);
+                };
+            },
+            
+            initEditor() {
+                this.editor = document.getElementById('noteEdit');
+            },
+            
+            insertTranscription(transcription) {
+                const { selectionEnd } = this.editor;
+                this.setRangeText("\n\n" + transcription + "\n\n", selectionEnd, selectionEnd);
+            },
+            
+            async transcribeAudio(base64Audio) {
+                // Show a loading indicator
+                const { selectionStart, selectionEnd } = this.editor;
+                const loadingText = "\n\n[Transcribing audio...]\n\n";
+                this.setRangeText(loadingText, selectionEnd, selectionEnd);
+                const loadingPosition = selectionEnd;
+
+                try {
+                    // Convert base64 back to blob
+                    const byteString = atob(base64Audio.split(',')[1]);
+                    const mimeString = base64Audio.split(',')[0].split(':')[1].split(';')[0];
+                    const ab = new ArrayBuffer(byteString.length);
+                    const ia = new Uint8Array(ab);
+                    for (let i = 0; i < byteString.length; i++) {
+                        ia[i] = byteString.charCodeAt(i);
+                    }
+                    const audioBlob = new Blob([ab], { type: mimeString });
+
+                    // Validate audio data
+                    if (audioBlob.size === 0) {
+                        throw new Error('No audio data received');
+                    }
+                    console.log('📊 Audio blob details - Type:', mimeString, 'Size:', audioBlob.size, 'bytes');
+
+                    // Initialize transcriber if needed
+                    if (!this.transcriber || !this.transcriber.isInitialized) {
+                        if (!window.WhisperTranscriber) {
+                            throw new Error('Transcriber not available');
+                        }
+                        console.log('🎯 Creating new transcriber instance...');
+                        this.transcriber = new WhisperTranscriber();
+                        await this.transcriber.initialize();
+                    }
+
+                    // Transcribe the audio
+                    console.log('🎯 Starting transcription...');
+                    const result = await this.transcriber.transcribe(audioBlob);
+                    console.log('📝 Raw transcription result:', result);
+                    
+                    // Handle empty or invalid results
+                    if (!result || (typeof result === 'object' && (!result.text || result.text.trim() === ''))) {
+                        console.warn('⚠️ Empty transcription result received');
+                        this.setRangeText(
+                            "\n\n[No speech detected in the audio. Please try recording again with clearer audio.]\n\n",
+                            loadingPosition,
+                            loadingPosition + loadingText.length
+                        );
+                        return;
+                    }
+
+                    // Extract text from result (handles both string and object returns)
+                    const transcription = typeof result === 'string' ? result : result.text;
+                    console.log('✅ Transcription complete:', transcription);
+                    
+                    this.setRangeText(
+                        "\n\n" + transcription + "\n\n",
+                        loadingPosition,
+                        loadingPosition + loadingText.length
+                    );
+                } catch (error) {
+                    console.error('❌ Error transcribing audio:', error);
+                    this.setRangeText(
+                        "\n\n[Transcription failed: " + error.message + "]\n\n",
+                        loadingPosition,
+                        loadingPosition + loadingText.length
+                    );
+                }
             },
 
             parseSelection() {

@@ -26,6 +26,12 @@ Route::middleware('auth')->group(function (): void {
     });
 
     Route::get('files/{vault}', [FileController::class, 'show'])->name('files.show');
+    
+    // Transcription routes
+    Route::prefix('transcription')->group(function (): void {
+        Route::post('/file', [App\Http\Controllers\TranscriptionController::class, 'transcribeFile'])->name('transcription.file');
+        Route::post('/base64', [App\Http\Controllers\TranscriptionController::class, 'transcribeBase64'])->name('transcription.base64');
+    });
 });
 
 Route::middleware(['guest', 'throttle'])->group(function (): void {

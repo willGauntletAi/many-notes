@@ -49,8 +49,30 @@
                         @click="$wire.dispatchTo('modals.markdown-editor-search', 'open-modal', { type: 'image' })">Image</x-markdownEditor.subButton>
                     <x-markdownEditor.subButton @click="image()">External image</x-markdownEditor.subButton>
                     <x-markdownEditor.subButton @click="table">Table</x-markdownEditor.subButton>
+                    <x-markdownEditor.itemDivider />
+                    <x-markdownEditor.subButton @click="startMicRecording">
+                        <div class="flex items-center gap-2">
+                            <x-icons.microphone class="w-4 h-4" />
+                            <span>Record Microphone</span>
+                        </div>
+                    </x-markdownEditor.subButton>
+                    <x-markdownEditor.subButton @click="startSystemRecording">
+                        <div class="flex items-center gap-2">
+                            <x-icons.desktop class="w-4 h-4" />
+                            <span>Record System Audio</span>
+                        </div>
+                    </x-markdownEditor.subButton>
                 </x-markdownEditor.items>
             </x-markdownEditor.itemDropdown>
+            
+            <!-- Audio Recording Status -->
+            <div x-show="isRecording" class="flex items-center gap-2 ml-2 text-red-500 animate-pulse">
+                <div class="w-2 h-2 bg-red-500 rounded-full"></div>
+                <span x-text="recordingSource + ' Recording'"></span>
+                <x-markdownEditor.button @click="stopRecording" class="bg-red-500 text-white">
+                    Stop
+                </x-markdownEditor.button>
+            </div>
         </ul>
         <div x-show="!isEditMode" class="absolute inset-0 opacity-25 bg-light-base-200 dark:bg-base-950"></div>
     </div>

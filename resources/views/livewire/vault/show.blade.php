@@ -261,6 +261,7 @@
     <livewire:modals.edit-node :$vault />
     <livewire:modals.search-node :$vault />
     <livewire:modals.markdown-editor-search :$vault />
+    <livewire:modals.transcribe-file />
 </div>
 
 @script
