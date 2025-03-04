@@ -26,11 +26,11 @@ class RAGService
         // Initialize OpenAI client
         $this->openaiClient = OpenAI::client(config('chat.openai.api_key'));
         $this->model = config('chat.openai.model');
-        $this->maxTokens = config('chat.openai.max_tokens');
+        $this->maxTokens = (int) config('chat.openai.max_tokens');
         
         // RAG configuration
-        $this->maxChunks = config('chat.rag.max_chunks');
-        $this->relevanceThreshold = config('chat.rag.relevance_threshold');
+        $this->maxChunks = (int) config('chat.rag.max_chunks');
+        $this->relevanceThreshold = (float) config('chat.rag.relevance_threshold');
     }
 
     /**
@@ -71,8 +71,6 @@ class RAGService
     protected function retrieveRelevantChunks(array $queryEmbedding): array
     {
         return $this->vecService->searchSimilar(
-            'node_embeddings',
-            'embedding',
             $queryEmbedding,
             $this->maxChunks * 2 // Retrieve more than needed to allow for filtering
         );
@@ -96,7 +94,7 @@ class RAGService
                 ['role' => 'system', 'content' => $systemPrompt],
                 ['role' => 'user', 'content' => $query]
             ],
-            'max_tokens' => $this->maxTokens,
+            'max_tokens' => (int) $this->maxTokens,
             'temperature' => 0.7,
         ]);
         

@@ -214,13 +214,61 @@ class Chat extends Component
                 return;
             }
             
-            $chatModel->messages()->create([
+            // Create user message
+            $userMessage = $chatModel->messages()->create([
                 'content' => $this->messageText,
                 'role' => 'user',
             ]);
             
             $this->messageText = '';
             $this->loadMessages($chatModel);
+            
+            // Check if API key is configured
+            $apiKey = config('chat.openai.api_key');
+            if (empty($apiKey) || strpos($apiKey, 'sk-') !== 0) {
+                Log::warning('OpenAI API key is not properly configured');
+                $dummyResponse = "I'm sorry, but I can't process your request right now. The AI service is not properly configured. Please contact the administrator to set up the OpenAI API key.";
+                
+                // Create a dummy assistant message
+                $chatModel->messages()->create([
+                    'role' => 'assistant',
+                    'content' => $dummyResponse,
+                ]);
+                
+                $this->loadMessages($chatModel);
+                return;
+            }
+            
+            try {
+                // Get RAG service and generate AI response
+                $ragService = app(\App\Services\RAGService::class);
+                
+                // Process the message with RAG
+                $response = $ragService->processQuery($this->vault, $userMessage->content);
+                
+                // Create assistant message
+                $assistantMessage = $chatModel->messages()->create([
+                    'role' => 'assistant',
+                    'content' => $response,
+                ]);
+                
+                // Reload messages to show the AI response
+                $this->loadMessages($chatModel);
+                
+            } catch (\Exception $aiError) {
+                Log::error('Error generating AI response: ' . $aiError->getMessage());
+                
+                // Provide a friendly error message as the assistant response
+                $errorResponse = "I'm sorry, but I encountered an error while processing your request. The system administrator has been notified.";
+                
+                $chatModel->messages()->create([
+                    'role' => 'assistant',
+                    'content' => $errorResponse,
+                ]);
+                
+                $this->loadMessages($chatModel);
+            }
+            
         } catch (\Exception $e) {
             Log::error("Error sending message", ['error' => $e->getMessage()]);
             session()->flash('error', 'Failed to send message: ' . $e->getMessage());
