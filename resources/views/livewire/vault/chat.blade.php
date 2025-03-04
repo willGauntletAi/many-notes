@@ -1,7 +1,7 @@
 <div 
     id="chat-component"
     wire:id="{{ $_instance->getId() }}"
-    class="flex flex-col h-full"
+    class="flex flex-row h-full"
     x-data="{ 
         showModalAlpine: @entangle('showModal').live,
         toggleModal() {
@@ -52,15 +52,22 @@
                 <ul class="space-y-2">
                     @foreach($chats as $chat)
                         <li>
-                            <button 
-                                wire:click="setActiveChat({{ $chat['id'] }})"
-                                class="w-full text-left px-3 py-2 rounded {{ $activeChat && $activeChat['id'] == $chat['id'] ? 'bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200' : 'hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200' }}"
-                            >
-                                <div class="flex justify-between items-center">
-                                    <span class="truncate">{{ $chat['name'] }}</span>
+                            <div class="w-full text-left px-3 py-2 rounded {{ $activeChat && $activeChat['id'] == $chat['id'] ? 'bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200' : 'hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200' }}">
+                                <div class="flex justify-between items-start">
+                                    <div class="flex-1">
+                                        <button 
+                                            wire:click="setActiveChat({{ $chat['id'] }})"
+                                            class="w-full text-left truncate"
+                                        >
+                                            {{ $chat['name'] }}
+                                        </button>
+                                        <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                            {{ \Carbon\Carbon::parse($chat['created_at'])->format('M d, Y') }}
+                                        </div>
+                                    </div>
                                     <button 
                                         wire:click.stop="deleteChat({{ $chat['id'] }})"
-                                        class="text-gray-400 hover:text-red-500 dark:text-gray-500 dark:hover:text-red-400"
+                                        class="text-gray-400 hover:text-red-500 dark:text-gray-500 dark:hover:text-red-400 ml-2"
                                         title="Delete chat"
                                     >
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -68,10 +75,7 @@
                                         </svg>
                                     </button>
                                 </div>
-                                <div class="text-xs text-gray-500 dark:text-gray-400">
-                                    {{ \Carbon\Carbon::parse($chat['created_at'])->format('M d, Y') }}
-                                </div>
-                            </button>
+                            </div>
                         </li>
                     @endforeach
                 </ul>
