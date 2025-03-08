@@ -31,6 +31,7 @@
             @right-panel-toggle.window="isRightPanelOpen = !isRightPanelOpen"
             @file-render-markup.window="$nextTick(() => { markdownToHtml() })"
         >
+            <!-- Loading indicator -->
             <div class="fixed inset-0 z-40 opacity-50 bg-light-base-200 dark:bg-base-950"
                 wire:loading wire:target.except="nodeForm.name, nodeForm.content"
             >
@@ -38,12 +39,15 @@
                     <x-icons.spinner class="w-5 h-5 animate-spin" />
                 </div>
             </div>
+            
+            <!-- Panel overlay backdrop -->
             <div class="fixed inset-0 z-20 opacity-50 bg-light-base-200 dark:bg-base-950"
                 x-show="(isLeftPanelOpen || isRightPanelOpen) && isSmallDevice" @click="closePanels"
                 x-transition:enter="ease-out duration-300" x-transition:leave="ease-in duration-200"
             ></div>
-            <div class="absolute top-0 left-0 z-30 flex flex-col h-full overflow-hidden overflow-y-auto transition-all w-60 bg-light-base-50 dark:bg-base-900"
+            <div class="absolute top-0 left-0 z-30 flex flex-col h-full overflow-hidden overflow-y-auto transition-all bg-light-base-50 dark:bg-base-900"
                 :class="{ 'translate-x-0': isLeftPanelOpen, '-translate-x-full hidden': !isLeftPanelOpen }"
+                :style="{ width: `${leftPanelWidth}px` }"
             >
                 <div class="sticky top-0 z-[5] flex justify-between p-4 bg-light-base-50 dark:bg-base-900">
                     <h3>{{ $vault->name }}</h3>
@@ -100,12 +104,31 @@
                 </div>
 
                 <livewire:vault.tree-view lazy="on-load" :$vault />
+                
+                <!-- LEFT RESIZE HANDLE - moved outside the sidebar element -->
+            </div>
+            
+            <!-- Left Resize Handle (positioned to right of left sidebar) -->
+            <div class="absolute top-0 left-0 bottom-0 z-50 cursor-ew-resize"
+                :class="{ 'left-[240px]': true }"
+                :style="{ left: `${leftPanelWidth}px` }"
+                @mousedown="startLeftResize($event)"
+            >
+                <div class="absolute inset-y-0 w-4 -ml-2 bg-transparent hover:bg-primary-500/30 group">
+                    <div class="absolute inset-y-0 right-[7px] w-[2px] bg-gray-300 dark:bg-gray-700"></div>
+                    <!-- Visible grabber indicator -->
+                    <div class="absolute top-1/2 right-[4px] h-16 w-[8px] -mt-8 bg-primary-600/50 rounded opacity-0 group-hover:opacity-100"></div>
+                </div>
             </div>
 
-            <div class="absolute top-0 bottom-0 right-0 flex flex-col w-full overflow-y-auto transition-all text-start bg-light-base-200 dark:bg-base-950"
-                :class="{ 'md:pl-60': isLeftPanelOpen, 'md:pr-60': isRightPanelOpen }" id="nodeContainer"
+            <div class="absolute top-0 bottom-0 right-0 left-0 flex flex-col overflow-y-auto transition-all text-start bg-light-base-200 dark:bg-base-950"
+                id="nodeContainer"
+                :style="{ 
+                  paddingLeft: isLeftPanelOpen ? `${leftPanelWidth}px` : '0px',
+                  paddingRight: isRightPanelOpen ? `${rightPanelWidth}px` : '0px' 
+                }"
             >
-                <div class="flex flex-col h-full w-full max-w-[48rem] mx-auto p-4">
+                <div class="flex flex-col h-full w-full mx-auto p-4">
                     <div class="flex flex-col w-full h-full gap-4" x-show="$wire.selectedFile">
                         <div class="z-[5]">
                             <div class="flex justify-between">
@@ -210,8 +233,10 @@
                 </div>
             </div>
 
-            <div class="absolute top-0 right-0 z-30 flex flex-col h-full overflow-hidden overflow-y-auto transition-all w-60 bg-light-base-50 dark:bg-base-900"
+            <!-- Right panel -->
+            <div class="absolute top-0 right-0 z-30 flex flex-col h-full overflow-hidden overflow-y-auto transition-all bg-light-base-50 dark:bg-base-900"
                 :class="{ 'translate-x-0': isRightPanelOpen, 'translate-x-full hidden': !isRightPanelOpen }"
+                :style="{ width: `${rightPanelWidth}px` }"
                 x-data="{ activeTab: 'info' }"
             >
                 <!-- Tab Navigation -->
@@ -290,6 +315,19 @@
                     @endif
                 </div>
             </div>
+            
+            <!-- Right Resize Handle (positioned to left of right sidebar) -->
+            <div class="absolute top-0 right-0 bottom-0 z-50 cursor-ew-resize"
+                :class="{ 'right-[360px]': true }"
+                :style="{ right: `${rightPanelWidth}px` }"
+                @mousedown="startRightResize($event)"
+            >
+                <div class="absolute inset-y-0 w-4 -mr-2 bg-transparent hover:bg-primary-500/30 group">
+                    <div class="absolute inset-y-0 left-[7px] w-[2px] bg-gray-300 dark:bg-gray-700"></div>
+                    <!-- Visible grabber indicator -->
+                    <div class="absolute top-1/2 left-[4px] h-16 w-[8px] -mt-8 bg-primary-600/50 rounded opacity-0 group-hover:opacity-100"></div>
+                </div>
+            </div>
         </div>
     </x-layouts.appMain>
 
@@ -309,12 +347,14 @@
             selectedFile: $wire.entangle('selectedFile'),
             html: '',
             renderListitem: null,
-
+            leftPanelWidth: localStorage.getItem('leftPanelWidth') ? parseInt(localStorage.getItem('leftPanelWidth')) : 240,
+            rightPanelWidth: localStorage.getItem('rightPanelWidth') ? parseInt(localStorage.getItem('rightPanelWidth')) : 360,
+            isDragging: false,
+            activePanel: null,
+            
             init() {
                 this.$watch('isEditMode', value => {
-                    if (value) {
-                        return;
-                    }
+                    if (value) return;
                     this.markdownToHtml();
                 });
 
@@ -330,6 +370,64 @@
                 let markedRender = new marked.Renderer;
                 markedRender.parser = new marked.Parser;
                 this.renderListitem = markedRender.listitem.bind(markedRender);
+            },
+            
+            // Simple handlers with direct methods
+            startLeftResize(e) {
+                this.startResize('left', e);
+            },
+            
+            startRightResize(e) {
+                this.startResize('right', e);
+            },
+            
+            // Main resize handler
+            startResize(panel, e) {
+                this.activePanel = panel;
+                this.isDragging = true;
+                
+                // Store starting positions
+                const startX = e.clientX;
+                const startWidth = panel === 'left' ? this.leftPanelWidth : this.rightPanelWidth;
+                
+                // Add global mouse move and up handlers
+                const moveHandler = (moveEvent) => {
+                    if (!this.isDragging) return;
+                    
+                    // Calculate the distance moved
+                    const deltaX = moveEvent.clientX - startX;
+                    
+                    if (panel === 'left') {
+                        // For left panel, add the difference to the original width
+                        this.leftPanelWidth = Math.max(150, Math.min(800, startWidth + deltaX));
+                    } else {
+                        // For right panel, subtract the difference from the original width
+                        this.rightPanelWidth = Math.max(150, Math.min(800, startWidth - deltaX));
+                    }
+                };
+                
+                const upHandler = () => {
+                    this.isDragging = false;
+                    this.activePanel = null;
+                    
+                    // Save to localStorage
+                    if (panel === 'left') {
+                        localStorage.setItem('leftPanelWidth', this.leftPanelWidth);
+                    } else {
+                        localStorage.setItem('rightPanelWidth', this.rightPanelWidth);
+                    }
+                    
+                    // Clean up
+                    document.removeEventListener('mousemove', moveHandler);
+                    document.removeEventListener('mouseup', upHandler);
+                };
+                
+                // Register global event listeners
+                document.addEventListener('mousemove', moveHandler);
+                document.addEventListener('mouseup', upHandler);
+                
+                // Prevent default behavior
+                e.preventDefault();
             },
 
             isSmallDevice() {
@@ -347,14 +445,14 @@
 
             openFile(node) {
                 $wire.openFile(node);
-
+                
                 if (this.isSmallDevice()) {
                     this.closePanels();
                 }
 
                 this.resetScrollPosition();
             },
-
+            
             resetScrollPosition() {
                 if (!Number.isInteger(this.selectedFile)) {
                     return;
