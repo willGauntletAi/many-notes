@@ -46,6 +46,16 @@ return [
             'database' => env('DB_CONNECTION', 'pgsql'),
         ],
 
+        'embeddings' => [
+            'driver' => 'database',
+            'connection' => env('DB_QUEUE_CONNECTION'),
+            'table' => env('DB_QUEUE_TABLE', 'jobs'),
+            'queue' => 'embeddings',
+            'retry_after' => 600, // 10 minutes for embedding jobs which can take longer
+            'after_commit' => true,
+            'database' => env('DB_CONNECTION', 'pgsql'),
+        ],
+
         'beanstalkd' => [
             'driver' => 'beanstalkd',
             'host' => env('BEANSTALKD_QUEUE_HOST', 'localhost'),

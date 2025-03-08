@@ -29,7 +29,23 @@ final class VaultNode extends Model
         'name',
         'extension',
         'content',
+        'content_hash',
     ];
+
+    /**
+     * Boot the model.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+        
+        static::saving(function (VaultNode $node) {
+            // Only update content hash if content has changed or it's null
+            if ($node->isDirty('content') || is_null($node->content_hash)) {
+                $node->content_hash = hash('sha256', $node->content);
+            }
+        });
+    }
 
     /**
      * Get the associated vault.
@@ -79,6 +95,17 @@ final class VaultNode extends Model
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class, null, 'vault_node_id', 'tag_id');
+    }
+
+    /**
+     * The chats that include this node.
+     *
+     * @return BelongsToMany<VaultChat, $this>
+     */
+    public function chats(): BelongsToMany
+    {
+        return $this->belongsToMany(VaultChat::class, 'vault_chat_node', 'vault_node_id', 'vault_chat_id')
+            ->withTimestamps();
     }
 
     /**

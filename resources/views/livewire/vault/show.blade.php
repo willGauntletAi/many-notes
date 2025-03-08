@@ -211,9 +211,29 @@
             </div>
 
             <div class="absolute top-0 right-0 z-30 flex flex-col h-full overflow-hidden overflow-y-auto transition-all w-60 bg-light-base-50 dark:bg-base-900"
-                :class="{ 'translate-x-0': isRightPanelOpen, '-translate-x-full hidden': !isRightPanelOpen }"
+                :class="{ 'translate-x-0': isRightPanelOpen, 'translate-x-full hidden': !isRightPanelOpen }"
+                x-data="{ activeTab: 'info' }"
             >
-                <div class="flex flex-col gap-4 p-4">
+                <!-- Tab Navigation -->
+                <div class="flex border-b border-gray-200 dark:border-gray-700">
+                    <button 
+                        class="flex-1 px-4 py-2 text-sm font-medium text-center border-b-2 transition-colors"
+                        :class="activeTab === 'info' ? 'border-primary-500 text-primary-600 dark:text-primary-400' : 'border-transparent hover:text-gray-700 dark:hover:text-gray-300'"
+                        @click="activeTab = 'info'"
+                    >
+                        Info
+                    </button>
+                    <button 
+                        class="flex-1 px-4 py-2 text-sm font-medium text-center border-b-2 transition-colors"
+                        :class="activeTab === 'chat' ? 'border-primary-500 text-primary-600 dark:text-primary-400' : 'border-transparent hover:text-gray-700 dark:hover:text-gray-300'"
+                        @click="activeTab = 'chat'"
+                    >
+                        Chat
+                    </button>
+                </div>
+                
+                <!-- Info Tab Content -->
+                <div x-show="activeTab === 'info'" class="flex flex-col flex-1 gap-4 p-4 overflow-y-auto">
                     <div class="flex flex-col w-full gap-2">
                         <h3>Links</h3>
                         <div class="flex flex-col gap-2 text-sm">
@@ -257,6 +277,17 @@
                             @endif
                         </div>
                     </div>
+                </div>
+                
+                <!-- Chat Tab Content -->
+                <div x-show="activeTab === 'chat'" class="flex-1 h-full overflow-y-auto">
+                    @if($nodeForm->node)
+                        <livewire:vault.chat-sidebar :vault="$vault" :node="$nodeForm->node" />
+                    @else
+                        <div class="flex items-center justify-center h-full text-gray-500 dark:text-gray-400">
+                            <p>Open a note to chat</p>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

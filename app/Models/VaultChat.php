@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class VaultChat extends Model
 {
@@ -38,6 +39,17 @@ class VaultChat extends Model
      */
     public function messages(): HasMany
     {
-        return $this->hasMany(ChatMessage::class);
+        return $this->hasMany(ChatMessage::class, 'chat_id');
+    }
+
+    /**
+     * Get the notes included in this chat's context.
+     *
+     * @return BelongsToMany<VaultNode>
+     */
+    public function nodes(): BelongsToMany
+    {
+        return $this->belongsToMany(VaultNode::class, 'vault_chat_node', 'vault_chat_id', 'vault_node_id')
+            ->withTimestamps();
     }
 }

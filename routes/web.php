@@ -34,6 +34,7 @@ Route::middleware('auth')->group(function (): void {
     Route::put('/vaults/{vault}/chats/{chat}', [App\Http\Controllers\ChatController::class, 'update'])->name('chat.update');
     Route::delete('/vaults/{vault}/chats/{chat}', [App\Http\Controllers\ChatController::class, 'destroy'])->name('chat.destroy');
     Route::post('/vaults/{vault}/chats/{chat}/messages', [App\Http\Controllers\ChatController::class, 'sendMessage'])->name('chat.send-message');
+    Route::post('/vaults/{vault}/generate-embeddings', [App\Http\Controllers\ChatController::class, 'generateEmbeddings'])->name('chat.generate-embeddings');
 });
 
 Route::middleware(['guest', 'throttle'])->group(function (): void {
@@ -53,4 +54,23 @@ Route::middleware(['guest', 'throttle'])->group(function (): void {
             Route::get('/{provider}/callback', OAuthLoginCallback::class)->where('provider', $providers);
         }
     });
+});
+
+// Test route for queue
+Route::get('/test-queue', function() {
+    // Dispatch the test job
+    \App\Jobs\TestQueueJob::dispatch();
+    
+    // Log that we've queued the test job
+    \Illuminate\Support\Facades\Log::info('Test queue job dispatched');
+    
+    // Check for jobs in the queue to confirm it was queued
+    $pendingJobs = \Illuminate\Support\Facades\DB::table('jobs')->where('queue', 'test-queue')->count();
+    \Illuminate\Support\Facades\Log::info('Pending test jobs in queue: ' . $pendingJobs);
+    
+    return response()->json([
+        'success' => true,
+        'message' => 'Test job dispatched',
+        'pending_jobs' => $pendingJobs
+    ]);
 });

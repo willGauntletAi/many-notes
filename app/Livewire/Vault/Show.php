@@ -248,13 +248,21 @@ final class Show extends Component
 
     public function render(): Factory|View
     {
-        return view('livewire.vault.show');
+        return view('livewire.vault.show', [
+            'vault' => $this->vault,
+        ]);
     }
 
     private function setNode(VaultNode $node): void
     {
+        $this->nodeForm->setNode($node);
         $this->selectedFile = $node->id;
         $this->selectedFileUrl = new GetUrlFromVaultNode()->handle($node);
-        $this->nodeForm->setNode($node);
+        $this->isEditMode = false;
+        
+        // Notify the ChatSidebar component about the newly opened note
+        if ($node->is_file && $node->extension === 'md') {
+            $this->dispatch('noteAdded', $node->id);
+        }
     }
 }

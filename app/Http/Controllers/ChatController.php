@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\DB;
 
 class ChatController
 {
@@ -177,6 +178,51 @@ class ChatController
 
             return redirect()->route('chat.show', ['vault' => $vault->id, 'chat' => $chat->id])
                 ->with('error', 'Failed to process message: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Generate embeddings for a vault's notes
+     */
+    public function generateEmbeddings(Request $request, Vault $vault)
+    {
+        // Authorize access to the vault
+        Gate::authorize('view', $vault);
+        
+        try {
+            // Clear any existing job in the queue for this vault
+            DB::table('jobs')
+                ->where('queue', 'embeddings')
+                ->where('payload', 'like', '%"vault_id":' . $vault->id . '%')
+                ->delete();
+            
+            // Create the job manually
+            $job = new \App\Jobs\GenerateEmbeddingsJob($vault);
+            
+            // Dispatch the job with specific options to force queueing
+            dispatch($job)
+                ->onQueue('embeddings')
+                ->afterCommit() // Only dispatch after the current database transaction commits
+                ->delay(now()->addSeconds(5)); // Add a small delay to ensure it's processed asynchronously
+            
+            // Log that we've queued the job
+            Log::info('Embedding generation job dispatched for vault: ' . $vault->id);
+            
+            // Check if the job was queued
+            $pendingJobs = DB::table('jobs')->where('queue', 'embeddings')->count();
+            Log::info('Pending embedding jobs in queue: ' . $pendingJobs);
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Notes indexing started in the background. This process may take several minutes to complete.',
+                'pending_jobs' => $pendingJobs
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error queueing embedding generation: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while starting the indexing process: ' . $e->getMessage()
+            ], 500);
         }
     }
 }
